@@ -17,6 +17,7 @@
       "src": "/N5-listening/images/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+      "purpose": "any maskable"
     }
   ]
 }
