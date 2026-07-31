@@ -1,0 +1,1798 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1a73e8" />
+    <link rel="apple-touch-icon" href="images/icons/icon-192.png" />
+    <meta charset="UTF-8" />
+    <title>JLPT N5 聴解練習 + Story Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #f6f1e6;
+        --paper-deep: #efe6d3;
+        --ink: #26241f;
+        --indigo: #274a5f;
+        --indigo-deep: #1a3441;
+        --shu: #b5482f;
+        --shu-soft: #e7d9c4;
+        --line: #c9bda1;
+        --ok: #3e6b4f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(
+            circle at 15% 10%,
+            rgba(39, 74, 95, 0.05),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 85% 90%,
+            rgba(181, 72, 47, 0.05),
+            transparent 40%
+          ),
+          var(--paper);
+        color: var(--ink);
+        font-family: "Noto Sans JP", sans-serif;
+        padding: 40px 18px 80px;
+      }
+      .wrap {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--line);
+        position: relative;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.35em;
+        color: var(--indigo);
+        font-weight: 700;
+      }
+      h1 {
+        font-family: "Noto Serif JP", serif;
+        font-size: 38px;
+        font-weight: 700;
+        margin: 10px 0 8px;
+        color: var(--indigo-deep);
+        letter-spacing: 0.04em;
+      }
+      .sub {
+        font-size: 14px;
+        color: #6b6455;
+      }
+      .stamp {
+        position: absolute;
+        top: -6px;
+        right: 0;
+        width: 56px;
+        height: 56px;
+        border: 2px solid var(--shu);
+        color: var(--shu);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Noto Serif JP", serif;
+        font-size: 13px;
+        font-weight: 700;
+        transform: rotate(6deg);
+        opacity: 0.85;
+        writing-mode: vertical-rl;
+      }
+
+      /* ===== MODE TABS ===== */
+      .mode-tabs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 16px 0 24px;
+      }
+      .mode-tab {
+        padding: 10px 30px;
+        border: 2px solid var(--line);
+        border-radius: 30px;
+        background: transparent;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ink);
+        cursor: pointer;
+        font-family: "Noto Sans JP", sans-serif;
+        transition: all 0.2s ease;
+      }
+      .mode-tab:hover {
+        border-color: var(--indigo);
+        background: #eef3f5;
+      }
+      .mode-tab.active {
+        background: var(--indigo);
+        border-color: var(--indigo);
+        color: #fff;
+      }
+
+      .progress-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 26px;
+        font-size: 13px;
+        color: #6b6455;
+      }
+      .progress-track {
+        flex: 1;
+        height: 3px;
+        background: var(--line);
+        margin: 0 14px;
+        position: relative;
+        border-radius: 2px;
+      }
+      .progress-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: var(--shu);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        width: 0%;
+      }
+
+      .card {
+        background: #fffdf8;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 26px 26px 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+        position: relative;
+      }
+      .qnum {
+        font-family: "Noto Serif JP", serif;
+        font-size: 13px;
+        color: var(--indigo);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .qnum .kanji-num {
+        font-size: 20px;
+        color: var(--shu);
+      }
+      .qnum::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .audio-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+      .play-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--indigo);
+        color: #fdf9ef;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: "Noto Sans JP", sans-serif;
+        transition:
+          background 0.15s ease,
+          transform 0.1s ease;
+      }
+      .play-btn:hover {
+        background: var(--indigo-deep);
+      }
+      .play-btn:active {
+        transform: scale(0.97);
+      }
+      .play-btn.playing {
+        background: var(--shu);
+      }
+      .play-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+      .replay-hint {
+        font-size: 12px;
+        color: #8a8270;
+      }
+      .stop-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: none;
+        color: var(--shu);
+        border: 1px solid var(--shu);
+        padding: 10px 16px;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: "Noto Sans JP", sans-serif;
+        transition: background 0.15s ease;
+      }
+      .stop-btn:hover {
+        background: #fbece7;
+      }
+      .stop-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .qtext {
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0 0 16px;
+        color: var(--ink);
+      }
+
+      .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .choice {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 11px 14px;
+        cursor: pointer;
+        font-size: 19px;
+        background: #fff;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .choice:hover {
+        border-color: var(--indigo);
+      }
+      .choice .mark {
+        width: 22px;
+        height: 22px;
+        flex: 0 0 auto;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #8a8270;
+      }
+      .choice.selected {
+        border-color: var(--indigo);
+        background: #eef3f5;
+      }
+      .choice.selected .mark {
+        border-color: var(--indigo);
+        color: var(--indigo);
+      }
+      .choice.correct {
+        border-color: var(--ok);
+        background: #eaf2ec;
+      }
+      .choice.correct .mark {
+        background: var(--ok);
+        border-color: var(--ok);
+        color: #fff;
+      }
+      .choice.wrong {
+        border-color: var(--shu);
+        background: #fbece7;
+      }
+      .choice.wrong .mark {
+        background: var(--shu);
+        border-color: var(--shu);
+        color: #fff;
+      }
+      .choice.disabled {
+        cursor: default;
+      }
+
+      .feedback {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 4px;
+        font-size: 13.5px;
+        line-height: 1.7;
+        display: none;
+      }
+      .feedback.show {
+        display: block;
+      }
+      .feedback.good {
+        background: #eaf2ec;
+        color: #2600fc;
+        border: 1px solid #bcd6c4;
+      }
+      .feedback.bad {
+        background: #fbece7;
+        color: #ff0000;
+        border: 1px solid #e6c2b6;
+      }
+      .feedback .script {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed #c9bda1;
+        color: #050400;
+        font-size: 12.5px;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 34px;
+      }
+      .summary-btn {
+        background: none;
+        border: 1px solid var(--indigo);
+        color: var(--indigo);
+        padding: 11px 26px;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: "Noto Sans JP", sans-serif;
+      }
+      .summary-btn:hover {
+        background: var(--indigo);
+        color: #fdf9ef;
+      }
+
+      .score-banner {
+        display: none;
+        text-align: center;
+        margin-top: 18px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: #fffdf8;
+        font-family: "Noto Serif JP", serif;
+      }
+      .score-banner.show {
+        display: block;
+      }
+      .score-banner .num {
+        font-size: 30px;
+        color: var(--shu);
+        font-weight: 700;
+      }
+      .score-banner .label {
+        font-size: 13px;
+        color: #6b6455;
+        margin-top: 4px;
+      }
+
+      rt {
+        font-size: 0.6em;
+        color: #5f0501;
+        user-select: none;
+      }
+      .script rt {
+        font-size: 0.9em;
+      }
+
+      .rate-row {
+        text-align: center;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #8a8270;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px 12px;
+      }
+      select {
+        font-family: inherit;
+        font-size: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 3px 10px;
+        background: #fff;
+        color: var(--ink);
+      }
+
+      /* ===== STORY SECTION ===== */
+      #storyModeSection {
+        display: none;
+        margin-top: 10px;
+      }
+      .story-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        border-bottom: 2px solid var(--line);
+        padding-bottom: 12px;
+        margin-bottom: 18px;
+      }
+      .story-header h2 {
+        font-family: "Noto Serif JP", serif;
+        font-size: 24px;
+        color: var(--indigo-deep);
+        margin: 0;
+      }
+      .story-nav-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .story-nav-btn {
+        padding: 6px 16px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+      }
+      .story-nav-btn:hover {
+        background: var(--indigo);
+        color: #fff;
+        border-color: var(--indigo);
+      }
+      .story-nav-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .story-display {
+        background: #fffdf8;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .story-controls-top {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .story-play-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--indigo);
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+      .story-play-btn:hover {
+        background: var(--indigo-deep);
+      }
+      .story-play-btn.playing {
+        background: var(--shu);
+      }
+      .story-btn {
+        padding: 8px 18px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .story-btn:hover {
+        border-color: var(--indigo);
+        background: #eef3f5;
+      }
+      .story-btn.active {
+        background: var(--indigo);
+        color: #fff;
+        border-color: var(--indigo);
+      }
+
+      /* ===== FURIGANA DISPLAY ===== */
+      .story-japanese-block {
+        font-size: 18px;
+        line-height: 2.8;
+        padding: 8px 4px;
+      }
+      .story-japanese-block ruby {
+        ruby-align: center;
+      }
+      .story-japanese-block rt {
+        font-size: 0.55em;
+        color: #8b0000;
+        font-weight: 300;
+        letter-spacing: 0.02em;
+      }
+      .story-english-block {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #6b6455;
+        padding: 12px 4px;
+        border-top: 1px dashed var(--line);
+        margin-top: 12px;
+        padding-top: 16px;
+      }
+
+      /* ===== QUESTIONS SECTION ===== */
+      .story-questions-section {
+        background: #fffdf8;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px;
+      }
+      .story-questions-section h3 {
+        font-size: 18px;
+        color: var(--indigo-deep);
+        margin: 0 0 16px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10px;
+      }
+      .question-progress {
+        font-size: 14px;
+        color: #8a8270;
+        margin-bottom: 12px;
+      }
+      .question-text {
+        font-size: 17px;
+        font-weight: 500;
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+      .question-text rt {
+        font-size: 0.6em;
+        color: #5f0501;
+      }
+      .question-choices {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .question-choice {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 10px 14px;
+        cursor: pointer;
+        background: #fff;
+        transition: all 0.15s ease;
+        font-size: 17px;
+      }
+      .question-choice:hover:not(.disabled) {
+        border-color: var(--indigo);
+      }
+      .question-choice .choice-mark {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: #8a8270;
+      }
+      .question-choice.selected {
+        border-color: var(--indigo);
+        background: #eef3f5;
+      }
+      .question-choice.selected .choice-mark {
+        border-color: var(--indigo);
+        color: var(--indigo);
+      }
+      .question-choice.correct {
+        border-color: var(--ok);
+        background: #eaf2ec;
+      }
+      .question-choice.correct .choice-mark {
+        background: var(--ok);
+        border-color: var(--ok);
+        color: #fff;
+      }
+      .question-choice.wrong {
+        border-color: var(--shu);
+        background: #fbece7;
+      }
+      .question-choice.wrong .choice-mark {
+        background: var(--shu);
+        border-color: var(--shu);
+        color: #fff;
+      }
+      .question-choice.disabled {
+        cursor: default;
+      }
+      .question-choice rt {
+        font-size: 0.6em;
+        color: #5f0501;
+      }
+
+      .question-feedback {
+        margin-top: 12px;
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1.7;
+        display: none;
+      }
+      .question-feedback.show {
+        display: block;
+      }
+      .question-feedback.correct {
+        background: #eaf2ec;
+        border: 1px solid #bcd6c4;
+        color: #1a4a1a;
+      }
+      .question-feedback.wrong {
+        background: #fbece7;
+        border: 1px solid #e6c2b6;
+        color: #8a1a1a;
+      }
+
+      .question-nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+      }
+      .question-nav-btn {
+        padding: 6px 16px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+      }
+      .question-nav-btn:hover {
+        background: var(--indigo);
+        color: #fff;
+        border-color: var(--indigo);
+      }
+      .question-nav-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 600px) {
+        .story-header {
+          flex-direction: column;
+          align-items: stretch;
+          text-align: center;
+        }
+        .story-nav-controls {
+          justify-content: center;
+        }
+        .story-japanese-block {
+          font-size: 16px;
+          line-height: 2.5;
+        }
+        .question-text {
+          font-size: 15px;
+        }
+        .question-choice {
+          font-size: 15px;
+        }
+        .mode-tab {
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+        .audio-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .replay-hint {
+          text-align: center;
+        }
+        .rate-row {
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+
+      /* ===== PRINT STYLES ===== */
+      @media print {
+        .mode-tabs,
+        .story-controls-top,
+        .story-nav-controls,
+        .question-nav,
+        .audio-row {
+          display: none !important;
+        }
+        .story-display {
+          border: 1px solid #ccc !important;
+          background: white !important;
+          box-shadow: none !important;
+        }
+        .story-questions-section {
+          border: 1px solid #ccc !important;
+          background: white !important;
+          box-shadow: none !important;
+          page-break-inside: avoid;
+        }
+        .story-header {
+          border-bottom: 1px solid #000 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="stamp">
+          <ruby>聴<rt>ちょう</rt>解<rt>かい</rt></ruby>
+        </div>
+        <div class="eyebrow">JLPT N5 ・ もぎ試験</div>
+        <h1>Listening &amp; Reading Practice</h1>
+        <div class="sub">
+          🎧 Listening: Press play and select the correct answer.<br />
+          📖 Story: Read and answer comprehension questions.
+        </div>
+      </header>
+
+      <!-- ===== MODE TABS ===== -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="listening">
+          🎧 Listening
+        </button>
+        <button class="mode-tab" data-mode="story">📖 Story</button>
+      </div>
+
+      <!-- ===== LISTENING SECTION ===== -->
+      <div id="listeningSection">
+        <div class="progress-row">
+          <span id="progressLabel"
+            >0 / 8 <ruby>Question 問<rt>もん</rt></ruby></span
+          >
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <span id="scoreLabel">Correct 正解 0</span>
+        </div>
+
+        <div id="quiz"></div>
+
+        <footer>
+          <button class="summary-btn" id="summaryBtn">Check all answers</button>
+          <div class="rate-row">
+            <span>Voice:</span>
+            <select id="voiceSelect">
+              <option value="">Loading voices...</option>
+            </select>
+            <span>Speed:</span>
+            <select id="rateSelect">
+              <option value="0.75">ゆっくり</option>
+              <option value="0.85" selected>ふつう</option>
+              <option value="1">はやい</option>
+            </select>
+          </div>
+          <div class="score-banner" id="scoreBanner">
+            <div class="num" id="finalScore">0 / 8</div>
+            <div class="label">Thank you for your hard work.</div>
+          </div>
+        </footer>
+      </div>
+
+      <!-- ===== STORY SECTION ===== -->
+      <div id="storyModeSection">
+        <div class="story-header">
+          <h2 id="storyTitle">📖 N5 Story</h2>
+          <div class="story-nav-controls">
+            <button class="story-nav-btn" id="storyPrevBtn">◀ Prev</button>
+            <span id="storyProgress">1 / <span id="storyTotal">10</span></span>
+            <button class="story-nav-btn" id="storyNextBtn">Next ▶</button>
+          </div>
+        </div>
+
+        <div class="story-display">
+          <div class="story-controls-top">
+            <button class="story-play-btn" id="storyPlayBtn">
+              🔊 Play Story
+            </button>
+            <button class="story-btn" id="storyTransBtn">🌎 Translation</button>
+            <button class="story-btn active" id="storyFuriToggleBtn">
+              🔤 Furigana On
+            </button>
+          </div>
+          <div id="storyJapaneseBlock" class="story-japanese-block"></div>
+          <div
+            id="storyEnglishBlock"
+            class="story-english-block"
+            style="display: none"
+          ></div>
+        </div>
+
+        <div class="story-questions-section">
+          <h3>📝 Comprehension Questions</h3>
+          <div id="questionContainer">
+            <div id="questionProgress" class="question-progress">1 / 5</div>
+            <div id="currentQuestion" class="question-text"></div>
+            <div id="questionChoices" class="question-choices"></div>
+            <div id="questionFeedback" class="question-feedback"></div>
+            <div class="question-nav">
+              <button class="question-nav-btn" id="prevQuestionBtn">
+                ◀ Prev Q
+              </button>
+              <button class="question-nav-btn" id="nextQuestionBtn">
+                Next Q ▶
+              </button>
+              <button class="question-nav-btn" id="showAnswersBtn">
+                Show All Answers
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- DATA SCRIPTS -->
+    <!-- ============================================================ -->
+    <script src="js/data/sentences.js"></script>
+    <script src="js/data/sprints.js"></script>
+    <script src="js/data/stories.js"></script>
+    <script src="js/data/wordDict.js"></script>
+    <script src="js/data/storiesQ&A.js"></script>
+
+    <!-- ============================================================ -->
+    <!-- MAIN APPLICATION SCRIPT -->
+    <!-- ============================================================ -->
+    <script>
+      // ============================================================
+      // LISTENING MODE - Original code
+      // ============================================================
+
+      const listeningQuestions = [
+        {
+          script: "すみません、今何時ですか。今は三時半です。",
+          html: "すみません、<ruby>今<rt>いま</rt></ruby><ruby>何<rt>なん</rt></ruby><ruby>時<rt>じ</rt></ruby>ですか。<ruby>今<rt>いま</rt></ruby>は<ruby>三<rt>さん</rt></ruby><ruby>時<rt>じ</rt></ruby><ruby>半<rt>はん</rt></ruby>です。",
+          question: " Question: 今何時ですか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>今<rt>いま</rt></ruby><ruby>何<rt>なん</rt></ruby><ruby>時<rt>じ</rt></ruby>ですか。",
+          choices: ["二時半", "三時", "三時半", "四時"],
+          choicesHtml: [
+            "<ruby>二<rt>に</rt></ruby><ruby>時<rt>じ</rt></ruby><ruby>半<rt>はん</rt></ruby>",
+            "<ruby>三<rt>さん</rt></ruby><ruby>時<rt>じ</rt></ruby>",
+            "<ruby>三<rt>さん</rt></ruby><ruby>時<rt>じ</rt></ruby><ruby>半<rt>はん</rt></ruby>",
+            "<ruby>四<rt>よ</rt></ruby><ruby>時<rt>じ</rt></ruby>",
+          ],
+          answer: 2,
+          note: "「三時半」＝3:30 という意味です。",
+        },
+        {
+          script:
+            "店員：いらっしゃいませ。客：このりんごはいくらですか。店員：これは一つ百円です。客：三つください。",
+          html: "<ruby>店員<rt>てんいん</rt></ruby>：いらっしゃいませ。<ruby>客<rt>きゃく</rt></ruby>：このりんごはいくらですか。<ruby>店員<rt>てんいん</rt></ruby>：これは<ruby>一<rt>ひと</rt></ruby>つ<ruby>百円<rt>ひゃくえん</rt></ruby>です。<ruby>客<rt>きゃく</rt></ruby>：<ruby>三<rt>みっ</rt></ruby>つください。",
+          question: " Question: りんごを三つ買うと、いくらですか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: りんごを<ruby>三<rt>みっ</rt></ruby>つ<ruby>買<rt>か</rt></ruby>うと、いくらですか。",
+          choices: ["百円", "二百円", "三百円", "四百円"],
+          choicesHtml: [
+            "<ruby>百円<rt>ひゃくえん</rt></ruby>",
+            "<ruby>二百円<rt>にひゃくえん</rt></ruby>",
+            "<ruby>三百円<rt>さんびゃくえん</rt></ruby>",
+            "<ruby>四百円<rt>よんひゃくえん</rt></ruby>",
+          ],
+          answer: 2,
+          note: "一つ100円 × 三つ ＝ 300円。",
+        },
+        {
+          script:
+            "すみません、駅はどこですか。この道をまっすぐ行って、二番目の角を右に曲がってください。駅は左にあります。",
+          html: "すみません、<ruby>駅<rt>えき</rt></ruby>はどこですか。この<ruby>道<rt>みち</rt></ruby>をまっすぐ<ruby>行<rt>い</rt></ruby>って、<ruby>二番目<rt>にばんめ</rt></ruby>の<ruby>角<rt>かど</rt></ruby>を<ruby>右<rt>みぎ</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がってください。<ruby>駅<rt>えき</rt></ruby>は<ruby>左<rt>ひだり</rt></ruby>にあります。",
+          question: " Question: 駅へ行くにはどうしますか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>駅<rt>えき</rt></ruby>へ<ruby>行<rt>い</rt></ruby>くにはどうしますか。",
+          choices: [
+            "まっすぐ行って左に曲がる",
+            "まっすぐ行って右に曲がる",
+            "右に曲がってまっすぐ行く",
+            "左に曲がってまっすぐ行く",
+          ],
+          choicesHtml: [
+            "まっすぐ<ruby>行<rt>い</rt></ruby>って<ruby>左<rt>ひだり</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がる",
+            "まっすぐ<ruby>行<rt>い</rt></ruby>って<ruby>右<rt>みぎ</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がる",
+            "<ruby>右<rt>みぎ</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がってまっすぐ<ruby>行<rt>い</rt></ruby>く",
+            "<ruby>左<rt>ひだり</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がってまっすぐ<ruby>行<rt>い</rt></ruby>く",
+          ],
+          answer: 1,
+          note: "「まっすぐ行って、右に曲がる」が正解です。",
+        },
+        {
+          script:
+            "今朝、何を食べましたか。パンと卵を食べました。コーヒーも飲みました。",
+          html: "<ruby>今朝<rt>けさ</rt></ruby>、<ruby>何<rt>なに</rt></ruby>を<ruby>食<rt>た</rt></ruby>べましたか。パンと<ruby>卵<rt>たまご</rt></ruby>を<ruby>食<rt>た</rt></ruby>べました。コーヒーも<ruby>飲<rt>の</rt></ruby>みました。",
+          question: " Question: 今朝、何を食べましたか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>今朝<rt>けさ</rt></ruby>、<ruby>何<rt>なに</rt></ruby>を<ruby>食<rt>た</rt></ruby>べましたか。",
+          choices: ["ごはんと魚", "パンと卵", "パンと魚", "ごはんと卵"],
+          choicesHtml: [
+            "ごはんと<ruby>魚<rt>さかな</rt></ruby>",
+            "パンと<ruby>卵<rt>たまご</rt></ruby>",
+            "パンと<ruby>魚<rt>さかな</rt></ruby>",
+            "ごはんと<ruby>卵<rt>たまご</rt></ruby>",
+          ],
+          answer: 1,
+          note: "「パンと卵」を食べたと言っています。コーヒーは飲み物です。",
+        },
+        {
+          script:
+            "今度の日曜日、一緒に映画を見に行きませんか。いいですね。でも日曜日はちょっと…。土曜日はどうですか。土曜日ですか。いいですよ。",
+          html: "<ruby>今度<rt>こんど</rt></ruby>の<ruby>日曜日<rt>にちようび</rt></ruby>、<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>に<ruby>行<rt>い</rt></ruby>きませんか。いいですね。でも<ruby>日曜日<rt>にちようび</rt></ruby>はちょっと…。<ruby>土曜日<rt>どようび</rt></ruby>はどうですか。<ruby>土曜日<rt>どようび</rt></ruby>ですか。いいですよ。",
+          question: " Question: 二人はいつ映画を見に行きますか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>二人<rt>ふたり</rt></ruby>はいつ<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>に<ruby>行<rt>い</rt></ruby>きますか。",
+          choices: ["金曜日", "土曜日", "日曜日", "月曜日"],
+          choicesHtml: [
+            "<ruby>金曜日<rt>きんようび</rt></ruby>",
+            "<ruby>土曜日<rt>どようび</rt></ruby>",
+            "<ruby>日曜日<rt>にちようび</rt></ruby>",
+            "<ruby>月曜日<rt>げつようび</rt></ruby>",
+          ],
+          answer: 1,
+          note: "日曜日は都合が悪いので、土曜日に変更しました。",
+        },
+        {
+          script:
+            "山田さんは今日、誰と図書館へ行きましたか。山田さんは田中さんと図書館へ行きました。鈴木さんは行きませんでした。",
+          html: "<ruby>山田<rt>やまだ</rt></ruby>さんは<ruby>今日<rt>きょう</rt></ruby>、<ruby>誰<rt>だれ</rt></ruby>と<ruby>図書館<rt>としょかん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きましたか。<ruby>山田<rt>やまだ</rt></ruby>さんは<ruby>田中<rt>たなか</rt></ruby>さんと<ruby>図書館<rt>としょかん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きました。<ruby>鈴木<rt>すずき</rt></ruby>さんは<ruby>行<rt>い</rt></ruby>きませんでした。",
+          question: " Question: 山田さんは誰と図書館へ行きましたか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>山田<rt>やまだ</rt></ruby>さんは<ruby>誰<rt>だれ</rt></ruby>と<ruby>図書館<rt>としょかん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きましたか。",
+          choices: [
+            "一人で",
+            "田中さんと",
+            "鈴木さんと",
+            "田中さんと鈴木さんと",
+          ],
+          choicesHtml: [
+            "<ruby>一人<rt>ひとり</rt></ruby>で",
+            "<ruby>田中<rt>たなか</rt></ruby>さんと",
+            "<ruby>鈴木<rt>すずき</rt></ruby>さんと",
+            "<ruby>田中<rt>たなか</rt></ruby>さんと<ruby>鈴木<rt>すずき</rt></ruby>さんと",
+          ],
+          answer: 1,
+          note: "鈴木さんは「行きませんでした」と言っているので不正解です。",
+        },
+        {
+          script:
+            "すみません、田中先生の教室はどこですか。二階の二百三号室です。階段を上がって、右側です。",
+          html: "すみません、<ruby>田中<rt>たなか</rt></ruby><ruby>先生<rt>せんせい</rt></ruby>の<ruby>教室<rt>きょうしつ</rt></ruby>はどこですか。<ruby>二階<rt>にかい</rt></ruby>の<ruby>二百三<rt>にひゃくさん</rt></ruby><ruby>号室<rt>ごうしつ</rt></ruby>です。<ruby>階段<rt>かいだん</rt></ruby>を<ruby>上<rt>あ</rt></ruby>がって、<ruby>右側<rt>みぎがわ</rt></ruby>です。",
+          question: " Question: 田中先生の教室はどこですか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>田中<rt>たなか</rt></ruby><ruby>先生<rt>せんせい</rt></ruby>の<ruby>教室<rt>きょうしつ</rt></ruby>はどこですか。",
+          choices: [
+            "一階の203号室",
+            "二階の203号室・右側",
+            "二階の203号室・左側",
+            "三階の203号室",
+          ],
+          choicesHtml: [
+            "<ruby>一階<rt>いっかい</rt></ruby>の203<ruby>号室<rt>ごうしつ</rt></ruby>",
+            "<ruby>二階<rt>にかい</rt></ruby>の203<ruby>号室<rt>ごうしつ</rt></ruby>・<ruby>右側<rt>みぎがわ</rt></ruby>",
+            "<ruby>二階<rt>にかい</rt></ruby>の203<ruby>号室<rt>ごうしつ</rt></ruby>・<ruby>左側<rt>ひだりがわ</rt></ruby>",
+            "<ruby>三階<rt>さんかい</rt></ruby>の203<ruby>号室<rt>ごうしつ</rt></ruby>",
+          ],
+          answer: 1,
+          note: "「二階」「203号室」「右側」の3つの情報がすべて合っているものを選びます。",
+        },
+        {
+          script:
+            "明日の天気はどうですか。明日は朝は晴れですが、午後から雨が降るでしょう。傘を持って行ったほうがいいです。",
+          html: "<ruby>明日<rt>あした</rt></ruby>の<ruby>天気<rt>てんき</rt></ruby>はどうですか。<ruby>明日<rt>あした</rt></ruby>は<ruby>朝<rt>あさ</rt></ruby>は<ruby>晴<rt>は</rt></ruby>れですが、<ruby>午後<rt>ごご</rt></ruby>から<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>るでしょう。<ruby>傘<rt>かさ</rt></ruby>を<ruby>持<rt>も</rt></ruby>って<ruby>行<rt>い</rt></ruby>ったほうがいいです。",
+          question: " Question: 明日の天気はどうですか。",
+          questionHtml:
+            "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>明日<rt>あした</rt></ruby>の<ruby>天気<rt>てんき</rt></ruby>はどうですか。",
+          choices: [
+            "一日中晴れ",
+            "一日中雨",
+            "朝は晴れ、午後は雨",
+            "朝は雨、午後は晴れ",
+          ],
+          choicesHtml: [
+            "<ruby>一日中<rt>いちにちじゅう</rt></ruby><ruby>晴<rt>は</rt></ruby>れ",
+            "<ruby>一日中<rt>いちにちじゅう</rt></ruby><ruby>雨<rt>あめ</rt></ruby>",
+            "<ruby>朝<rt>あさ</rt></ruby>は<ruby>晴<rt>は</rt></ruby>れ、<ruby>午後<rt>ごご</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>",
+            "<ruby>朝<rt>あさ</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>、<ruby>午後<rt>ごご</rt></ruby>は<ruby>晴<rt>は</rt></ruby>れ",
+          ],
+          answer: 2,
+          note: "「朝は晴れ」「午後から雨」と言っています。",
+        },
+      ];
+
+      const kanjiNums = [
+        "一",
+        "二",
+        "三",
+        "四",
+        "五",
+        "六",
+        "七",
+        "八",
+        "九",
+        "十",
+      ];
+      const quizEl = document.getElementById("quiz");
+      let answered = 0,
+        correct = 0;
+      let currentUtterance = null;
+
+      let japaneseVoices = [];
+      let chosenVoice = null;
+
+      // ============================================================
+      // VOICE SELECTOR
+      // ============================================================
+      const voiceSelect = document.getElementById("voiceSelect");
+
+      function populateVoiceList() {
+        const voices = window.speechSynthesis.getVoices();
+        const jpVoices = voices.filter((v) => v.lang.startsWith("ja"));
+
+        voiceSelect.innerHTML = "";
+
+        if (jpVoices.length === 0) {
+          // Fallback: show all voices
+          voices.forEach((v) => {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            voiceSelect.appendChild(opt);
+          });
+        } else {
+          jpVoices.forEach((v) => {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            // Pre-select female voices if available
+            const femaleHints = [
+              "female",
+              "女性",
+              "kyoko",
+              "o-ren",
+              "mizuki",
+              "nanami",
+              "haruka",
+              "sayaka",
+              "ayumi",
+            ];
+            if (femaleHints.some((h) => v.name.toLowerCase().includes(h))) {
+              opt.selected = true;
+            }
+            voiceSelect.appendChild(opt);
+          });
+        }
+
+        // Store selected voice
+        const selectedName = voiceSelect.value;
+        const voices2 = window.speechSynthesis.getVoices();
+        const selectedVoice = voices2.find((v) => v.name === selectedName);
+        if (selectedVoice) {
+          chosenVoice = selectedVoice;
+        }
+      }
+
+      // Update voice selector when voices change
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          populateVoiceList();
+          chosenVoice = pickFemaleVoice();
+        };
+        // Initial population with slight delay
+        setTimeout(populateVoiceList, 100);
+      }
+
+      // Listen for voice selection changes
+      if (voiceSelect) {
+        voiceSelect.addEventListener("change", function () {
+          const voices = window.speechSynthesis.getVoices();
+          const selected = voices.find((v) => v.name === this.value);
+          if (selected) {
+            chosenVoice = selected;
+            // Stop current speech
+            window.speechSynthesis.cancel();
+            document
+              .querySelectorAll(".play-btn")
+              .forEach((b) => b.classList.remove("playing"));
+            const storyBtn = document.getElementById("storyPlayBtn");
+            if (storyBtn) {
+              storyBtn.classList.remove("playing");
+              storyBtn.textContent = "🔊 Play Story";
+            }
+          }
+        });
+      }
+
+      function pickFemaleVoice() {
+        // If user selected a voice, use it
+        const selectedName = voiceSelect ? voiceSelect.value : "";
+        if (selectedName) {
+          const voices = window.speechSynthesis.getVoices();
+          const selected = voices.find((v) => v.name === selectedName);
+          if (selected) return selected;
+        }
+
+        // Otherwise auto-select a female voice
+        const voices = window.speechSynthesis
+          .getVoices()
+          .filter(
+            (v) =>
+              v.lang === "ja-JP" ||
+              v.lang === "ja_JP" ||
+              v.lang.startsWith("ja"),
+          );
+        if (voices.length === 0) return null;
+
+        const femaleHints = [
+          "female",
+          "女性",
+          "kyoko",
+          "o-ren",
+          "mizuki",
+          "nanami",
+          "haruka",
+          "sayaka",
+          "ayumi",
+        ];
+        let v = voices.find((v) =>
+          femaleHints.some((h) => v.name.toLowerCase().includes(h)),
+        );
+        if (!v) v = voices[0];
+        return v;
+      }
+
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          chosenVoice = pickFemaleVoice();
+        };
+        chosenVoice = pickFemaleVoice();
+      }
+
+      function speak(text, btn) {
+        if (!("speechSynthesis" in window)) {
+          alert("お使いのブラウザは音声読み上げに対応していません。");
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "ja-JP";
+        // Use selected rate or default to 0.85 for clarity
+        const rateSelect = document.getElementById("rateSelect");
+        utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
+        utter.pitch = 1.0; // Natural pitch for better clarity
+        if (!chosenVoice) chosenVoice = pickFemaleVoice();
+        if (chosenVoice) utter.voice = chosenVoice;
+        document
+          .querySelectorAll(".play-btn")
+          .forEach((b) => b.classList.remove("playing"));
+        if (btn) btn.classList.add("playing");
+        utter.onend = () => {
+          if (btn) btn.classList.remove("playing");
+        };
+        currentUtterance = utter;
+        window.speechSynthesis.speak(utter);
+      }
+
+      function updateProgress() {
+        document.getElementById("progressLabel").textContent =
+          answered + " / " + listeningQuestions.length + " Question 問";
+        document.getElementById("scoreLabel").textContent =
+          "Correct 正解 " + correct;
+        document.getElementById("progressFill").style.width =
+          (answered / listeningQuestions.length) * 100 + "%";
+      }
+
+      // Build listening questions
+      listeningQuestions.forEach((q, qi) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="qnum"><span class="kanji-num">${kanjiNums[qi]}</span>Question 問${qi + 1}</div>
+          <div class="audio-row">
+            <button class="play-btn" data-qi="${qi}">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Play
+            </button>
+            <button class="stop-btn" data-qi="${qi}">
+              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+              Stop
+            </button>
+            <span class="replay-hint">You can listen to it as many times as you like. (何度でも聞けます)</span>
+          </div>
+          <p class="qtext">${q.questionHtml}</p>
+          <div class="choices">
+            ${q.choicesHtml
+              .map(
+                (c, ci) => `
+              <div class="choice" data-qi="${qi}" data-ci="${ci}">
+                <span class="mark">${String.fromCharCode(65 + ci)}</span>
+                <span>${c}</span>
+              </div>`,
+              )
+              .join("")}
+          </div>
+          <div class="feedback" id="fb-${qi}"></div>
+        `;
+        quizEl.appendChild(card);
+      });
+
+      quizEl.addEventListener("click", (e) => {
+        const stopBtn = e.target.closest(".stop-btn");
+        if (stopBtn) {
+          window.speechSynthesis.cancel();
+          document
+            .querySelectorAll(".play-btn")
+            .forEach((b) => b.classList.remove("playing"));
+          return;
+        }
+        const playBtn = e.target.closest(".play-btn");
+        if (playBtn) {
+          const qi = playBtn.dataset.qi;
+          speak(listeningQuestions[qi].script, playBtn);
+          return;
+        }
+        const choice = e.target.closest(".choice");
+        if (choice && !choice.classList.contains("disabled")) {
+          const qi = parseInt(choice.dataset.qi);
+          const ci = parseInt(choice.dataset.ci);
+          const q = listeningQuestions[qi];
+          const siblings = quizEl.querySelectorAll(`.choice[data-qi="${qi}"]`);
+          siblings.forEach((s) => s.classList.add("disabled"));
+
+          const isCorrect = ci === q.answer;
+          if (isCorrect) {
+            choice.classList.add("correct");
+            correct++;
+          } else {
+            choice.classList.add("wrong");
+            siblings[q.answer].classList.add("correct");
+          }
+
+          const fb = document.getElementById("fb-" + qi);
+          fb.classList.add("show", isCorrect ? "good" : "bad");
+          fb.innerHTML = `${isCorrect ? "正解です。" : "残念、不正解です。"} ${q.note}
+            <div class="script">スクリプト：${q.html}</div>`;
+
+          answered++;
+          updateProgress();
+        }
+      });
+
+      document.getElementById("summaryBtn").addEventListener("click", () => {
+        document.querySelectorAll(".choice").forEach((c) => {
+          const qi = parseInt(c.dataset.qi),
+            ci = parseInt(c.dataset.ci);
+          c.classList.add("disabled");
+          if (ci === listeningQuestions[qi].answer) c.classList.add("correct");
+        });
+        document.querySelectorAll(".feedback").forEach((fb, qi) => {
+          if (!fb.classList.contains("show")) {
+            fb.classList.add("show", "good");
+            fb.innerHTML = `Correct answer (正解)：${String.fromCharCode(65 + listeningQuestions[qi].answer)}　${listeningQuestions[qi].note}
+              <div class="script">Script (スクリプト)：${listeningQuestions[qi].html}</div>`;
+          }
+        });
+        answered = listeningQuestions.length;
+        updateProgress();
+        document.getElementById("scoreBanner").classList.add("show");
+        document.getElementById("finalScore").textContent =
+          correct + " / " + listeningQuestions.length;
+      });
+
+      updateProgress();
+
+      // ============================================================
+      // STORY MODE - Using storiesQ&A.js
+      // ============================================================
+
+      let currentStoryIndex = 0;
+      let currentQuestionIndex = 0;
+      let storyAnswered = false;
+      let storyCorrect = 0;
+      let storySelectedChoices = [];
+      let storyUtterance = null;
+      let storyShowTranslation = false;
+      let storyShowFurigana = true;
+
+      // DOM refs for story mode
+      const storySection = document.getElementById("storyModeSection");
+      const storyTitle = document.getElementById("storyTitle");
+      const storyProgress = document.getElementById("storyProgress");
+      const storyTotal = document.getElementById("storyTotal");
+      const storyJpBlock = document.getElementById("storyJapaneseBlock");
+      const storyEnBlock = document.getElementById("storyEnglishBlock");
+      const storyPlayBtn = document.getElementById("storyPlayBtn");
+      const storyTransBtn = document.getElementById("storyTransBtn");
+      const storyFuriToggleBtn = document.getElementById("storyFuriToggleBtn");
+      const storyPrevBtn = document.getElementById("storyPrevBtn");
+      const storyNextBtn = document.getElementById("storyNextBtn");
+      const questionProgress = document.getElementById("questionProgress");
+      const currentQuestionEl = document.getElementById("currentQuestion");
+      const questionChoicesEl = document.getElementById("questionChoices");
+      const questionFeedback = document.getElementById("questionFeedback");
+      const prevQuestionBtn = document.getElementById("prevQuestionBtn");
+      const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+      const showAnswersBtn = document.getElementById("showAnswersBtn");
+
+      // ============================================================
+      // Auto-convert parentheses furigana to <ruby> tags
+      // ============================================================
+      function convertFurigana(text) {
+        // Match pattern: 漢字（ふりがな）
+        return text.replace(
+          /([一-龯ぁ-んァ-ヶ]+)（([^（）]+)）/g,
+          function (match, kanji, furigana) {
+            return `<ruby>${kanji}<rt>${furigana}</rt></ruby>`;
+          },
+        );
+      }
+
+      // ============================================================
+      // Get stories from loaded data
+      // ============================================================
+      function getStories() {
+        if (
+          typeof sprintStoriesWithQA !== "undefined" &&
+          sprintStoriesWithQA.length > 0
+        ) {
+          return sprintStoriesWithQA;
+        }
+        console.warn("⚠️ sprintStoriesWithQA not found!");
+        return [];
+      }
+
+      function getStoryCount() {
+        return getStories().length;
+      }
+
+      function getCurrentStory() {
+        const stories = getStories();
+        if (currentStoryIndex < 0 || currentStoryIndex >= stories.length) {
+          return null;
+        }
+        return stories[currentStoryIndex];
+      }
+
+      function getCurrentStoryQuestions() {
+        const story = getCurrentStory();
+        return story ? story.questions : [];
+      }
+
+      function getCurrentQuestion() {
+        const questions = getCurrentStoryQuestions();
+        if (
+          currentQuestionIndex < 0 ||
+          currentQuestionIndex >= questions.length
+        ) {
+          return null;
+        }
+        return questions[currentQuestionIndex];
+      }
+
+      // ============================================================
+      // Render story - FIXED for furigana display
+      // ============================================================
+      function renderStory() {
+        const stories = getStories();
+        if (stories.length === 0) {
+          storyJpBlock.innerHTML =
+            '<p style="color: #a02020;">⚠️ No stories loaded. Check storiesQ&A.js</p>';
+          storyEnBlock.innerHTML = "";
+          storyTitle.textContent = "No stories";
+          storyTotal.textContent = "0";
+          return;
+        }
+
+        const story = getCurrentStory();
+        if (!story) {
+          storyJpBlock.innerHTML =
+            '<p style="color: #a02020;">⚠️ Story not found.</p>';
+          return;
+        }
+
+        // Update title
+        storyTitle.textContent = `📖 ${story.title}`;
+        storyTotal.textContent = stories.length;
+        storyProgress.textContent = `${currentStoryIndex + 1}`;
+
+        // ===== FIX: Convert parentheses furigana to ruby tags =====
+        if (storyShowFurigana) {
+          // Convert 漢字（ふりがな） to <ruby>漢字<rt>ふりがな</rt></ruby>
+          const convertedText = convertFurigana(story.storyJp);
+          storyJpBlock.innerHTML = convertedText;
+        } else {
+          // Remove furigana: strip parentheses and their content
+          let textWithoutFurigana = story.storyJp.replace(/（[^（）]+）/g, "");
+          storyJpBlock.textContent = textWithoutFurigana;
+        }
+
+        storyEnBlock.textContent = story.storyEn;
+        storyEnBlock.style.display = storyShowTranslation ? "block" : "none";
+
+        // Update buttons
+        storyPrevBtn.disabled = currentStoryIndex === 0;
+        storyNextBtn.disabled = currentStoryIndex >= stories.length - 1;
+
+        // Reset question state
+        currentQuestionIndex = 0;
+        storyAnswered = false;
+        storySelectedChoices = [];
+        storyCorrect = 0;
+        renderQuestion();
+      }
+
+      // ============================================================
+      // Render question
+      // ============================================================
+      function renderQuestion() {
+        const questions = getCurrentStoryQuestions();
+        if (questions.length === 0) {
+          questionContainer.innerHTML =
+            '<p style="color: #8a8270;">No questions for this story.</p>';
+          return;
+        }
+
+        const q = getCurrentQuestion();
+        if (!q) {
+          questionContainer.innerHTML =
+            '<p style="color: #8a8270;">Question not found.</p>';
+          return;
+        }
+
+        // Update progress
+        questionProgress.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+
+        // Question text - convert furigana too
+        const questionHtml = q.questionHtml || q.question;
+        const convertedQuestion = convertFurigana(questionHtml);
+        currentQuestionEl.innerHTML = convertedQuestion;
+
+        // Choices
+        const letters = ["A", "B", "C", "D"];
+        let choicesHtml = "";
+        const selected = storySelectedChoices[currentQuestionIndex] || -1;
+
+        q.choicesHtml.forEach((choiceHtml, idx) => {
+          const isSelected = selected === idx;
+          let extraClass = "";
+          if (storyAnswered) {
+            if (idx === q.answer) extraClass += " correct";
+            else if (selected === idx) extraClass += " wrong";
+            extraClass += " disabled";
+          } else if (isSelected) {
+            extraClass += " selected";
+          }
+          // Convert furigana in choices too
+          const convertedChoice = convertFurigana(choiceHtml);
+          choicesHtml += `
+            <div class="question-choice ${extraClass}" data-qidx="${currentQuestionIndex}" data-choice="${idx}">
+              <span class="choice-mark">${letters[idx]}</span>
+              <span>${convertedChoice}</span>
+            </div>
+          `;
+        });
+        questionChoicesEl.innerHTML = choicesHtml;
+
+        // Feedback
+        if (storyAnswered && q.note) {
+          const isCorrect = selected === q.answer;
+          questionFeedback.className = `question-feedback show ${isCorrect ? "correct" : "wrong"}`;
+          questionFeedback.innerHTML = `
+            <strong>${isCorrect ? "✅ Correct!" : "❌ Not quite."}</strong><br>
+            ${q.note}
+          `;
+        } else {
+          questionFeedback.className = "question-feedback";
+          questionFeedback.innerHTML = "";
+        }
+
+        // Nav buttons
+        prevQuestionBtn.disabled = currentQuestionIndex === 0;
+        nextQuestionBtn.disabled = currentQuestionIndex >= questions.length - 1;
+
+        // Attach choice click events
+        document
+          .querySelectorAll(".question-choice:not(.disabled)")
+          .forEach((el) => {
+            el.addEventListener("click", handleQuestionChoice);
+          });
+      }
+
+      // ============================================================
+      // Handle question choice click
+      // ============================================================
+      function handleQuestionChoice(e) {
+        const el = e.currentTarget;
+        if (storyAnswered) return;
+
+        const qidx = parseInt(el.dataset.qidx);
+        const choice = parseInt(el.dataset.choice);
+        const questions = getCurrentStoryQuestions();
+        const q = questions[qidx];
+
+        if (isNaN(choice) || !q) return;
+
+        // Store selection
+        storySelectedChoices[qidx] = choice;
+        storyAnswered = true;
+
+        // Update score
+        if (choice === q.answer) {
+          storyCorrect++;
+        }
+
+        renderQuestion();
+      }
+
+      // ============================================================
+      // Navigation
+      // ============================================================
+      function goToStory(index) {
+        const stories = getStories();
+        if (index < 0 || index >= stories.length) return;
+        currentStoryIndex = index;
+        currentQuestionIndex = 0;
+        storyAnswered = false;
+        storyCorrect = 0;
+        storySelectedChoices = [];
+        if (storyUtterance) {
+          window.speechSynthesis.cancel();
+          storyUtterance = null;
+          storyPlayBtn.classList.remove("playing");
+          storyPlayBtn.textContent = "🔊 Play Story";
+        }
+        renderStory();
+      }
+
+      function prevStory() {
+        if (currentStoryIndex > 0) {
+          goToStory(currentStoryIndex - 1);
+        }
+      }
+
+      function nextStory() {
+        const stories = getStories();
+        if (currentStoryIndex < stories.length - 1) {
+          goToStory(currentStoryIndex + 1);
+        }
+      }
+
+      function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          storyAnswered = false;
+          renderQuestion();
+        }
+      }
+
+      function nextQuestion() {
+        const questions = getCurrentStoryQuestions();
+        if (currentQuestionIndex < questions.length - 1) {
+          currentQuestionIndex++;
+          storyAnswered = false;
+          renderQuestion();
+        }
+      }
+
+      // ============================================================
+      // Show all answers
+      // ============================================================
+      function showAllAnswers() {
+        const questions = getCurrentStoryQuestions();
+        questions.forEach((q, idx) => {
+          if (storySelectedChoices[idx] === undefined) {
+            storySelectedChoices[idx] = q.answer;
+          }
+          if (idx === currentQuestionIndex) {
+            storyAnswered = true;
+          }
+        });
+        renderQuestion();
+      }
+
+      // ============================================================
+      // Story TTS
+      // ============================================================
+      function playStoryAudio() {
+        const story = getCurrentStory();
+        if (!story) return;
+
+        if (storyUtterance) {
+          window.speechSynthesis.cancel();
+          storyUtterance = null;
+          storyPlayBtn.classList.remove("playing");
+          storyPlayBtn.textContent = "🔊 Play Story";
+          return;
+        }
+
+        // Remove parentheses and furigana for TTS
+        let text = story.storyJp;
+        // Remove parentheses content (furigana) for cleaner speech
+        text = text.replace(/（[^（）]+）/g, "");
+        // Remove any HTML tags
+        text = text.replace(/<[^>]*>/g, "");
+
+        if (!("speechSynthesis" in window)) {
+          alert("Speech synthesis not supported.");
+          return;
+        }
+
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "ja-JP";
+        const rateSelect = document.getElementById("rateSelect");
+        utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
+        utter.pitch = 1.0; // Natural pitch for clarity
+
+        // Use user-selected voice or fallback
+        if (!chosenVoice) chosenVoice = pickFemaleVoice();
+        if (chosenVoice) utter.voice = chosenVoice;
+
+        storyUtterance = utter;
+        storyPlayBtn.classList.add("playing");
+        storyPlayBtn.textContent = "⏹️ Stop";
+
+        utter.onend = () => {
+          storyUtterance = null;
+          storyPlayBtn.classList.remove("playing");
+          storyPlayBtn.textContent = "🔊 Play Story";
+        };
+
+        window.speechSynthesis.speak(utter);
+      }
+
+      // ============================================================
+      // Toggle translation and furigana
+      // ============================================================
+      function toggleTranslation() {
+        storyShowTranslation = !storyShowTranslation;
+        storyTransBtn.classList.toggle("active", storyShowTranslation);
+        storyTransBtn.textContent = storyShowTranslation
+          ? "🌎 Translation On"
+          : "🌎 Translation Off";
+        renderStory();
+      }
+
+      function toggleFurigana() {
+        storyShowFurigana = !storyShowFurigana;
+        storyFuriToggleBtn.classList.toggle("active", storyShowFurigana);
+        storyFuriToggleBtn.textContent = storyShowFurigana
+          ? "🔤 Furigana On"
+          : "🔤 Furigana Off";
+        renderStory();
+      }
+
+      // ============================================================
+      // Mode switching
+      // ============================================================
+      function switchMode(mode) {
+        const listeningSection = document.getElementById("listeningSection");
+        const storySectionEl = document.getElementById("storyModeSection");
+        const progressRow = document.querySelector(".progress-row");
+        const footer = document.querySelector("footer");
+
+        if (mode === "story") {
+          listeningSection.style.display = "none";
+          storySectionEl.style.display = "block";
+          if (progressRow) progressRow.style.display = "none";
+          if (footer) footer.style.display = "none";
+          // Initialize if not already
+          if (getStories().length > 0 && !storyJpBlock.innerHTML) {
+            renderStory();
+          }
+        } else {
+          listeningSection.style.display = "block";
+          storySectionEl.style.display = "none";
+          if (progressRow) progressRow.style.display = "flex";
+          if (footer) footer.style.display = "block";
+        }
+
+        document.querySelectorAll(".mode-tab").forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.mode === mode);
+        });
+      }
+
+      // ============================================================
+      // Initialize story mode
+      // ============================================================
+      function initStoryMode() {
+        const stories = getStories();
+        if (stories.length === 0) {
+          console.warn("⚠️ No stories loaded. Check storiesQ&A.js");
+          return;
+        }
+
+        console.log(`✅ Loaded ${stories.length} stories with Q&A`);
+
+        // Set total
+        storyTotal.textContent = stories.length;
+
+        // Render first story
+        currentStoryIndex = 0;
+        renderStory();
+
+        // Add event listeners
+        storyPrevBtn.addEventListener("click", prevStory);
+        storyNextBtn.addEventListener("click", nextStory);
+        storyPlayBtn.addEventListener("click", playStoryAudio);
+        storyTransBtn.addEventListener("click", toggleTranslation);
+        storyFuriToggleBtn.addEventListener("click", toggleFurigana);
+        prevQuestionBtn.addEventListener("click", prevQuestion);
+        nextQuestionBtn.addEventListener("click", nextQuestion);
+        showAnswersBtn.addEventListener("click", showAllAnswers);
+
+        // Mode tabs
+        document.querySelectorAll(".mode-tab").forEach((tab) => {
+          tab.addEventListener("click", () => {
+            switchMode(tab.dataset.mode);
+          });
+        });
+
+        // Check if story mode should be active (if the tab is active)
+        const activeTab = document.querySelector(".mode-tab.active");
+        if (activeTab && activeTab.dataset.mode === "story") {
+          switchMode("story");
+        }
+
+        console.log("✅ Story mode initialized");
+      }
+
+      // ============================================================
+      // Initialize
+      // ============================================================
+      document.addEventListener("DOMContentLoaded", function () {
+        initStoryMode();
+      });
+
+      // Also run immediately if DOM is already loaded
+      if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+      ) {
+        initStoryMode();
+      }
+    </script>
+    // Register Service Worker if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/N5-listening/sw.js') .then(registration
+    => { console.log('Service Worker registered:', registration); })
+    .catch(error => { console.log('Service Worker registration failed:', error);
+    }); }); }
+  </body>
+</html>
