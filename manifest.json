@@ -3,6 +3,10 @@
   "short_name": "N5 Listening",
   "start_url": "/N5-listening/",
   "scope": "/N5-listening/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/N5-listening/images/icons/icon-192.png",

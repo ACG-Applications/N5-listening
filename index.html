@@ -1793,7 +1793,7 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
           navigator.serviceWorker
-            .register("//N5-listening/sw.js")
+            .register("/N5-listening/sw.js")
             .then(function (registration) {
               console.log(
                 "✅ Service Worker registered successfully:",
