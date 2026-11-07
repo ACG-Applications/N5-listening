@@ -28,31 +28,18 @@
         --line: #c9bda1;
         --ok: #3e6b4f;
       }
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         background:
-          radial-gradient(
-            circle at 15% 10%,
-            rgba(39, 74, 95, 0.05),
-            transparent 40%
-          ),
-          radial-gradient(
-            circle at 85% 90%,
-            rgba(181, 72, 47, 0.05),
-            transparent 40%
-          ),
+          radial-gradient(circle at 15% 10%, rgba(39, 74, 95, 0.05), transparent 40%),
+          radial-gradient(circle at 85% 90%, rgba(181, 72, 47, 0.05), transparent 40%),
           var(--paper);
         color: var(--ink);
         font-family: "Noto Sans JP", sans-serif;
         padding: 40px 18px 80px;
       }
-      .wrap {
-        max-width: 760px;
-        margin: 0 auto;
-      }
+      .wrap { max-width: 760px; margin: 0 auto; }
 
       header {
         text-align: center;
@@ -61,700 +48,404 @@
         border-bottom: 1px solid var(--line);
         position: relative;
       }
-      .eyebrow {
-        font-size: 12px;
-        letter-spacing: 0.35em;
-        color: var(--indigo);
-        font-weight: 700;
-      }
+      .eyebrow { font-size: 12px; letter-spacing: 0.35em; color: var(--indigo); font-weight: 700; }
       h1 {
         font-family: "Noto Serif JP", serif;
-        font-size: 38px;
-        font-weight: 700;
-        margin: 10px 0 8px;
-        color: var(--indigo-deep);
+        font-size: 38px; font-weight: 700;
+        margin: 10px 0 8px; color: var(--indigo-deep);
         letter-spacing: 0.04em;
       }
-      .sub {
-        font-size: 14px;
-        color: #6b6455;
-      }
+      .sub { font-size: 14px; color: #6b6455; }
       .stamp {
-        position: absolute;
-        top: -6px;
-        right: 0;
-        width: 56px;
-        height: 56px;
-        border: 2px solid var(--shu);
-        color: var(--shu);
+        position: absolute; top: -6px; right: 0;
+        width: 56px; height: 56px;
+        border: 2px solid var(--shu); color: var(--shu);
         border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: "Noto Serif JP", serif;
-        font-size: 13px;
-        font-weight: 700;
-        transform: rotate(6deg);
-        opacity: 0.85;
-        writing-mode: vertical-rl;
+        display: flex; align-items: center; justify-content: center;
+        font-family: "Noto Serif JP", serif; font-size: 13px; font-weight: 700;
+        transform: rotate(6deg); opacity: 0.85; writing-mode: vertical-rl;
       }
+
+      /* ===== GLOBAL TOGGLE BAR ===== */
+      .global-toggles {
+        display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+        margin: 16px 0 4px; padding: 12px;
+        background: #fffdf8; border: 1px solid var(--line); border-radius: 8px;
+      }
+      .global-toggle {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 16px; border: 1px solid var(--line); border-radius: 20px;
+        background: #fff; cursor: pointer; font-size: 14px; font-weight: 500;
+        font-family: "Noto Sans JP", sans-serif; transition: all 0.15s ease;
+        color: var(--ink);
+      }
+      .global-toggle:hover { border-color: var(--indigo); }
+      .global-toggle.active { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+      .global-toggle .toggle-icon { font-size: 16px; }
 
       /* ===== MODE TABS ===== */
-      .mode-tabs {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin: 16px 0 24px;
-      }
+      .mode-tabs { display: flex; gap: 10px; justify-content: center; margin: 16px 0 24px; }
       .mode-tab {
-        padding: 10px 30px;
-        border: 2px solid var(--line);
-        border-radius: 30px;
-        background: transparent;
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--ink);
-        cursor: pointer;
-        font-family: "Noto Sans JP", sans-serif;
-        transition: all 0.2s ease;
+        padding: 10px 30px; border: 2px solid var(--line); border-radius: 30px;
+        background: transparent; font-size: 16px; font-weight: 600;
+        color: var(--ink); cursor: pointer;
+        font-family: "Noto Sans JP", sans-serif; transition: all 0.2s ease;
       }
-      .mode-tab:hover {
-        border-color: var(--indigo);
-        background: #eef3f5;
-      }
-      .mode-tab.active {
-        background: var(--indigo);
-        border-color: var(--indigo);
-        color: #fff;
-      }
+      .mode-tab:hover { border-color: var(--indigo); background: #eef3f5; }
+      .mode-tab.active { background: var(--indigo); border-color: var(--indigo); color: #fff; }
 
       .progress-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 26px;
-        font-size: 13px;
-        color: #6b6455;
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 26px; font-size: 13px; color: #6b6455;
       }
       .progress-track {
-        flex: 1;
-        height: 3px;
-        background: var(--line);
-        margin: 0 14px;
-        position: relative;
-        border-radius: 2px;
+        flex: 1; height: 3px; background: var(--line);
+        margin: 0 14px; position: relative; border-radius: 2px;
       }
       .progress-fill {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        background: var(--shu);
-        border-radius: 2px;
-        transition: width 0.3s ease;
-        width: 0%;
+        position: absolute; left: 0; top: 0; height: 100%;
+        background: var(--shu); border-radius: 2px;
+        transition: width 0.3s ease; width: 0%;
       }
 
       .card {
-        background: #fffdf8;
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        padding: 26px 26px 24px;
-        margin-bottom: 22px;
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
-        position: relative;
+        background: #fffdf8; border: 1px solid var(--line); border-radius: 4px;
+        padding: 26px 26px 24px; margin-bottom: 22px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03); position: relative;
       }
       .qnum {
-        font-family: "Noto Serif JP", serif;
-        font-size: 13px;
-        color: var(--indigo);
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 14px;
+        font-family: "Noto Serif JP", serif; font-size: 13px;
+        color: var(--indigo); font-weight: 700; letter-spacing: 0.12em;
+        display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
       }
-      .qnum .kanji-num {
-        font-size: 20px;
-        color: var(--shu);
-      }
-      .qnum::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--line);
-      }
+      .qnum .kanji-num { font-size: 20px; color: var(--shu); }
+      .qnum::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
-      .audio-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 18px;
-        flex-wrap: wrap;
-      }
-      .play-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--indigo);
-        color: #fdf9ef;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 24px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
+      .audio-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+      
+      /* Shared button styles for Play, Stop, and Transcript */
+      .play-btn, .stop-btn, .question-ctrl-btn {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 16px; border-radius: 24px;
+        font-size: 13px; font-weight: 500; cursor: pointer;
         font-family: "Noto Sans JP", sans-serif;
-        transition:
-          background 0.15s ease,
-          transform 0.1s ease;
+        transition: all 0.15s ease;
       }
-      .play-btn:hover {
-        background: var(--indigo-deep);
+      .play-btn, .question-ctrl-btn {
+        background: var(--indigo); color: #fdf9ef; border: 1px solid var(--indigo);
       }
-      .play-btn:active {
-        transform: scale(0.97);
-      }
-      .play-btn.playing {
-        background: var(--shu);
-      }
-      .play-btn svg {
-        width: 14px;
-        height: 14px;
-      }
-      .replay-hint {
-        font-size: 12px;
-        color: #8a8270;
-      }
+      .play-btn:hover, .question-ctrl-btn:hover { background: var(--indigo-deep); }
+      .play-btn.playing, .question-ctrl-btn.playing { background: var(--shu); border-color: var(--shu); color: #fff; }
+      
       .stop-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: none;
-        color: var(--shu);
-        border: 1px solid var(--shu);
-        padding: 10px 16px;
-        border-radius: 24px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        font-family: "Noto Sans JP", sans-serif;
-        transition: background 0.15s ease;
+        background: none; color: var(--shu); border: 1px solid var(--shu);
       }
-      .stop-btn:hover {
-        background: #fbece7;
-      }
-      .stop-btn svg {
-        width: 14px;
-        height: 14px;
-      }
+      .stop-btn:hover { background: #fbece7; }
 
-      .qtext {
-        font-size: 16px;
-        font-weight: 500;
-        margin: 0 0 16px;
-        color: var(--ink);
+      .transcript-btn {
+        background: #fff; color: var(--ink); border: 1px solid var(--line);
       }
+      .transcript-btn:hover { border-color: var(--indigo); background: #eef3f5; }
+      .transcript-btn.active { background: var(--indigo); color: #fff; border-color: var(--indigo); }
 
-      .choices {
-        display: flex;
-        flex-direction: column;
-        gap: 9px;
+      .play-btn svg, .stop-btn svg, .question-ctrl-btn svg { width: 14px; height: 14px; }
+      .replay-hint { font-size: 12px; color: #8a8270; }
+
+      .qtext { font-size: 16px; font-weight: 500; margin: 0 0 16px; color: var(--ink); }
+      .qtext-translation {
+        font-size: 13px; color: #6b6455; margin: -8px 0 16px;
+        font-style: italic; padding: 8px 12px;
+        background: #f9f5ec; border-left: 3px solid var(--indigo);
+        border-radius: 0 4px 4px 0; display: none;
       }
+      .qtext-translation.show { display: block; }
+
+      .choices { display: flex; flex-direction: column; gap: 9px; }
       .choice {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        padding: 11px 14px;
-        cursor: pointer;
-        font-size: 19px;
-        background: #fff;
-        transition:
-          border-color 0.15s,
-          background 0.15s;
+        display: flex; align-items: center; gap: 12px;
+        border: 1px solid var(--line); border-radius: 4px;
+        padding: 11px 14px; cursor: pointer; font-size: 19px;
+        background: #fff; transition: border-color 0.15s, background 0.15s;
       }
-      .choice:hover {
-        border-color: var(--indigo);
-      }
+      .choice:hover { border-color: var(--indigo); }
       .choice .mark {
-        width: 22px;
-        height: 22px;
-        flex: 0 0 auto;
-        border: 1px solid var(--line);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        font-weight: 700;
-        color: #8a8270;
+        width: 22px; height: 22px; flex: 0 0 auto;
+        border: 1px solid var(--line); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 700; color: #8a8270;
       }
-      .choice.selected {
-        border-color: var(--indigo);
-        background: #eef3f5;
+      .choice .choice-text { flex: 1; }
+      .choice .choice-translation {
+        font-size: 12px; color: #8a8270; font-style: italic; display: none;
       }
-      .choice.selected .mark {
-        border-color: var(--indigo);
-        color: var(--indigo);
+      .choice .choice-translation.show { display: block; }
+      .choice .choice-audio-btn {
+        flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%;
+        border: 1px solid var(--line); background: #fff; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--indigo); transition: all 0.15s ease;
       }
-      .choice.correct {
-        border-color: var(--ok);
-        background: #eaf2ec;
-      }
-      .choice.correct .mark {
-        background: var(--ok);
-        border-color: var(--ok);
-        color: #fff;
-      }
-      .choice.wrong {
-        border-color: var(--shu);
-        background: #fbece7;
-      }
-      .choice.wrong .mark {
-        background: var(--shu);
-        border-color: var(--shu);
-        color: #fff;
-      }
-      .choice.disabled {
-        cursor: default;
-      }
+      .choice .choice-audio-btn:hover { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+      .choice .choice-audio-btn svg { width: 14px; height: 14px; }
+      .choice.selected { border-color: var(--indigo); background: #eef3f5; }
+      .choice.selected .mark { border-color: var(--indigo); color: var(--indigo); }
+      .choice.correct { border-color: var(--ok); background: #eaf2ec; }
+      .choice.correct .mark { background: var(--ok); border-color: var(--ok); color: #fff; }
+      .choice.wrong { border-color: var(--shu); background: #fbece7; }
+      .choice.wrong .mark { background: var(--shu); border-color: var(--shu); color: #fff; }
+      .choice.disabled { cursor: default; }
 
       .feedback {
-        margin-top: 14px;
-        padding: 12px 14px;
-        border-radius: 4px;
-        font-size: 13.5px;
-        line-height: 1.7;
-        display: none;
+        margin-top: 14px; padding: 12px 14px; border-radius: 4px;
+        font-size: 13.5px; line-height: 1.7; display: none;
       }
-      .feedback.show {
-        display: block;
-      }
-      .feedback.good {
-        background: #eaf2ec;
-        color: #2600fc;
-        border: 1px solid #bcd6c4;
-      }
-      .feedback.bad {
-        background: #fbece7;
-        color: #ff0000;
-        border: 1px solid #e6c2b6;
-      }
+      .feedback.show { display: block; }
+      .feedback.good { background: #eaf2ec; color: #2600fc; border: 1px solid #bcd6c4; }
+      .feedback.bad { background: #fbece7; color: #ff0000; border: 1px solid #e6c2b6; }
       .feedback .script {
-        margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px dashed #c9bda1;
-        color: #050400;
-        font-size: 12.5px;
+        margin-top: 8px; padding-top: 8px; border-top: 1px dashed #c9bda1;
+        color: #050400; font-size: 12.5px;
       }
+      .feedback .script-translation {
+        margin-top: 6px; padding-top: 6px; border-top: 1px dashed #c9bda1;
+        color: #6b6455; font-size: 12px; font-style: italic; display: none;
+      }
+      .feedback .script-translation.show { display: block; }
 
-      footer {
-        text-align: center;
-        margin-top: 34px;
-      }
+      footer { text-align: center; margin-top: 34px; }
       .summary-btn {
-        background: none;
-        border: 1px solid var(--indigo);
-        color: var(--indigo);
-        padding: 11px 26px;
-        border-radius: 24px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        font-family: "Noto Sans JP", sans-serif;
+        background: none; border: 1px solid var(--indigo); color: var(--indigo);
+        padding: 11px 26px; border-radius: 24px; font-size: 14px; font-weight: 500;
+        cursor: pointer; font-family: "Noto Sans JP", sans-serif;
       }
-      .summary-btn:hover {
-        background: var(--indigo);
-        color: #fdf9ef;
-      }
+      .summary-btn:hover { background: var(--indigo); color: #fdf9ef; }
 
       .score-banner {
-        display: none;
-        text-align: center;
-        margin-top: 18px;
-        padding: 18px;
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        background: #fffdf8;
+        display: none; text-align: center; margin-top: 18px; padding: 18px;
+        border: 1px solid var(--line); border-radius: 4px; background: #fffdf8;
         font-family: "Noto Serif JP", serif;
       }
-      .score-banner.show {
-        display: block;
-      }
-      .score-banner .num {
-        font-size: 30px;
-        color: var(--shu);
-        font-weight: 700;
-      }
-      .score-banner .label {
-        font-size: 13px;
-        color: #6b6455;
-        margin-top: 4px;
-      }
+      .score-banner.show { display: block; }
+      .score-banner .num { font-size: 30px; color: var(--shu); font-weight: 700; }
+      .score-banner .label { font-size: 13px; color: #6b6455; margin-top: 4px; }
 
-      rt {
-        font-size: 0.6em;
-        color: #5f0501;
-        user-select: none;
-      }
-      .script rt {
-        font-size: 0.9em;
-      }
+      rt { font-size: 0.6em; color: #5f0501; user-select: none; }
+      .script rt { font-size: 0.9em; }
+      .furigana-hidden rt { display: none !important; }
 
       .rate-row {
-        text-align: center;
-        margin-top: 8px;
-        font-size: 12px;
-        color: #8a8270;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
+        text-align: center; margin-top: 8px; font-size: 12px; color: #8a8270;
+        display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
         gap: 6px 12px;
       }
       select {
-        font-family: inherit;
-        font-size: 12px;
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 3px 10px;
-        background: #fff;
-        color: var(--ink);
+        font-family: inherit; font-size: 12px; border: 1px solid var(--line);
+        border-radius: 14px; padding: 3px 10px; background: #fff; color: var(--ink);
       }
 
       /* ===== STORY SECTION ===== */
-      #storyModeSection {
-        display: none;
-        margin-top: 10px;
-      }
+      #storyModeSection { display: none; margin-top: 10px; }
       .story-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        border-bottom: 2px solid var(--line);
-        padding-bottom: 12px;
-        margin-bottom: 18px;
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: 12px;
+        border-bottom: 2px solid var(--line); padding-bottom: 12px; margin-bottom: 18px;
       }
       .story-header h2 {
-        font-family: "Noto Serif JP", serif;
-        font-size: 24px;
-        color: var(--indigo-deep);
-        margin: 0;
+        font-family: "Noto Serif JP", serif; font-size: 24px;
+        color: var(--indigo-deep); margin: 0;
       }
-      .story-nav-controls {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
+      .story-nav-controls { display: flex; align-items: center; gap: 12px; }
       .story-nav-btn {
-        padding: 6px 16px;
-        border: 1px solid var(--line);
-        border-radius: 20px;
-        background: #fff;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
+        padding: 6px 16px; border: 1px solid var(--line); border-radius: 20px;
+        background: #fff; cursor: pointer; font-size: 14px; font-weight: 500;
         transition: all 0.15s ease;
       }
-      .story-nav-btn:hover {
-        background: var(--indigo);
-        color: #fff;
-        border-color: var(--indigo);
-      }
-      .story-nav-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
+      .story-nav-btn:hover { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+      .story-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
       .story-display {
-        background: #fffdf8;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 24px;
-        margin-bottom: 20px;
+        background: #fffdf8; border: 1px solid var(--line);
+        border-radius: 8px; padding: 24px; margin-bottom: 20px;
       }
       .story-controls-top {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
+        display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
+        padding-bottom: 14px; border-bottom: 1px dashed var(--line);
       }
       .story-play-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background: var(--indigo);
-        color: #fff;
-        border: none;
-        padding: 8px 18px;
-        border-radius: 24px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
+        display: flex; align-items: center; gap: 6px;
+        background: var(--indigo); color: #fff; border: none;
+        padding: 8px 18px; border-radius: 24px;
+        font-size: 14px; font-weight: 500; cursor: pointer;
         transition: background 0.15s ease;
       }
-      .story-play-btn:hover {
-        background: var(--indigo-deep);
-      }
-      .story-play-btn.playing {
-        background: var(--shu);
-      }
-      .story-btn {
-        padding: 8px 18px;
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        background: #fff;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.15s ease;
-      }
-      .story-btn:hover {
-        border-color: var(--indigo);
-        background: #eef3f5;
-      }
-      .story-btn.active {
-        background: var(--indigo);
-        color: #fff;
-        border-color: var(--indigo);
-      }
+      .story-play-btn:hover { background: var(--indigo-deep); }
+      .story-play-btn.playing { background: var(--shu); }
 
       /* ===== FURIGANA DISPLAY ===== */
-      .story-japanese-block {
-        font-size: 18px;
-        line-height: 2.8;
-        padding: 8px 4px;
-      }
-      .story-japanese-block ruby {
-        ruby-align: center;
-      }
+      .story-japanese-block { font-size: 18px; line-height: 2.8; padding: 8px 4px; }
+      .story-japanese-block ruby { ruby-align: center; }
       .story-japanese-block rt {
-        font-size: 0.55em;
-        color: #8b0000;
-        font-weight: 300;
-        letter-spacing: 0.02em;
+        font-size: 0.55em; color: #8b0000; font-weight: 300; letter-spacing: 0.02em;
       }
       .story-english-block {
-        font-size: 16px;
-        line-height: 1.8;
-        color: #6b6455;
-        padding: 12px 4px;
-        border-top: 1px dashed var(--line);
-        margin-top: 12px;
-        padding-top: 16px;
+        font-size: 16px; line-height: 1.8; color: #6b6455;
+        padding: 12px 4px; border-top: 1px dashed var(--line);
+        margin-top: 12px; padding-top: 16px;
       }
 
       /* ===== QUESTIONS SECTION ===== */
       .story-questions-section {
-        background: #fffdf8;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 24px;
+        background: #fffdf8; border: 1px solid var(--line);
+        border-radius: 8px; padding: 24px;
       }
       .story-questions-section h3 {
-        font-size: 18px;
-        color: var(--indigo-deep);
-        margin: 0 0 16px;
-        border-bottom: 1px solid var(--line);
-        padding-bottom: 10px;
+        font-size: 18px; color: var(--indigo-deep); margin: 0 0 16px;
+        border-bottom: 1px solid var(--line); padding-bottom: 10px;
       }
-      .question-progress {
-        font-size: 14px;
-        color: #8a8270;
-        margin-bottom: 12px;
-      }
+      .question-progress { font-size: 14px; color: #8a8270; margin-bottom: 12px; }
       .question-text {
-        font-size: 17px;
-        font-weight: 500;
-        margin-bottom: 16px;
-        line-height: 1.6;
+        font-size: 17px; font-weight: 500; margin-bottom: 8px; line-height: 1.6;
       }
-      .question-text rt {
-        font-size: 0.6em;
-        color: #5f0501;
+      .question-text rt { font-size: 0.6em; color: #5f0501; }
+      .question-translation {
+        font-size: 13px; color: #6b6455; font-style: italic;
+        margin-bottom: 16px; padding: 8px 12px;
+        background: #f9f5ec; border-left: 3px solid var(--indigo);
+        border-radius: 0 4px 4px 0; display: none;
       }
-      .question-choices {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 14px;
+      .question-translation.show { display: block; }
+
+      /* ===== PER-QUESTION CONTROLS ROW ===== */
+      .question-controls {
+        display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
       }
-      .question-choice {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        padding: 10px 14px;
-        cursor: pointer;
-        background: #fff;
+      .question-ctrl-btn { padding: 6px 14px; font-size: 13px; border-radius: 20px; }
+
+      /* ===== PER-QUESTION TRANSCRIPT ===== */
+      .question-transcript {
+        margin-bottom: 16px; padding: 12px 16px;
+        background: #fdf8ed; border: 1px solid var(--line);
+        border-left: 4px solid var(--shu); border-radius: 4px;
+        font-size: 14px; line-height: 2.2; display: none;
+      }
+      .question-transcript.show { display: block; }
+      .question-transcript .transcript-label {
+        font-size: 11px; font-weight: 700; color: var(--shu);
+        letter-spacing: 0.1em; margin-bottom: 6px;
+        display: flex; align-items: center; justify-content: space-between;
+      }
+      .question-transcript .transcript-text { color: var(--ink); }
+      .question-transcript .transcript-text rt {
+        font-size: 0.55em; color: #8b0000;
+      }
+      .question-transcript .transcript-translation {
+        margin-top: 8px; padding-top: 8px;
+        border-top: 1px dashed var(--line);
+        font-size: 13px; color: #6b6455; font-style: italic; display: none;
+      }
+      .question-transcript .transcript-translation.show { display: block; }
+      .transcript-play-btn {
+        background: none; border: 1px solid var(--shu); color: var(--shu);
+        border-radius: 14px; padding: 3px 10px; font-size: 11px;
+        cursor: pointer; font-family: "Noto Sans JP", sans-serif;
         transition: all 0.15s ease;
-        font-size: 17px;
       }
-      .question-choice:hover:not(.disabled) {
-        border-color: var(--indigo);
+      .transcript-play-btn:hover { background: var(--shu); color: #fff; }
+
+      .question-choices { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+      .question-choice {
+        display: flex; align-items: center; gap: 12px;
+        border: 1px solid var(--line); border-radius: 6px;
+        padding: 10px 14px; cursor: pointer; background: #fff;
+        transition: all 0.15s ease; font-size: 17px;
       }
+      .question-choice:hover:not(.disabled) { border-color: var(--indigo); }
       .question-choice .choice-mark {
-        width: 24px;
-        height: 24px;
-        flex-shrink: 0;
-        border: 1px solid var(--line);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 700;
-        color: #8a8270;
+        width: 24px; height: 24px; flex-shrink: 0;
+        border: 1px solid var(--line); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 700; color: #8a8270;
       }
-      .question-choice.selected {
-        border-color: var(--indigo);
-        background: #eef3f5;
+      .question-choice .q-choice-text { flex: 1; }
+      .question-choice .q-choice-translation {
+        font-size: 12px; color: #8a8270; font-style: italic; display: none;
       }
-      .question-choice.selected .choice-mark {
-        border-color: var(--indigo);
-        color: var(--indigo);
+      .question-choice .q-choice-translation.show { display: block; }
+      .question-choice .q-choice-audio-btn {
+        flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
+        border: 1px solid var(--line); background: #fff; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--indigo); transition: all 0.15s ease;
       }
-      .question-choice.correct {
-        border-color: var(--ok);
-        background: #eaf2ec;
+      .question-choice .q-choice-audio-btn:hover {
+        background: var(--indigo); color: #fff; border-color: var(--indigo);
       }
-      .question-choice.correct .choice-mark {
-        background: var(--ok);
-        border-color: var(--ok);
-        color: #fff;
-      }
-      .question-choice.wrong {
-        border-color: var(--shu);
-        background: #fbece7;
-      }
-      .question-choice.wrong .choice-mark {
-        background: var(--shu);
-        border-color: var(--shu);
-        color: #fff;
-      }
-      .question-choice.disabled {
-        cursor: default;
-      }
-      .question-choice rt {
-        font-size: 0.6em;
-        color: #5f0501;
-      }
+      .question-choice .q-choice-audio-btn svg { width: 13px; height: 13px; }
+      .question-choice.selected { border-color: var(--indigo); background: #eef3f5; }
+      .question-choice.selected .choice-mark { border-color: var(--indigo); color: var(--indigo); }
+      .question-choice.correct { border-color: var(--ok); background: #eaf2ec; }
+      .question-choice.correct .choice-mark { background: var(--ok); border-color: var(--ok); color: #fff; }
+      .question-choice.wrong { border-color: var(--shu); background: #fbece7; }
+      .question-choice.wrong .choice-mark { background: var(--shu); border-color: var(--shu); color: #fff; }
+      .question-choice.disabled { cursor: default; }
+      .question-choice rt { font-size: 0.6em; color: #5f0501; }
 
       .question-feedback {
-        margin-top: 12px;
-        padding: 12px 16px;
-        border-radius: 6px;
-        font-size: 14px;
-        line-height: 1.7;
-        display: none;
+        margin-top: 12px; padding: 12px 16px; border-radius: 6px;
+        font-size: 14px; line-height: 1.7; display: none;
       }
-      .question-feedback.show {
-        display: block;
+      .question-feedback.show { display: block; }
+      .question-feedback.correct { background: #eaf2ec; border: 1px solid #bcd6c4; color: #1a4a1a; }
+      .question-feedback.wrong { background: #fbece7; border: 1px solid #e6c2b6; color: #8a1a1a; }
+      .question-feedback .q-note-en {
+        margin-top: 6px; color: #6b6455; font-style: italic; font-size: 13px; display: none;
       }
-      .question-feedback.correct {
-        background: #eaf2ec;
-        border: 1px solid #bcd6c4;
-        color: #1a4a1a;
-      }
-      .question-feedback.wrong {
-        background: #fbece7;
-        border: 1px solid #e6c2b6;
-        color: #8a1a1a;
-      }
+      .question-feedback .q-note-en.show { display: block; }
 
       .question-nav {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 14px;
-        padding-top: 14px;
+        display: flex; gap: 10px; flex-wrap: wrap;
+        margin-top: 14px; padding-top: 14px;
         border-top: 1px solid var(--line);
       }
       .question-nav-btn {
-        padding: 6px 16px;
-        border: 1px solid var(--line);
-        border-radius: 20px;
-        background: #fff;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
+        padding: 6px 16px; border: 1px solid var(--line); border-radius: 20px;
+        background: #fff; cursor: pointer; font-size: 13px; font-weight: 500;
         transition: all 0.15s ease;
       }
-      .question-nav-btn:hover {
-        background: var(--indigo);
-        color: #fff;
-        border-color: var(--indigo);
-      }
-      .question-nav-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
+      .question-nav-btn:hover { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+      .question-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
       /* ===== RESPONSIVE ===== */
       @media (max-width: 600px) {
-        .story-header {
-          flex-direction: column;
-          align-items: stretch;
-          text-align: center;
-        }
-        .story-nav-controls {
-          justify-content: center;
-        }
-        .story-japanese-block {
-          font-size: 16px;
-          line-height: 2.5;
-        }
-        .question-text {
-          font-size: 15px;
-        }
-        .question-choice {
-          font-size: 15px;
-        }
-        .mode-tab {
-          padding: 8px 16px;
-          font-size: 14px;
-        }
-        .audio-row {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .replay-hint {
-          text-align: center;
-        }
-        .rate-row {
-          flex-direction: column;
-          gap: 4px;
-        }
+        .story-header { flex-direction: column; align-items: stretch; text-align: center; }
+        .story-nav-controls { justify-content: center; }
+        .story-japanese-block { font-size: 16px; line-height: 2.5; }
+        .question-text { font-size: 15px; }
+        .question-choice { font-size: 15px; }
+        .mode-tab { padding: 8px 16px; font-size: 14px; }
+        .audio-row { flex-direction: column; align-items: stretch; }
+        .replay-hint { text-align: center; }
+        .rate-row { flex-direction: column; gap: 4px; }
+        .choice { font-size: 16px; }
       }
 
       /* ===== PRINT STYLES ===== */
       @media print {
-        .mode-tabs,
-        .story-controls-top,
-        .story-nav-controls,
-        .question-nav,
-        .audio-row {
+        .mode-tabs, .story-controls-top, .story-nav-controls,
+        .question-nav, .audio-row, .global-toggles,
+        .choice-audio-btn, .q-choice-audio-btn, .question-controls,
+        .transcript-play-btn, .transcript-btn {
           display: none !important;
         }
         .story-display {
-          border: 1px solid #ccc !important;
-          background: white !important;
+          border: 1px solid #ccc !important; background: white !important;
           box-shadow: none !important;
         }
         .story-questions-section {
-          border: 1px solid #ccc !important;
-          background: white !important;
-          box-shadow: none !important;
-          page-break-inside: avoid;
+          border: 1px solid #ccc !important; background: white !important;
+          box-shadow: none !important; page-break-inside: avoid;
         }
-        .story-header {
-          border-bottom: 1px solid #000 !important;
-        }
+        .story-header { border-bottom: 1px solid #000 !important; }
       }
     </style>
   </head>
@@ -772,20 +463,28 @@
         </div>
       </header>
 
-      <!-- ===== MODE TABS ===== -->
+      <div class="global-toggles">
+        <button class="global-toggle active" id="globalFuriganaBtn" type="button">
+          <span class="toggle-icon">🔤</span>
+          <span id="globalFuriganaLabel">Furigana On</span>
+        </button>
+        <button class="global-toggle" id="globalTranslationBtn" type="button">
+          <span class="toggle-icon">🌎</span>
+          <span id="globalTranslationLabel">Translation Off</span>
+        </button>
+      </div>
+
       <div class="mode-tabs">
-        <button class="mode-tab active" data-mode="listening">
+        <button class="mode-tab active" data-mode="listening" type="button">
           🎧 Listening
         </button>
-        <button class="mode-tab" data-mode="story">📖 Story</button>
+        <button class="mode-tab" data-mode="story" type="button">📖 Story</button>
       </div>
 
       <!-- ===== LISTENING SECTION ===== -->
       <div id="listeningSection">
         <div class="progress-row">
-          <span id="progressLabel"
-            >0 / 8 <ruby>Question 問<rt>もん</rt></ruby></span
-          >
+          <span id="progressLabel">0 / 8 <ruby>Question 問<rt>もん</rt></ruby></span>
           <div class="progress-track">
             <div class="progress-fill" id="progressFill"></div>
           </div>
@@ -795,7 +494,7 @@
         <div id="quiz"></div>
 
         <footer>
-          <button class="summary-btn" id="summaryBtn">Check all answers</button>
+          <button class="summary-btn" id="summaryBtn" type="button">Check all answers</button>
           <div class="rate-row">
             <span>Voice:</span>
             <select id="voiceSelect">
@@ -820,20 +519,16 @@
         <div class="story-header">
           <h2 id="storyTitle">📖 N5 Story</h2>
           <div class="story-nav-controls">
-            <button class="story-nav-btn" id="storyPrevBtn">◀ Prev</button>
+            <button class="story-nav-btn" id="storyPrevBtn" type="button">◀ Prev</button>
             <span id="storyProgress">1 / <span id="storyTotal">10</span></span>
-            <button class="story-nav-btn" id="storyNextBtn">Next ▶</button>
+            <button class="story-nav-btn" id="storyNextBtn" type="button">Next ▶</button>
           </div>
         </div>
 
         <div class="story-display">
           <div class="story-controls-top">
-            <button class="story-play-btn" id="storyPlayBtn">
+            <button class="story-play-btn" id="storyPlayBtn" type="button">
               🔊 Play Story
-            </button>
-            <button class="story-btn" id="storyTransBtn">🌎 Translation</button>
-            <button class="story-btn active" id="storyFuriToggleBtn">
-              🔤 Furigana On
             </button>
           </div>
           <div id="storyJapaneseBlock" class="story-japanese-block"></div>
@@ -848,17 +543,49 @@
           <h3>📝 Comprehension Questions</h3>
           <div id="questionContainer">
             <div id="questionProgress" class="question-progress">1 / 5</div>
+
+            <!-- Per-question controls: play/stop question audio + toggle transcript -->
+            <div class="question-controls">
+              <button class="question-ctrl-btn" id="questionPlayBtn" type="button">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Play Question
+              </button>
+              <button class="question-ctrl-btn" id="questionStopBtn" type="button">
+                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+                Stop
+              </button>
+              <button class="question-ctrl-btn transcript-btn" id="questionTranscriptBtn" type="button">
+                📖 Transcript
+              </button>
+            </div>
+
+            <!-- Transcript panel (hidden until button is toggled) -->
+            <div id="questionTranscript" class="question-transcript">
+              <div class="transcript-label">
+                <span>📖 関連文 (Related text)</span>
+                <button class="transcript-play-btn" id="transcriptPlayBtn" type="button">
+                  🔊 Play
+                </button>
+              </div>
+              <div id="transcriptText" class="transcript-text"></div>
+              <div
+                id="transcriptTranslation"
+                class="transcript-translation"
+              ></div>
+            </div>
+
             <div id="currentQuestion" class="question-text"></div>
+            <div id="questionTranslation" class="question-translation"></div>
             <div id="questionChoices" class="question-choices"></div>
             <div id="questionFeedback" class="question-feedback"></div>
             <div class="question-nav">
-              <button class="question-nav-btn" id="prevQuestionBtn">
+              <button class="question-nav-btn" id="prevQuestionBtn" type="button">
                 ◀ Prev Q
               </button>
-              <button class="question-nav-btn" id="nextQuestionBtn">
+              <button class="question-nav-btn" id="nextQuestionBtn" type="button">
                 Next Q ▶
               </button>
-              <button class="question-nav-btn" id="showAnswersBtn">
+              <button class="question-nav-btn" id="showAnswersBtn" type="button">
                 Show All Answers
               </button>
             </div>
@@ -867,31 +594,33 @@
       </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- DATA SCRIPTS -->
-    <!-- ============================================================ -->
+    <!-- Data scripts -->
     <script src="js/data/sentences.js"></script>
     <script src="js/data/sprints.js"></script>
     <script src="js/data/stories.js"></script>
     <script src="js/data/wordDict.js"></script>
     <script src="js/data/storiesQ&A.js"></script>
 
-    <!-- ============================================================ -->
-    <!-- MAIN APPLICATION SCRIPT -->
-    <!-- ============================================================ -->
     <script>
       // ============================================================
-      // LISTENING MODE - Original code
+      // GLOBAL STATE
       // ============================================================
+      let globalShowFurigana = true;
+      let globalShowTranslation = false;
 
+      // ============================================================
+      // LISTENING MODE DATA
+      // ============================================================
       const listeningQuestions = [
         {
           script: "すみません、今何時ですか。今は三時半です。",
           html: "すみません、<ruby>今<rt>いま</rt></ruby><ruby>何<rt>なん</rt></ruby><ruby>時<rt>じ</rt></ruby>ですか。<ruby>今<rt>いま</rt></ruby>は<ruby>三<rt>さん</rt></ruby><ruby>時<rt>じ</rt></ruby><ruby>半<rt>はん</rt></ruby>です。",
-          question: " Question: 今何時ですか。",
+          scriptEn: "Excuse me, what time is it now? It is 3:30 now.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>今<rt>いま</rt></ruby><ruby>何<rt>なん</rt></ruby><ruby>時<rt>じ</rt></ruby>ですか。",
+          questionEn: "Question: What time is it now?",
           choices: ["二時半", "三時", "三時半", "四時"],
+          choicesEn: ["2:30", "3:00", "3:30", "4:00"],
           choicesHtml: [
             "<ruby>二<rt>に</rt></ruby><ruby>時<rt>じ</rt></ruby><ruby>半<rt>はん</rt></ruby>",
             "<ruby>三<rt>さん</rt></ruby><ruby>時<rt>じ</rt></ruby>",
@@ -900,15 +629,19 @@
           ],
           answer: 2,
           note: "「三時半」＝3:30 という意味です。",
+          noteEn: "「三時半」means 3:30.",
         },
         {
           script:
             "店員：いらっしゃいませ。客：このりんごはいくらですか。店員：これは一つ百円です。客：三つください。",
           html: "<ruby>店員<rt>てんいん</rt></ruby>：いらっしゃいませ。<ruby>客<rt>きゃく</rt></ruby>：このりんごはいくらですか。<ruby>店員<rt>てんいん</rt></ruby>：これは<ruby>一<rt>ひと</rt></ruby>つ<ruby>百円<rt>ひゃくえん</rt></ruby>です。<ruby>客<rt>きゃく</rt></ruby>：<ruby>三<rt>みっ</rt></ruby>つください。",
-          question: " Question: りんごを三つ買うと、いくらですか。",
+          scriptEn:
+            "Clerk: Welcome. Customer: How much is this apple? Clerk: This is 100 yen each. Customer: Three, please.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: りんごを<ruby>三<rt>みっ</rt></ruby>つ<ruby>買<rt>か</rt></ruby>うと、いくらですか。",
+          questionEn: "Question: If you buy three apples, how much is it?",
           choices: ["百円", "二百円", "三百円", "四百円"],
+          choicesEn: ["100 yen", "200 yen", "300 yen", "400 yen"],
           choicesHtml: [
             "<ruby>百円<rt>ひゃくえん</rt></ruby>",
             "<ruby>二百円<rt>にひゃくえん</rt></ruby>",
@@ -917,19 +650,28 @@
           ],
           answer: 2,
           note: "一つ100円 × 三つ ＝ 300円。",
+          noteEn: "100 yen each × 3 = 300 yen.",
         },
         {
           script:
             "すみません、駅はどこですか。この道をまっすぐ行って、二番目の角を右に曲がってください。駅は左にあります。",
           html: "すみません、<ruby>駅<rt>えき</rt></ruby>はどこですか。この<ruby>道<rt>みち</rt></ruby>をまっすぐ<ruby>行<rt>い</rt></ruby>って、<ruby>二番目<rt>にばんめ</rt></ruby>の<ruby>角<rt>かど</rt></ruby>を<ruby>右<rt>みぎ</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がってください。<ruby>駅<rt>えき</rt></ruby>は<ruby>左<rt>ひだり</rt></ruby>にあります。",
-          question: " Question: 駅へ行くにはどうしますか。",
+          scriptEn:
+            "Excuse me, where is the station? Go straight down this road, and turn right at the second corner. The station is on the left.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>駅<rt>えき</rt></ruby>へ<ruby>行<rt>い</rt></ruby>くにはどうしますか。",
+          questionEn: "Question: How do you get to the station?",
           choices: [
             "まっすぐ行って左に曲がる",
             "まっすぐ行って右に曲がる",
             "右に曲がってまっすぐ行く",
             "左に曲がってまっすぐ行く",
+          ],
+          choicesEn: [
+            "Go straight and turn left",
+            "Go straight and turn right",
+            "Turn right and go straight",
+            "Turn left and go straight",
           ],
           choicesHtml: [
             "まっすぐ<ruby>行<rt>い</rt></ruby>って<ruby>左<rt>ひだり</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がる",
@@ -939,15 +681,19 @@
           ],
           answer: 1,
           note: "「まっすぐ行って、右に曲がる」が正解です。",
+          noteEn: 'The correct answer is "go straight and turn right."',
         },
         {
           script:
             "今朝、何を食べましたか。パンと卵を食べました。コーヒーも飲みました。",
           html: "<ruby>今朝<rt>けさ</rt></ruby>、<ruby>何<rt>なに</rt></ruby>を<ruby>食<rt>た</rt></ruby>べましたか。パンと<ruby>卵<rt>たまご</rt></ruby>を<ruby>食<rt>た</rt></ruby>べました。コーヒーも<ruby>飲<rt>の</rt></ruby>みました。",
-          question: " Question: 今朝、何を食べましたか。",
+          scriptEn:
+            "What did you eat this morning? I ate bread and eggs. I also drank coffee.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>今朝<rt>けさ</rt></ruby>、<ruby>何<rt>なに</rt></ruby>を<ruby>食<rt>た</rt></ruby>べましたか。",
+          questionEn: "Question: What did you eat this morning?",
           choices: ["ごはんと魚", "パンと卵", "パンと魚", "ごはんと卵"],
+          choicesEn: ["Rice and fish", "Bread and eggs", "Bread and fish", "Rice and eggs"],
           choicesHtml: [
             "ごはんと<ruby>魚<rt>さかな</rt></ruby>",
             "パンと<ruby>卵<rt>たまご</rt></ruby>",
@@ -956,15 +702,19 @@
           ],
           answer: 1,
           note: "「パンと卵」を食べたと言っています。コーヒーは飲み物です。",
+          noteEn: "They said they ate bread and eggs. Coffee is a drink (not food).",
         },
         {
           script:
             "今度の日曜日、一緒に映画を見に行きませんか。いいですね。でも日曜日はちょっと…。土曜日はどうですか。土曜日ですか。いいですよ。",
           html: "<ruby>今度<rt>こんど</rt></ruby>の<ruby>日曜日<rt>にちようび</rt></ruby>、<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>に<ruby>行<rt>い</rt></ruby>きませんか。いいですね。でも<ruby>日曜日<rt>にちようび</rt></ruby>はちょっと…。<ruby>土曜日<rt>どようび</rt></ruby>はどうですか。<ruby>土曜日<rt>どようび</rt></ruby>ですか。いいですよ。",
-          question: " Question: 二人はいつ映画を見に行きますか。",
+          scriptEn:
+            "Would you like to go see a movie together this Sunday? That sounds nice. But Sunday is a bit... How about Saturday? Saturday? That's fine.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>二人<rt>ふたり</rt></ruby>はいつ<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>に<ruby>行<rt>い</rt></ruby>きますか。",
+          questionEn: "Question: When will the two go see the movie?",
           choices: ["金曜日", "土曜日", "日曜日", "月曜日"],
+          choicesEn: ["Friday", "Saturday", "Sunday", "Monday"],
           choicesHtml: [
             "<ruby>金曜日<rt>きんようび</rt></ruby>",
             "<ruby>土曜日<rt>どようび</rt></ruby>",
@@ -973,20 +723,19 @@
           ],
           answer: 1,
           note: "日曜日は都合が悪いので、土曜日に変更しました。",
+          noteEn: "Since Sunday was inconvenient, they changed to Saturday.",
         },
         {
           script:
             "山田さんは今日、誰と図書館へ行きましたか。山田さんは田中さんと図書館へ行きました。鈴木さんは行きませんでした。",
           html: "<ruby>山田<rt>やまだ</rt></ruby>さんは<ruby>今日<rt>きょう</rt></ruby>、<ruby>誰<rt>だれ</rt></ruby>と<ruby>図書館<rt>としょかん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きましたか。<ruby>山田<rt>やまだ</rt></ruby>さんは<ruby>田中<rt>たなか</rt></ruby>さんと<ruby>図書館<rt>としょかん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きました。<ruby>鈴木<rt>すずき</rt></ruby>さんは<ruby>行<rt>い</rt></ruby>きませんでした。",
-          question: " Question: 山田さんは誰と図書館へ行きましたか。",
+          scriptEn:
+            "Who did Yamada go to the library with today? Yamada went to the library with Tanaka. Suzuki did not go.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>山田<rt>やまだ</rt></ruby>さんは<ruby>誰<rt>だれ</rt></ruby>と<ruby>図書館<rt>としょかん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きましたか。",
-          choices: [
-            "一人で",
-            "田中さんと",
-            "鈴木さんと",
-            "田中さんと鈴木さんと",
-          ],
+          questionEn: "Question: Who did Yamada go to the library with?",
+          choices: ["一人で", "田中さんと", "鈴木さんと", "田中さんと鈴木さんと"],
+          choicesEn: ["Alone", "With Tanaka", "With Suzuki", "With Tanaka and Suzuki"],
           choicesHtml: [
             "<ruby>一人<rt>ひとり</rt></ruby>で",
             "<ruby>田中<rt>たなか</rt></ruby>さんと",
@@ -995,19 +744,28 @@
           ],
           answer: 1,
           note: "鈴木さんは「行きませんでした」と言っているので不正解です。",
+          noteEn: 'Suzuki said "did not go," so Suzuki is incorrect.',
         },
         {
           script:
             "すみません、田中先生の教室はどこですか。二階の二百三号室です。階段を上がって、右側です。",
           html: "すみません、<ruby>田中<rt>たなか</rt></ruby><ruby>先生<rt>せんせい</rt></ruby>の<ruby>教室<rt>きょうしつ</rt></ruby>はどこですか。<ruby>二階<rt>にかい</rt></ruby>の<ruby>二百三<rt>にひゃくさん</rt></ruby><ruby>号室<rt>ごうしつ</rt></ruby>です。<ruby>階段<rt>かいだん</rt></ruby>を<ruby>上<rt>あ</rt></ruby>がって、<ruby>右側<rt>みぎがわ</rt></ruby>です。",
-          question: " Question: 田中先生の教室はどこですか。",
+          scriptEn:
+            "Excuse me, where is Professor Tanaka's classroom? It's room 203 on the second floor. Go up the stairs and it's on the right side.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>田中<rt>たなか</rt></ruby><ruby>先生<rt>せんせい</rt></ruby>の<ruby>教室<rt>きょうしつ</rt></ruby>はどこですか。",
+          questionEn: "Question: Where is Professor Tanaka's classroom?",
           choices: [
             "一階の203号室",
             "二階の203号室・右側",
             "二階の203号室・左側",
             "三階の203号室",
+          ],
+          choicesEn: [
+            "Room 203 on the 1st floor",
+            "Room 203 on the 2nd floor, right side",
+            "Room 203 on the 2nd floor, left side",
+            "Room 203 on the 3rd floor",
           ],
           choicesHtml: [
             "<ruby>一階<rt>いっかい</rt></ruby>の203<ruby>号室<rt>ごうしつ</rt></ruby>",
@@ -1017,19 +775,23 @@
           ],
           answer: 1,
           note: "「二階」「203号室」「右側」の3つの情報がすべて合っているものを選びます。",
+          noteEn: 'Choose the option that matches all three: "2nd floor," "room 203," and "right side."',
         },
         {
           script:
             "明日の天気はどうですか。明日は朝は晴れですが、午後から雨が降るでしょう。傘を持って行ったほうがいいです。",
           html: "<ruby>明日<rt>あした</rt></ruby>の<ruby>天気<rt>てんき</rt></ruby>はどうですか。<ruby>明日<rt>あした</rt></ruby>は<ruby>朝<rt>あさ</rt></ruby>は<ruby>晴<rt>は</rt></ruby>れですが、<ruby>午後<rt>ごご</rt></ruby>から<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>るでしょう。<ruby>傘<rt>かさ</rt></ruby>を<ruby>持<rt>も</rt></ruby>って<ruby>行<rt>い</rt></ruby>ったほうがいいです。",
-          question: " Question: 明日の天気はどうですか。",
+          scriptEn:
+            "How is the weather tomorrow? Tomorrow it will be sunny in the morning, but it will probably rain from the afternoon. You should take an umbrella.",
           questionHtml:
             "<ruby>質<rt>しつ</rt>問<rt>もん</rt></ruby>: <ruby>明日<rt>あした</rt></ruby>の<ruby>天気<rt>てんき</rt></ruby>はどうですか。",
-          choices: [
-            "一日中晴れ",
-            "一日中雨",
-            "朝は晴れ、午後は雨",
-            "朝は雨、午後は晴れ",
+          questionEn: "Question: How is the weather tomorrow?",
+          choices: ["一日中晴れ", "一日中雨", "朝は晴れ、午後は雨", "朝は雨、午後は晴れ"],
+          choicesEn: [
+            "Sunny all day",
+            "Rainy all day",
+            "Sunny in the morning, rainy in the afternoon",
+            "Rainy in the morning, sunny in the afternoon",
           ],
           choicesHtml: [
             "<ruby>一日中<rt>いちにちじゅう</rt></ruby><ruby>晴<rt>は</rt></ruby>れ",
@@ -1039,28 +801,17 @@
           ],
           answer: 2,
           note: "「朝は晴れ」「午後から雨」と言っています。",
+          noteEn: 'They say "sunny in the morning" and "rain from the afternoon."',
         },
       ];
 
-      const kanjiNums = [
-        "一",
-        "二",
-        "三",
-        "四",
-        "五",
-        "六",
-        "七",
-        "八",
-        "九",
-        "十",
-      ];
+      const kanjiNums = ["一","二","三","四","五","六","七","八","九","十"];
       const quizEl = document.getElementById("quiz");
-      let answered = 0,
-        correct = 0;
+      let answered = 0, correct = 0;
       let currentUtterance = null;
-
       let japaneseVoices = [];
       let chosenVoice = null;
+      let listeningTranscriptsOpen = {}; // Tracks open transcripts per question index
 
       // ============================================================
       // VOICE SELECTOR
@@ -1070,11 +821,8 @@
       function populateVoiceList() {
         const voices = window.speechSynthesis.getVoices();
         const jpVoices = voices.filter((v) => v.lang.startsWith("ja"));
-
         voiceSelect.innerHTML = "";
-
         if (jpVoices.length === 0) {
-          // Fallback: show all voices
           voices.forEach((v) => {
             const opt = document.createElement("option");
             opt.value = v.name;
@@ -1086,56 +834,32 @@
             const opt = document.createElement("option");
             opt.value = v.name;
             opt.textContent = `${v.name} (${v.lang})`;
-            // Pre-select female voices if available
-            const femaleHints = [
-              "female",
-              "女性",
-              "kyoko",
-              "o-ren",
-              "mizuki",
-              "nanami",
-              "haruka",
-              "sayaka",
-              "ayumi",
-            ];
-            if (femaleHints.some((h) => v.name.toLowerCase().includes(h))) {
-              opt.selected = true;
-            }
+            const femaleHints = ["female","女性","kyoko","o-ren","mizuki","nanami","haruka","sayaka","ayumi"];
+            if (femaleHints.some((h) => v.name.toLowerCase().includes(h))) opt.selected = true;
             voiceSelect.appendChild(opt);
           });
         }
-
-        // Store selected voice
         const selectedName = voiceSelect.value;
-        const voices2 = window.speechSynthesis.getVoices();
-        const selectedVoice = voices2.find((v) => v.name === selectedName);
-        if (selectedVoice) {
-          chosenVoice = selectedVoice;
-        }
+        const selectedVoice = voices.find((v) => v.name === selectedName);
+        if (selectedVoice) chosenVoice = selectedVoice;
       }
 
-      // Update voice selector when voices change
       if (window.speechSynthesis) {
         window.speechSynthesis.onvoiceschanged = () => {
           populateVoiceList();
           chosenVoice = pickFemaleVoice();
         };
-        // Initial population with slight delay
         setTimeout(populateVoiceList, 100);
       }
 
-      // Listen for voice selection changes
       if (voiceSelect) {
         voiceSelect.addEventListener("change", function () {
           const voices = window.speechSynthesis.getVoices();
           const selected = voices.find((v) => v.name === this.value);
           if (selected) {
             chosenVoice = selected;
-            // Stop current speech
             window.speechSynthesis.cancel();
-            document
-              .querySelectorAll(".play-btn")
-              .forEach((b) => b.classList.remove("playing"));
+            document.querySelectorAll(".play-btn, .question-ctrl-btn.playing").forEach((b) => b.classList.remove("playing"));
             const storyBtn = document.getElementById("storyPlayBtn");
             if (storyBtn) {
               storyBtn.classList.remove("playing");
@@ -1146,47 +870,24 @@
       }
 
       function pickFemaleVoice() {
-        // If user selected a voice, use it
         const selectedName = voiceSelect ? voiceSelect.value : "";
         if (selectedName) {
           const voices = window.speechSynthesis.getVoices();
           const selected = voices.find((v) => v.name === selectedName);
           if (selected) return selected;
         }
-
-        // Otherwise auto-select a female voice
         const voices = window.speechSynthesis
           .getVoices()
-          .filter(
-            (v) =>
-              v.lang === "ja-JP" ||
-              v.lang === "ja_JP" ||
-              v.lang.startsWith("ja"),
-          );
+          .filter((v) => v.lang === "ja-JP" || v.lang === "ja_JP" || v.lang.startsWith("ja"));
         if (voices.length === 0) return null;
-
-        const femaleHints = [
-          "female",
-          "女性",
-          "kyoko",
-          "o-ren",
-          "mizuki",
-          "nanami",
-          "haruka",
-          "sayaka",
-          "ayumi",
-        ];
-        let v = voices.find((v) =>
-          femaleHints.some((h) => v.name.toLowerCase().includes(h)),
-        );
+        const femaleHints = ["female","女性","kyoko","o-ren","mizuki","nanami","haruka","sayaka","ayumi"];
+        let v = voices.find((v) => femaleHints.some((h) => v.name.toLowerCase().includes(h)));
         if (!v) v = voices[0];
         return v;
       }
 
       if ("speechSynthesis" in window) {
-        window.speechSynthesis.onvoiceschanged = () => {
-          chosenVoice = pickFemaleVoice();
-        };
+        window.speechSynthesis.onvoiceschanged = () => { chosenVoice = pickFemaleVoice(); };
         chosenVoice = pickFemaleVoice();
       }
 
@@ -1198,57 +899,122 @@
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = "ja-JP";
-        // Use selected rate or default to 0.85 for clarity
         const rateSelect = document.getElementById("rateSelect");
         utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
-        utter.pitch = 1.0; // Natural pitch for better clarity
+        utter.pitch = 1.0;
         if (!chosenVoice) chosenVoice = pickFemaleVoice();
         if (chosenVoice) utter.voice = chosenVoice;
-        document
-          .querySelectorAll(".play-btn")
-          .forEach((b) => b.classList.remove("playing"));
+        // Clear all playing states
+        document.querySelectorAll(".play-btn, .question-ctrl-btn.playing").forEach((b) => b.classList.remove("playing"));
         if (btn) btn.classList.add("playing");
-        utter.onend = () => {
-          if (btn) btn.classList.remove("playing");
-        };
+        utter.onend = () => { if (btn) btn.classList.remove("playing"); };
         currentUtterance = utter;
         window.speechSynthesis.speak(utter);
       }
 
+      // ============================================================
+      // GLOBAL TOGGLE HANDLERS
+      // ============================================================
+      function applyGlobalToggles() {
+        document.body.classList.toggle("furigana-hidden", !globalShowFurigana);
+        document.getElementById("globalFuriganaBtn").classList.toggle("active", globalShowFurigana);
+        document.getElementById("globalFuriganaLabel").textContent =
+          globalShowFurigana ? "Furigana On" : "Furigana Off";
+
+        document.getElementById("globalTranslationBtn").classList.toggle("active", globalShowTranslation);
+        document.getElementById("globalTranslationLabel").textContent =
+          globalShowTranslation ? "Translation On" : "Translation Off";
+
+        document.querySelectorAll(".qtext-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
+        document.querySelectorAll(".choice-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
+        document.querySelectorAll(".feedback .script-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
+
+        const storyEnBlock = document.getElementById("storyEnglishBlock");
+        if (storyEnBlock) storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
+
+        const questionTranslation = document.getElementById("questionTranslation");
+        if (questionTranslation) questionTranslation.classList.toggle("show", globalShowTranslation);
+        document.querySelectorAll(".q-choice-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
+        const transcriptTranslation = document.getElementById("transcriptTranslation");
+        if (transcriptTranslation) transcriptTranslation.classList.toggle("show", globalShowTranslation);
+        document.querySelectorAll(".question-feedback .q-note-en").forEach((el) => el.classList.toggle("show", globalShowTranslation));
+
+        // NOTE: No renderStory() here to avoid infinite loops!
+      }
+
+      document.getElementById("globalFuriganaBtn").addEventListener("click", () => {
+        globalShowFurigana = !globalShowFurigana;
+        applyGlobalToggles();
+      });
+      document.getElementById("globalTranslationBtn").addEventListener("click", () => {
+        globalShowTranslation = !globalShowTranslation;
+        applyGlobalToggles();
+      });
+
+      // ============================================================
+      // PROGRESS
+      // ============================================================
       function updateProgress() {
         document.getElementById("progressLabel").textContent =
           answered + " / " + listeningQuestions.length + " Question 問";
-        document.getElementById("scoreLabel").textContent =
-          "Correct 正解 " + correct;
+        document.getElementById("scoreLabel").textContent = "Correct 正解 " + correct;
         document.getElementById("progressFill").style.width =
           (answered / listeningQuestions.length) * 100 + "%";
       }
 
-      // Build listening questions
+      // ============================================================
+      // BUILD LISTENING QUESTIONS
+      // ============================================================
       listeningQuestions.forEach((q, qi) => {
         const card = document.createElement("div");
         card.className = "card";
+        
+        // Transcript panel for listening
+        const transcriptHtml = `
+          <div class="question-transcript" id="transcript-panel-${qi}">
+            <div class="transcript-label">
+              <span>📖 スクリプト (Script)</span>
+              <button class="transcript-play-btn" data-qi="${qi}" type="button">🔊 Play</button>
+            </div>
+            <div class="transcript-text">${q.html}</div>
+            <div class="transcript-translation">${q.scriptEn || ""}</div>
+          </div>
+        `;
+
         card.innerHTML = `
           <div class="qnum"><span class="kanji-num">${kanjiNums[qi]}</span>Question 問${qi + 1}</div>
+          
           <div class="audio-row">
-            <button class="play-btn" data-qi="${qi}">
+            <button class="play-btn" data-qi="${qi}" type="button">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              Play
+              Play Audio
             </button>
-            <button class="stop-btn" data-qi="${qi}">
+            <button class="stop-btn" data-qi="${qi}" type="button">
               <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
               Stop
             </button>
-            <span class="replay-hint">You can listen to it as many times as you like. (何度でも聞けます)</span>
+            <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" type="button">
+              📖 Transcript
+            </button>
           </div>
+
+          ${transcriptHtml}
+
           <p class="qtext">${q.questionHtml}</p>
+          <p class="qtext-translation">${q.questionEn || ""}</p>
           <div class="choices">
             ${q.choicesHtml
               .map(
                 (c, ci) => `
               <div class="choice" data-qi="${qi}" data-ci="${ci}">
                 <span class="mark">${String.fromCharCode(65 + ci)}</span>
-                <span>${c}</span>
+                <span class="choice-text">
+                  <span>${c}</span>
+                  <span class="choice-translation">${q.choicesEn && q.choicesEn[ci] ? q.choicesEn[ci] : ""}</span>
+                </span>
+                <button class="choice-audio-btn" data-qi="${qi}" data-ci="${ci}" title="Play this option" type="button">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </button>
               </div>`,
               )
               .join("")}
@@ -1258,21 +1024,55 @@
         quizEl.appendChild(card);
       });
 
+      // ============================================================
+      // LISTENING CLICK HANDLERS
+      // ============================================================
       quizEl.addEventListener("click", (e) => {
         const stopBtn = e.target.closest(".stop-btn");
         if (stopBtn) {
           window.speechSynthesis.cancel();
-          document
-            .querySelectorAll(".play-btn")
-            .forEach((b) => b.classList.remove("playing"));
+          document.querySelectorAll(".play-btn, .question-ctrl-btn.playing").forEach((b) => b.classList.remove("playing"));
           return;
         }
+        
         const playBtn = e.target.closest(".play-btn");
         if (playBtn) {
           const qi = playBtn.dataset.qi;
           speak(listeningQuestions[qi].script, playBtn);
           return;
         }
+
+        // Handle Transcript Toggle
+        const transcriptBtn = e.target.closest(".transcript-btn");
+        if (transcriptBtn) {
+          const qi = transcriptBtn.dataset.qi;
+          const panel = document.getElementById(`transcript-panel-${qi}`);
+          listeningTranscriptsOpen[qi] = !listeningTranscriptsOpen[qi];
+          panel.classList.toggle("show", listeningTranscriptsOpen[qi]);
+          transcriptBtn.classList.toggle("active", listeningTranscriptsOpen[qi]);
+          transcriptBtn.textContent = listeningTranscriptsOpen[qi] ? "📖 Hide Transcript" : "📖 Transcript";
+          return;
+        }
+
+        // Handle Play Transcript audio
+        const transcriptPlayBtn = e.target.closest(".transcript-play-btn");
+        if (transcriptPlayBtn) {
+          const qi = transcriptPlayBtn.dataset.qi;
+          const text = listeningQuestions[qi].script;
+          speak(text, null);
+          return;
+        }
+
+        const choiceAudioBtn = e.target.closest(".choice-audio-btn");
+        if (choiceAudioBtn) {
+          e.stopPropagation();
+          const qi = parseInt(choiceAudioBtn.dataset.qi);
+          const ci = parseInt(choiceAudioBtn.dataset.ci);
+          const q = listeningQuestions[qi];
+          speak(q.choices[ci], null);
+          return;
+        }
+
         const choice = e.target.closest(".choice");
         if (choice && !choice.classList.contains("disabled")) {
           const qi = parseInt(choice.dataset.qi);
@@ -1280,21 +1080,14 @@
           const q = listeningQuestions[qi];
           const siblings = quizEl.querySelectorAll(`.choice[data-qi="${qi}"]`);
           siblings.forEach((s) => s.classList.add("disabled"));
-
           const isCorrect = ci === q.answer;
-          if (isCorrect) {
-            choice.classList.add("correct");
-            correct++;
-          } else {
-            choice.classList.add("wrong");
-            siblings[q.answer].classList.add("correct");
-          }
-
+          if (isCorrect) { choice.classList.add("correct"); correct++; }
+          else { choice.classList.add("wrong"); siblings[q.answer].classList.add("correct"); }
           const fb = document.getElementById("fb-" + qi);
           fb.classList.add("show", isCorrect ? "good" : "bad");
           fb.innerHTML = `${isCorrect ? "正解です。" : "残念、不正解です。"} ${q.note}
-            <div class="script">スクリプト：${q.html}</div>`;
-
+            <div class="script-translation">${q.scriptEn || ""}</div>`;
+          applyGlobalToggles();
           answered++;
           updateProgress();
         }
@@ -1302,8 +1095,7 @@
 
       document.getElementById("summaryBtn").addEventListener("click", () => {
         document.querySelectorAll(".choice").forEach((c) => {
-          const qi = parseInt(c.dataset.qi),
-            ci = parseInt(c.dataset.ci);
+          const qi = parseInt(c.dataset.qi), ci = parseInt(c.dataset.ci);
           c.classList.add("disabled");
           if (ci === listeningQuestions[qi].answer) c.classList.add("correct");
         });
@@ -1311,32 +1103,30 @@
           if (!fb.classList.contains("show")) {
             fb.classList.add("show", "good");
             fb.innerHTML = `Correct answer (正解)：${String.fromCharCode(65 + listeningQuestions[qi].answer)}　${listeningQuestions[qi].note}
-              <div class="script">Script (スクリプト)：${listeningQuestions[qi].html}</div>`;
+              <div class="script-translation">${listeningQuestions[qi].scriptEn || ""}</div>`;
           }
         });
+        applyGlobalToggles();
         answered = listeningQuestions.length;
         updateProgress();
         document.getElementById("scoreBanner").classList.add("show");
-        document.getElementById("finalScore").textContent =
-          correct + " / " + listeningQuestions.length;
+        document.getElementById("finalScore").textContent = correct + " / " + listeningQuestions.length;
       });
 
       updateProgress();
 
       // ============================================================
-      // STORY MODE - Using storiesQ&A.js
+      // STORY MODE
       // ============================================================
-
       let currentStoryIndex = 0;
       let currentQuestionIndex = 0;
       let storyAnswered = false;
       let storyCorrect = 0;
       let storySelectedChoices = [];
       let storyUtterance = null;
-      let storyShowTranslation = false;
-      let storyShowFurigana = true;
+      let questionUtterance = null;
+      let transcriptOpen = false;
 
-      // DOM refs for story mode
       const storySection = document.getElementById("storyModeSection");
       const storyTitle = document.getElementById("storyTitle");
       const storyProgress = document.getElementById("storyProgress");
@@ -1344,54 +1134,42 @@
       const storyJpBlock = document.getElementById("storyJapaneseBlock");
       const storyEnBlock = document.getElementById("storyEnglishBlock");
       const storyPlayBtn = document.getElementById("storyPlayBtn");
-      const storyTransBtn = document.getElementById("storyTransBtn");
-      const storyFuriToggleBtn = document.getElementById("storyFuriToggleBtn");
       const storyPrevBtn = document.getElementById("storyPrevBtn");
       const storyNextBtn = document.getElementById("storyNextBtn");
       const questionProgress = document.getElementById("questionProgress");
       const currentQuestionEl = document.getElementById("currentQuestion");
+      const questionTranslation = document.getElementById("questionTranslation");
       const questionChoicesEl = document.getElementById("questionChoices");
       const questionFeedback = document.getElementById("questionFeedback");
       const prevQuestionBtn = document.getElementById("prevQuestionBtn");
       const nextQuestionBtn = document.getElementById("nextQuestionBtn");
       const showAnswersBtn = document.getElementById("showAnswersBtn");
+      const questionTranscript = document.getElementById("questionTranscript");
+      const transcriptText = document.getElementById("transcriptText");
+      const transcriptTranslation = document.getElementById("transcriptTranslation");
+      const transcriptPlayBtn = document.getElementById("transcriptPlayBtn");
+      const questionPlayBtn = document.getElementById("questionPlayBtn");
+      const questionStopBtn = document.getElementById("questionStopBtn");
+      const questionTranscriptBtn = document.getElementById("questionTranscriptBtn");
 
-      // ============================================================
-      // Auto-convert parentheses furigana to <ruby> tags
-      // ============================================================
       function convertFurigana(text) {
-        // Match pattern: 漢字（ふりがな）
         return text.replace(
           /([一-龯ぁ-んァ-ヶ]+)（([^（）]+)）/g,
-          function (match, kanji, furigana) {
-            return `<ruby>${kanji}<rt>${furigana}</rt></ruby>`;
-          },
+          (match, kanji, furigana) => `<ruby>${kanji}<rt>${furigana}</rt></ruby>`
         );
       }
 
-      // ============================================================
-      // Get stories from loaded data
-      // ============================================================
       function getStories() {
-        if (
-          typeof sprintStoriesWithQA !== "undefined" &&
-          sprintStoriesWithQA.length > 0
-        ) {
+        if (typeof sprintStoriesWithQA !== "undefined" && sprintStoriesWithQA.length > 0) {
           return sprintStoriesWithQA;
         }
         console.warn("⚠️ sprintStoriesWithQA not found!");
         return [];
       }
 
-      function getStoryCount() {
-        return getStories().length;
-      }
-
       function getCurrentStory() {
         const stories = getStories();
-        if (currentStoryIndex < 0 || currentStoryIndex >= stories.length) {
-          return null;
-        }
+        if (currentStoryIndex < 0 || currentStoryIndex >= stories.length) return null;
         return stories[currentStoryIndex];
       }
 
@@ -1402,98 +1180,121 @@
 
       function getCurrentQuestion() {
         const questions = getCurrentStoryQuestions();
-        if (
-          currentQuestionIndex < 0 ||
-          currentQuestionIndex >= questions.length
-        ) {
-          return null;
-        }
+        if (currentQuestionIndex < 0 || currentQuestionIndex >= questions.length) return null;
         return questions[currentQuestionIndex];
       }
 
+      // Heuristic: find the story sentence(s) most related to this question
+      function findRelatedTranscript(story, question) {
+        if (!story || !story.storyJp) return "";
+        const rawSentences = story.storyJp.split(/(?<=。)/);
+        const sentences = rawSentences.map((s) => s.trim()).filter((s) => s.length > 0);
+        const questionPlain = (question.question || "").replace(/（[^（）]+）/g, "");
+        const keywords = [];
+        const kanjiMatches = questionPlain.match(/[一-龯]{2,}/g) || [];
+        kanjiMatches.forEach((k) => keywords.push(k));
+        (question.choices || []).forEach((c) => {
+          const clean = c.replace(/（[^（）]+）/g, "");
+          (clean.match(/[一-龯]{2,}/g) || []).forEach((k) => keywords.push(k));
+        });
+        if (question.note) {
+          const noteClean = question.note.replace(/（[^（）]+）/g, "");
+          (noteClean.match(/[一-龯]{2,}/g) || []).forEach((k) => keywords.push(k));
+        }
+        const uniqueKeywords = [...new Set(keywords)];
+        const scored = sentences.map((sentence, idx) => {
+          const cleanSentence = sentence.replace(/（[^（）]+）/g, "");
+          let score = 0;
+          uniqueKeywords.forEach((kw) => { if (cleanSentence.includes(kw)) score += kw.length; });
+          return { sentence, idx, score };
+        });
+        scored.sort((a, b) => b.score - a.score);
+        const top = scored.filter((s) => s.score > 0).slice(0, 2);
+        if (top.length === 0) return sentences[0] || "";
+        top.sort((a, b) => a.idx - b.idx);
+        return top.map((t) => t.sentence).join("");
+      }
+
       // ============================================================
-      // Render story - FIXED for furigana display
+      // RENDER STORY
       // ============================================================
-      function renderStory() {
+      function renderStory(keepQuestionState) {
         const stories = getStories();
         if (stories.length === 0) {
-          storyJpBlock.innerHTML =
-            '<p style="color: #a02020;">⚠️ No stories loaded. Check storiesQ&A.js</p>';
+          storyJpBlock.innerHTML = '<p style="color: #a02020;">⚠️ No stories loaded. Check storiesQ&A.js</p>';
           storyEnBlock.innerHTML = "";
           storyTitle.textContent = "No stories";
           storyTotal.textContent = "0";
           return;
         }
-
         const story = getCurrentStory();
         if (!story) {
-          storyJpBlock.innerHTML =
-            '<p style="color: #a02020;">⚠️ Story not found.</p>';
+          storyJpBlock.innerHTML = '<p style="color: #a02020;">⚠️ Story not found.</p>';
           return;
         }
-
-        // Update title
         storyTitle.textContent = `📖 ${story.title}`;
         storyTotal.textContent = stories.length;
         storyProgress.textContent = `${currentStoryIndex + 1}`;
 
-        // ===== FIX: Convert parentheses furigana to ruby tags =====
-        if (storyShowFurigana) {
-          // Convert 漢字（ふりがな） to <ruby>漢字<rt>ふりがな</rt></ruby>
-          const convertedText = convertFurigana(story.storyJp);
-          storyJpBlock.innerHTML = convertedText;
-        } else {
-          // Remove furigana: strip parentheses and their content
-          let textWithoutFurigana = story.storyJp.replace(/（[^（）]+）/g, "");
-          storyJpBlock.textContent = textWithoutFurigana;
-        }
-
+        storyJpBlock.innerHTML = convertFurigana(story.storyJp);
         storyEnBlock.textContent = story.storyEn;
-        storyEnBlock.style.display = storyShowTranslation ? "block" : "none";
+        storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
 
-        // Update buttons
         storyPrevBtn.disabled = currentStoryIndex === 0;
         storyNextBtn.disabled = currentStoryIndex >= stories.length - 1;
 
-        // Reset question state
-        currentQuestionIndex = 0;
-        storyAnswered = false;
-        storySelectedChoices = [];
-        storyCorrect = 0;
+        if (!keepQuestionState) {
+          currentQuestionIndex = 0;
+          storyAnswered = false;
+          storySelectedChoices = [];
+          storyCorrect = 0;
+        }
         renderQuestion();
       }
 
       // ============================================================
-      // Render question
+      // RENDER QUESTION (Story Mode)
       // ============================================================
       function renderQuestion() {
+        const container = document.getElementById("questionContainer");
         const questions = getCurrentStoryQuestions();
         if (questions.length === 0) {
-          questionContainer.innerHTML =
-            '<p style="color: #8a8270;">No questions for this story.</p>';
+          container.innerHTML = '<p style="color: #8a8270;">No questions for this story.</p>';
           return;
         }
-
         const q = getCurrentQuestion();
         if (!q) {
-          questionContainer.innerHTML =
-            '<p style="color: #8a8270;">Question not found.</p>';
+          container.innerHTML = '<p style="color: #8a8270;">Question not found.</p>';
           return;
         }
 
-        // Update progress
         questionProgress.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
 
-        // Question text - convert furigana too
         const questionHtml = q.questionHtml || q.question;
-        const convertedQuestion = convertFurigana(questionHtml);
-        currentQuestionEl.innerHTML = convertedQuestion;
+        currentQuestionEl.innerHTML = convertFurigana(questionHtml);
+
+        const qTranslation = q.questionEn || "";
+        questionTranslation.textContent = qTranslation;
+        questionTranslation.classList.toggle("show", globalShowTranslation);
+
+        const story = getCurrentStory();
+        const relatedText = findRelatedTranscript(story, q);
+        if (relatedText) {
+          transcriptText.innerHTML = convertFurigana(relatedText);
+          transcriptTranslation.textContent = q.transcriptEn || qTranslation || "";
+        } else {
+          transcriptText.textContent = "";
+          transcriptTranslation.textContent = "";
+        }
+        questionTranscript.classList.toggle("show", transcriptOpen);
+        questionTranscriptBtn.classList.toggle("transcript-open", transcriptOpen);
+        questionTranscriptBtn.textContent = transcriptOpen ? "📖 Hide Transcript" : "📖 Transcript";
+        transcriptTranslation.classList.toggle("show", globalShowTranslation);
 
         // Choices
         const letters = ["A", "B", "C", "D"];
         let choicesHtml = "";
         const selected = storySelectedChoices[currentQuestionIndex] || -1;
-
         q.choicesHtml.forEach((choiceHtml, idx) => {
           const isSelected = selected === idx;
           let extraClass = "";
@@ -1504,71 +1305,69 @@
           } else if (isSelected) {
             extraClass += " selected";
           }
-          // Convert furigana in choices too
-          const convertedChoice = convertFurigana(choiceHtml);
           choicesHtml += `
             <div class="question-choice ${extraClass}" data-qidx="${currentQuestionIndex}" data-choice="${idx}">
               <span class="choice-mark">${letters[idx]}</span>
-              <span>${convertedChoice}</span>
+              <span class="q-choice-text">
+                <span>${convertFurigana(choiceHtml)}</span>
+                <span class="q-choice-translation">${q.choicesEn && q.choicesEn[idx] ? q.choicesEn[idx] : ""}</span>
+              </span>
+              <button class="q-choice-audio-btn" data-qidx="${currentQuestionIndex}" data-choice="${idx}" title="Play this option" type="button">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
             </div>
           `;
         });
         questionChoicesEl.innerHTML = choicesHtml;
 
-        // Feedback
         if (storyAnswered && q.note) {
           const isCorrect = selected === q.answer;
           questionFeedback.className = `question-feedback show ${isCorrect ? "correct" : "wrong"}`;
           questionFeedback.innerHTML = `
             <strong>${isCorrect ? "✅ Correct!" : "❌ Not quite."}</strong><br>
             ${q.note}
+            ${q.noteEn ? `<div class="q-note-en ${globalShowTranslation ? "show" : ""}">${q.noteEn}</div>` : ""}
           `;
         } else {
           questionFeedback.className = "question-feedback";
           questionFeedback.innerHTML = "";
         }
 
-        // Nav buttons
         prevQuestionBtn.disabled = currentQuestionIndex === 0;
         nextQuestionBtn.disabled = currentQuestionIndex >= questions.length - 1;
 
-        // Attach choice click events
-        document
-          .querySelectorAll(".question-choice:not(.disabled)")
-          .forEach((el) => {
-            el.addEventListener("click", handleQuestionChoice);
-          });
+        document.querySelectorAll(".question-choice:not(.disabled)").forEach((el) => {
+          el.addEventListener("click", handleQuestionChoice);
+        });
+        document.querySelectorAll(".q-choice-audio-btn").forEach((el) => {
+          el.addEventListener("click", handleChoiceAudio);
+        });
+
+        applyGlobalToggles();
       }
 
-      // ============================================================
-      // Handle question choice click
-      // ============================================================
+      function handleChoiceAudio(e) {
+        e.stopPropagation();
+        const qidx = parseInt(e.currentTarget.dataset.qidx);
+        const choice = parseInt(e.currentTarget.dataset.choice);
+        const q = getCurrentStoryQuestions()[qidx];
+        if (!q) return;
+        speak(q.choices[choice], null);
+      }
+
       function handleQuestionChoice(e) {
         const el = e.currentTarget;
         if (storyAnswered) return;
-
         const qidx = parseInt(el.dataset.qidx);
         const choice = parseInt(el.dataset.choice);
-        const questions = getCurrentStoryQuestions();
-        const q = questions[qidx];
-
+        const q = getCurrentStoryQuestions()[qidx];
         if (isNaN(choice) || !q) return;
-
-        // Store selection
         storySelectedChoices[qidx] = choice;
         storyAnswered = true;
-
-        // Update score
-        if (choice === q.answer) {
-          storyCorrect++;
-        }
-
+        if (choice === q.answer) storyCorrect++;
         renderQuestion();
       }
 
-      // ============================================================
-      // Navigation
-      // ============================================================
       function goToStory(index) {
         const stories = getStories();
         if (index < 0 || index >= stories.length) return;
@@ -1577,68 +1376,48 @@
         storyAnswered = false;
         storyCorrect = 0;
         storySelectedChoices = [];
+        transcriptOpen = false;
         if (storyUtterance) {
           window.speechSynthesis.cancel();
           storyUtterance = null;
           storyPlayBtn.classList.remove("playing");
           storyPlayBtn.textContent = "🔊 Play Story";
         }
-        renderStory();
+        renderStory(false);
       }
 
-      function prevStory() {
-        if (currentStoryIndex > 0) {
-          goToStory(currentStoryIndex - 1);
-        }
-      }
-
-      function nextStory() {
-        const stories = getStories();
-        if (currentStoryIndex < stories.length - 1) {
-          goToStory(currentStoryIndex + 1);
-        }
-      }
-
+      function prevStory() { if (currentStoryIndex > 0) goToStory(currentStoryIndex - 1); }
+      function nextStory() { if (currentStoryIndex < getStories().length - 1) goToStory(currentStoryIndex + 1); }
       function prevQuestion() {
         if (currentQuestionIndex > 0) {
           currentQuestionIndex--;
           storyAnswered = false;
+          transcriptOpen = false;
           renderQuestion();
         }
       }
-
       function nextQuestion() {
         const questions = getCurrentStoryQuestions();
         if (currentQuestionIndex < questions.length - 1) {
           currentQuestionIndex++;
           storyAnswered = false;
+          transcriptOpen = false;
           renderQuestion();
         }
       }
 
-      // ============================================================
-      // Show all answers
-      // ============================================================
       function showAllAnswers() {
         const questions = getCurrentStoryQuestions();
         questions.forEach((q, idx) => {
-          if (storySelectedChoices[idx] === undefined) {
-            storySelectedChoices[idx] = q.answer;
-          }
-          if (idx === currentQuestionIndex) {
-            storyAnswered = true;
-          }
+          if (storySelectedChoices[idx] === undefined) storySelectedChoices[idx] = q.answer;
+          if (idx === currentQuestionIndex) storyAnswered = true;
         });
         renderQuestion();
       }
 
-      // ============================================================
-      // Story TTS
-      // ============================================================
       function playStoryAudio() {
         const story = getCurrentStory();
         if (!story) return;
-
         if (storyUtterance) {
           window.speechSynthesis.cancel();
           storyUtterance = null;
@@ -1646,65 +1425,83 @@
           storyPlayBtn.textContent = "🔊 Play Story";
           return;
         }
-
-        // Remove parentheses and furigana for TTS
-        let text = story.storyJp;
-        // Remove parentheses content (furigana) for cleaner speech
-        text = text.replace(/（[^（）]+）/g, "");
-        // Remove any HTML tags
-        text = text.replace(/<[^>]*>/g, "");
-
-        if (!("speechSynthesis" in window)) {
-          alert("Speech synthesis not supported.");
-          return;
-        }
-
+        let text = story.storyJp.replace(/（[^（）]+）/g, "").replace(/<[^>]*>/g, "");
+        if (!("speechSynthesis" in window)) { alert("Speech synthesis not supported."); return; }
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = "ja-JP";
         const rateSelect = document.getElementById("rateSelect");
         utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
-        utter.pitch = 1.0; // Natural pitch for clarity
-
-        // Use user-selected voice or fallback
+        utter.pitch = 1.0;
         if (!chosenVoice) chosenVoice = pickFemaleVoice();
         if (chosenVoice) utter.voice = chosenVoice;
-
         storyUtterance = utter;
         storyPlayBtn.classList.add("playing");
         storyPlayBtn.textContent = "⏹️ Stop";
-
         utter.onend = () => {
           storyUtterance = null;
           storyPlayBtn.classList.remove("playing");
           storyPlayBtn.textContent = "🔊 Play Story";
         };
-
         window.speechSynthesis.speak(utter);
       }
 
-      // ============================================================
-      // Toggle translation and furigana
-      // ============================================================
-      function toggleTranslation() {
-        storyShowTranslation = !storyShowTranslation;
-        storyTransBtn.classList.toggle("active", storyShowTranslation);
-        storyTransBtn.textContent = storyShowTranslation
-          ? "🌎 Translation On"
-          : "🌎 Translation Off";
-        renderStory();
+      function playTranscript() {
+        const story = getCurrentStory();
+        const q = getCurrentQuestion();
+        if (!story || !q) return;
+        const relatedText = findRelatedTranscript(story, q);
+        if (!relatedText) return;
+        const text = relatedText.replace(/（[^（）]+）/g, "").replace(/<[^>]*>/g, "");
+        speak(text, null);
       }
 
-      function toggleFurigana() {
-        storyShowFurigana = !storyShowFurigana;
-        storyFuriToggleBtn.classList.toggle("active", storyShowFurigana);
-        storyFuriToggleBtn.textContent = storyShowFurigana
-          ? "🔤 Furigana On"
-          : "🔤 Furigana Off";
-        renderStory();
+      function playQuestionAudio() {
+        const q = getCurrentQuestion();
+        if (!q) return;
+        if (questionUtterance) {
+          window.speechSynthesis.cancel();
+          questionUtterance = null;
+          questionPlayBtn.classList.remove("playing");
+          return;
+        }
+        const text = [
+          q.question.replace(/（[^（）]+）/g, ""),
+          ...q.choices.map((c) => c.replace(/（[^（）]+）/g, "")),
+        ].join("。");
+        if (!("speechSynthesis" in window)) { alert("Speech synthesis not supported."); return; }
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "ja-JP";
+        const rateSelect = document.getElementById("rateSelect");
+        utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
+        utter.pitch = 1.0;
+        if (!chosenVoice) chosenVoice = pickFemaleVoice();
+        if (chosenVoice) utter.voice = chosenVoice;
+        questionUtterance = utter;
+        questionPlayBtn.classList.add("playing");
+        utter.onend = () => {
+          questionUtterance = null;
+          questionPlayBtn.classList.remove("playing");
+        };
+        window.speechSynthesis.speak(utter);
+      }
+
+      function stopQuestionAudio() {
+        if (questionUtterance) {
+          window.speechSynthesis.cancel();
+          questionUtterance = null;
+        }
+        questionPlayBtn.classList.remove("playing");
+      }
+
+      function toggleTranscript() {
+        transcriptOpen = !transcriptOpen;
+        questionTranscript.classList.toggle("show", transcriptOpen);
+        questionTranscriptBtn.classList.toggle("transcript-open", transcriptOpen);
+        questionTranscriptBtn.textContent = transcriptOpen ? "📖 Hide Transcript" : "📖 Transcript";
       }
 
       // ============================================================
-      // Mode switching
+      // MODE SWITCHING
       // ============================================================
       function switchMode(mode) {
         const listeningSection = document.getElementById("listeningSection");
@@ -1717,10 +1514,7 @@
           storySectionEl.style.display = "block";
           if (progressRow) progressRow.style.display = "none";
           if (footer) footer.style.display = "none";
-          // Initialize if not already
-          if (getStories().length > 0 && !storyJpBlock.innerHTML) {
-            renderStory();
-          }
+          if (getStories().length > 0) renderStory(true);
         } else {
           listeningSection.style.display = "block";
           storySectionEl.style.display = "none";
@@ -1734,80 +1528,69 @@
       }
 
       // ============================================================
-      // Initialize story mode
+      // INIT
       // ============================================================
-      function initStoryMode() {
-        const stories = getStories();
-        if (stories.length === 0) {
-          console.warn("⚠️ No stories loaded. Check storiesQ&A.js");
-          return;
-        }
+      let __appInitialized = false;
 
-        console.log(`✅ Loaded ${stories.length} stories with Q&A`);
+      function initApp() {
+        if (__appInitialized) return;
+        __appInitialized = true;
 
-        // Set total
-        storyTotal.textContent = stories.length;
-
-        // Render first story
-        currentStoryIndex = 0;
-        renderStory();
-
-        // Add event listeners
-        storyPrevBtn.addEventListener("click", prevStory);
-        storyNextBtn.addEventListener("click", nextStory);
-        storyPlayBtn.addEventListener("click", playStoryAudio);
-        storyTransBtn.addEventListener("click", toggleTranslation);
-        storyFuriToggleBtn.addEventListener("click", toggleFurigana);
-        prevQuestionBtn.addEventListener("click", prevQuestion);
-        nextQuestionBtn.addEventListener("click", nextQuestion);
-        showAnswersBtn.addEventListener("click", showAllAnswers);
-
-        // Mode tabs
-        document.querySelectorAll(".mode-tab").forEach((tab) => {
-          tab.addEventListener("click", () => {
-            switchMode(tab.dataset.mode);
-          });
+        const tabs = document.querySelectorAll(".mode-tab");
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => switchMode(tab.dataset.mode));
         });
 
-        // Check if story mode should be active (if the tab is active)
+        try {
+          if (storyPrevBtn) storyPrevBtn.addEventListener("click", prevStory);
+          if (storyNextBtn) storyNextBtn.addEventListener("click", nextStory);
+          if (storyPlayBtn) storyPlayBtn.addEventListener("click", playStoryAudio);
+          if (prevQuestionBtn) prevQuestionBtn.addEventListener("click", prevQuestion);
+          if (nextQuestionBtn) nextQuestionBtn.addEventListener("click", nextQuestion);
+          if (showAnswersBtn) showAnswersBtn.addEventListener("click", showAllAnswers);
+          if (transcriptPlayBtn) transcriptPlayBtn.addEventListener("click", playTranscript);
+          if (questionPlayBtn) questionPlayBtn.addEventListener("click", playQuestionAudio);
+          if (questionStopBtn) questionStopBtn.addEventListener("click", stopQuestionAudio);
+          if (questionTranscriptBtn) questionTranscriptBtn.addEventListener("click", toggleTranscript);
+        } catch (err) {
+          console.error("Error binding story controls:", err);
+        }
+
+        try {
+          const stories = getStories();
+          if (stories.length > 0) {
+            console.log(`✅ Loaded ${stories.length} stories with Q&A`);
+            storyTotal.textContent = stories.length;
+            currentStoryIndex = 0;
+            renderStory(false);
+          }
+        } catch (err) {
+          console.error("Error initializing story mode:", err);
+        }
+
         const activeTab = document.querySelector(".mode-tab.active");
         if (activeTab && activeTab.dataset.mode === "story") {
           switchMode("story");
         }
 
-        console.log("✅ Story mode initialized");
+        try { applyGlobalToggles(); } catch (err) { console.error(err); }
+
+        console.log("✅ App initialized");
       }
 
-      // ============================================================
-      // Initialize
-      // ============================================================
-      document.addEventListener("DOMContentLoaded", function () {
-        initStoryMode();
-      });
-
-      // Also run immediately if DOM is already loaded
-      if (
-        document.readyState === "complete" ||
-        document.readyState === "interactive"
-      ) {
-        initStoryMode();
+      document.addEventListener("DOMContentLoaded", initApp);
+      if (document.readyState === "complete" || document.readyState === "interactive") {
+        initApp();
       }
     </script>
     <script>
-      // Register Service Worker
-      if ("serviceWorker" in navigator) {
+      // Register Service Worker (safely)
+      if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
         window.addEventListener("load", function () {
           navigator.serviceWorker
             .register("/N5-listening/sw.js")
-            .then(function (registration) {
-              console.log(
-                "✅ Service Worker registered successfully:",
-                registration,
-              );
-            })
-            .catch(function (error) {
-              console.log("❌ Service Worker registration failed:", error);
-            });
+            .then((registration) => console.log("✅ SW registered:", registration))
+            .catch((error) => console.log("❌ SW registration failed:", error));
         });
       }
     </script>
