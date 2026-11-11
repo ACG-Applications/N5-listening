@@ -5,20 +5,35 @@ const wordDict = {
   // ============================================================
   こんにちは: { reading: "こんにちは", meaning: "hello / good afternoon" },
   こんばんは: { reading: "こんばんは", meaning: "good evening" },
-  おはようございます: { reading: "おはようございます", meaning: "good morning (polite)" },
+  おはようございます: {
+    reading: "おはようございます",
+    meaning: "good morning (polite)",
+  },
   おやすみなさい: { reading: "おやすみなさい", meaning: "good night" },
   ありがとう: { reading: "ありがとう", meaning: "thank you" },
-  ありがとうございます: { reading: "ありがとうございます", meaning: "thank you very much" },
+  ありがとうございます: {
+    reading: "ありがとうございます",
+    meaning: "thank you very much",
+  },
   すみません: { reading: "すみません", meaning: "excuse me / sorry" },
   ごめんなさい: { reading: "ごめんなさい", meaning: "I'm sorry" },
   お願いします: { reading: "おねがいします", meaning: "please (request)" },
   どうぞ: { reading: "どうぞ", meaning: "please (offering)" },
-  いらっしゃいませ: { reading: "いらっしゃいませ", meaning: "welcome (to a store)" },
+  いらっしゃいませ: {
+    reading: "いらっしゃいませ",
+    meaning: "welcome (to a store)",
+  },
   お待ちください: { reading: "おまちください", meaning: "please wait" },
   おかえりなさい: { reading: "おかえりなさい", meaning: "welcome home" },
   ただいま: { reading: "ただいま", meaning: "I'm home" },
-  いただきます: { reading: "いただきます", meaning: "thank you for the meal (before eating)" },
-  ごちそうさま: { reading: "ごちそうさま", meaning: "thank you for the meal (after eating)" },
+  いただきます: {
+    reading: "いただきます",
+    meaning: "thank you for the meal (before eating)",
+  },
+  ごちそうさま: {
+    reading: "ごちそうさま",
+    meaning: "thank you for the meal (after eating)",
+  },
 
   // ============================================================
   // SECTION 2: PARTICLES & GRAMMATICAL WORDS
@@ -458,12 +473,27 @@ const wordDict = {
   震える: { reading: "ふるえる", meaning: "tremble / shake (dictionary)" },
   震えます: { reading: "ふるえます", meaning: "tremble / shake (polite)" },
   震えて: { reading: "ふるえて", meaning: "tremble / shake (te-form)" },
-  震えています: { reading: "ふるえています", meaning: "is trembling / shaking" },
-  待ち合わせる: { reading: "まちあわせる", meaning: "meet / rendezvous (dictionary)" },
-  待ち合わせます: { reading: "まちあわせます", meaning: "meet / rendezvous (polite)" },
-  待ち合わせて: { reading: "まちあわせて", meaning: "meet / rendezvous (te-form)" },
+  震えています: {
+    reading: "ふるえています",
+    meaning: "is trembling / shaking",
+  },
+  待ち合わせる: {
+    reading: "まちあわせる",
+    meaning: "meet / rendezvous (dictionary)",
+  },
+  待ち合わせます: {
+    reading: "まちあわせます",
+    meaning: "meet / rendezvous (polite)",
+  },
+  待ち合わせて: {
+    reading: "まちあわせて",
+    meaning: "meet / rendezvous (te-form)",
+  },
   待ち合わせましょう: { reading: "まちあわせましょう", meaning: "let's meet" },
-  待ち合わせました: { reading: "まちあわせました", meaning: "met / rendezvoused" },
+  待ち合わせました: {
+    reading: "まちあわせました",
+    meaning: "met / rendezvoused",
+  },
 
   // ============================================================
   // SECTION 9: VERBS (Group 2: る-verbs / Ichidan)
@@ -526,7 +556,10 @@ const wordDict = {
   忘れて: { reading: "わすれて", meaning: "forget (te-form)" },
   忘れました: { reading: "わすれました", meaning: "forgot" },
   忘れた: { reading: "わすれた", meaning: "forgot (past)" },
-  忘れないでください: { reading: "わすれないでください", meaning: "please do not forget" },
+  忘れないでください: {
+    reading: "わすれないでください",
+    meaning: "please do not forget",
+  },
   覚える: { reading: "おぼえる", meaning: "remember (dictionary)" },
   覚えます: { reading: "おぼえます", meaning: "remember (polite)" },
   覚えて: { reading: "おぼえて", meaning: "remember (te-form)" },
@@ -590,7 +623,10 @@ const wordDict = {
   説明します: { reading: "せつめいします", meaning: "explain (polite)" },
   説明: { reading: "せつめい", meaning: "explanation" },
   料理する: { reading: "りょうりする", meaning: "cook (dictionary)" },
-  料理します: { reading: "りょうりします", meaning: "cook / do the cooking (polite)" },
+  料理します: {
+    reading: "りょうりします",
+    meaning: "cook / do the cooking (polite)",
+  },
   料理: { reading: "りょうり", meaning: "dish / cooking" },
   料理して: { reading: "りょうりして", meaning: "cook (te-form)" },
   掃除する: { reading: "そうじする", meaning: "clean (dictionary)" },
@@ -605,12 +641,24 @@ const wordDict = {
   片付けて: { reading: "かたづけて", meaning: "tidy up (te-form)" },
   運動する: { reading: "うんどうする", meaning: "exercise (dictionary)" },
   運動します: { reading: "うんどうします", meaning: "exercise (polite)" },
-  相談する: { reading: "そうだんする", meaning: "consult / discuss (dictionary)" },
-  相談します: { reading: "そうだんします", meaning: "consult / discuss (polite)" },
+  相談する: {
+    reading: "そうだんする",
+    meaning: "consult / discuss (dictionary)",
+  },
+  相談します: {
+    reading: "そうだんします",
+    meaning: "consult / discuss (polite)",
+  },
   相談して: { reading: "そうだんして", meaning: "consult / discuss (te-form)" },
   相談: { reading: "そうだん", meaning: "consultation / discussion" },
-  確認する: { reading: "かくにんする", meaning: "confirm / verify (dictionary)" },
-  確認します: { reading: "かくにんします", meaning: "confirm / verify (polite)" },
+  確認する: {
+    reading: "かくにんする",
+    meaning: "confirm / verify (dictionary)",
+  },
+  確認します: {
+    reading: "かくにんします",
+    meaning: "confirm / verify (polite)",
+  },
   確認: { reading: "かくにん", meaning: "confirmation / verification" },
   連絡する: { reading: "れんらくする", meaning: "contact (dictionary)" },
   連絡します: { reading: "れんらくします", meaning: "contact (polite)" },
@@ -643,13 +691,28 @@ const wordDict = {
   受験しました: { reading: "じゅけんしました", meaning: "took an exam" },
   合格する: { reading: "ごうかくする", meaning: "pass (exam) (dictionary)" },
   合格しました: { reading: "ごうかくしました", meaning: "passed (exam)" },
-  進学する: { reading: "しんがくする", meaning: "advance to next level (dictionary)" },
-  進学しました: { reading: "しんがくしました", meaning: "advanced to next level" },
+  進学する: {
+    reading: "しんがくする",
+    meaning: "advance to next level (dictionary)",
+  },
+  進学しました: {
+    reading: "しんがくしました",
+    meaning: "advanced to next level",
+  },
   留学する: { reading: "りゅうがくする", meaning: "study abroad (dictionary)" },
   留学しました: { reading: "りゅうがくしました", meaning: "studied abroad" },
-  休学する: { reading: "きゅうがくする", meaning: "take leave from school (dictionary)" },
-  休学しました: { reading: "きゅうがくしました", meaning: "took leave from school" },
-  残業する: { reading: "ざんぎょうする", meaning: "work overtime (dictionary)" },
+  休学する: {
+    reading: "きゅうがくする",
+    meaning: "take leave from school (dictionary)",
+  },
+  休学しました: {
+    reading: "きゅうがくしました",
+    meaning: "took leave from school",
+  },
+  残業する: {
+    reading: "ざんぎょうする",
+    meaning: "work overtime (dictionary)",
+  },
   残業しました: { reading: "ざんぎょうしました", meaning: "worked overtime" },
   遅刻する: { reading: "ちこくする", meaning: "be late (dictionary)" },
   遅刻しました: { reading: "ちこくしました", meaning: "was late" },
@@ -1051,15 +1114,27 @@ const wordDict = {
   ながら: { reading: "ながら", meaning: "while (doing)" },
   ので: { reading: "ので", meaning: "because" },
   ください: { reading: "ください", meaning: "please (request)" },
-  くださいませんか: { reading: "くださいませんか", meaning: "could you please" },
+  くださいませんか: {
+    reading: "くださいませんか",
+    meaning: "could you please",
+  },
   しないでください: { reading: "しないでください", meaning: "please do not" },
-  しなければならない: { reading: "しなければならない", meaning: "must / have to" },
+  しなければならない: {
+    reading: "しなければならない",
+    meaning: "must / have to",
+  },
   しなくてもいい: { reading: "しなくてもいい", meaning: "do not have to" },
   する必要がある: { reading: "するひつようがある", meaning: "need to do" },
-  する必要がない: { reading: "するひつようがない", meaning: "do not need to do" },
+  する必要がない: {
+    reading: "するひつようがない",
+    meaning: "do not need to do",
+  },
   するべきだ: { reading: "するべきだ", meaning: "should do / ought to do" },
   するべきではない: { reading: "するべきではない", meaning: "should not do" },
-  するべきこと: { reading: "するべきこと", meaning: "things that should be done" },
+  するべきこと: {
+    reading: "するべきこと",
+    meaning: "things that should be done",
+  },
   ただけ: { reading: "ただけ", meaning: "only / just" },
   ために: { reading: "ために", meaning: "for the sake of / for" },
   しれません: { reading: "しれません", meaning: "might not know" },
@@ -1073,16 +1148,25 @@ const wordDict = {
   褒められて: { reading: "ほめられて", meaning: "was praised" },
   頼まれて: { reading: "たのまれて", meaning: "was asked / requested" },
   交換して: { reading: "こうかんして", meaning: "exchange (te-form)" },
-  考えさせられます: { reading: "かんがえさせられます", meaning: "makes me think" },
+  考えさせられます: {
+    reading: "かんがえさせられます",
+    meaning: "makes me think",
+  },
   ため: { reading: "ため", meaning: "for / for the sake of" },
 
   // ============================================================
   // SECTION 27: COMMON PHRASES & EXPRESSIONS
   // ============================================================
-  一度言ってください: { reading: "いちどいってください", meaning: "please say it once" },
+  一度言ってください: {
+    reading: "いちどいってください",
+    meaning: "please say it once",
+  },
   お召し上がり: { reading: "おめしあがり", meaning: "please enjoy your meal" },
   ご連絡: { reading: "ごれんらく", meaning: "contact / communication" },
-  恐れ入ります: { reading: "おそれいります", meaning: "excuse me / sorry to trouble you" },
+  恐れ入ります: {
+    reading: "おそれいります",
+    meaning: "excuse me / sorry to trouble you",
+  },
   お待ち: { reading: "おまち", meaning: "please wait" },
   申し込み: { reading: "もうしこみ", meaning: "application / registration" },
   試着して: { reading: "しちゃくして", meaning: "try on (te-form)" },
@@ -1091,7 +1175,10 @@ const wordDict = {
   予約: { reading: "よやく", meaning: "reservation" },
   満席: { reading: "まんせき", meaning: "full / no seats available" },
   違います: { reading: "ちがいます", meaning: "is different / is wrong" },
-  探しています: { reading: "さがしています", meaning: "looking for / searching" },
+  探しています: {
+    reading: "さがしています",
+    meaning: "looking for / searching",
+  },
   勝ちました: { reading: "かちました", meaning: "won" },
   負けました: { reading: "まけました", meaning: "lost" },
   緊張しています: { reading: "きんちょうしています", meaning: "is nervous" },
@@ -1107,24 +1194,51 @@ const wordDict = {
   // ============================================================
   つけっぱなし: { reading: "つけっぱなし", meaning: "left on / left running" },
   消しっぱなし: { reading: "けしっぱなし", meaning: "left off / left erased" },
-  置きっぱなし: { reading: "おきっぱなし", meaning: "left placed / left lying around" },
+  置きっぱなし: {
+    reading: "おきっぱなし",
+    meaning: "left placed / left lying around",
+  },
   開けっぱなし: { reading: "あけっぱなし", meaning: "left open" },
   閉めっぱなし: { reading: "しめっぱなし", meaning: "left closed" },
-  出しっぱなし: { reading: "だしっぱなし", meaning: "left out / left taken out" },
+  出しっぱなし: {
+    reading: "だしっぱなし",
+    meaning: "left out / left taken out",
+  },
 
   // ============================================================
   // SECTION 29: FORGOT TO... PATTERNS (忘れ patterns)
   // ============================================================
-  かけ忘れました: { reading: "かけわすれました", meaning: "forgot to hang / put on" },
-  取り忘れました: { reading: "とりわすれました", meaning: "forgot to take / pass" },
-  置き忘れました: { reading: "おきわすれました", meaning: "forgot to put / place" },
+  かけ忘れました: {
+    reading: "かけわすれました",
+    meaning: "forgot to hang / put on",
+  },
+  取り忘れました: {
+    reading: "とりわすれました",
+    meaning: "forgot to take / pass",
+  },
+  置き忘れました: {
+    reading: "おきわすれました",
+    meaning: "forgot to put / place",
+  },
   開け忘れました: { reading: "あけわすれました", meaning: "forgot to open" },
   閉め忘れました: { reading: "しめわすれました", meaning: "forgot to close" },
-  入れ忘れました: { reading: "いれわすれました", meaning: "forgot to put in / insert" },
-  出し忘れました: { reading: "だしわすれました", meaning: "forgot to take out / submit" },
-  消し忘れました: { reading: "けしわすれました", meaning: "forgot to turn off / erase" },
+  入れ忘れました: {
+    reading: "いれわすれました",
+    meaning: "forgot to put in / insert",
+  },
+  出し忘れました: {
+    reading: "だしわすれました",
+    meaning: "forgot to take out / submit",
+  },
+  消し忘れました: {
+    reading: "けしわすれました",
+    meaning: "forgot to turn off / erase",
+  },
   使い忘れました: { reading: "つかいわすれました", meaning: "forgot to use" },
-  教え忘れました: { reading: "おしえわすれました", meaning: "forgot to teach / tell" },
+  教え忘れました: {
+    reading: "おしえわすれました",
+    meaning: "forgot to teach / tell",
+  },
   習い忘れました: { reading: "ならいわすれました", meaning: "forgot to learn" },
   見せ忘れました: { reading: "みせわすれました", meaning: "forgot to show" },
 
@@ -1133,14 +1247,61 @@ const wordDict = {
   // ============================================================
   降る: { reading: "ふる", meaning: "fall (rain / snow)" },
   降った: { reading: "ふった", meaning: "fell (rain / snow)" },
-  降っています: { reading: "ふっています", meaning: "is falling (rain / snow)" },
+  降っています: {
+    reading: "ふっています",
+    meaning: "is falling (rain / snow)",
+  },
   降ったら: { reading: "ふったら", meaning: "if it rains / if it snows" },
   降り: { reading: "ふり", meaning: "falling (rain / snow)" },
   止まって: { reading: "とまって", meaning: "stop (te-form)" },
   近づいて: { reading: "ちかづいて", meaning: "approaching / getting closer" },
   効きすぎ: { reading: "ききすぎ", meaning: "too effective / too strong" },
   来れば: { reading: "くれば", meaning: "if you come" },
-  出てきたら: { reading: "でてきたら", meaning: "if it comes out / if it appears" },
+  出てきたら: {
+    reading: "でてきたら",
+    meaning: "if it comes out / if it appears",
+  },
+
+  // ============================================================
+  // SECTION 31: ADDITIONS FOR ADVANCED READING COMPREHENSION
+  // ============================================================
+  再来年: { reading: "さらいねん", meaning: "year after next" },
+  今夜: { reading: "こんや", meaning: "tonight" },
+  様子: { reading: "ようす", meaning: "appearance / state / condition" },
+  引き分け: { reading: "ひきわけ", meaning: "draw / tie (in a game)" },
+  怪我: { reading: "けが", meaning: "injury / wound" },
+  火事: { reading: "かじ", meaning: "fire (disaster)" },
+  太った: { reading: "ふとった", meaning: "got fat / gained weight" },
+  短くなった: { reading: "みじかくなった", meaning: "became short" },
+  背が高くなった: {
+    reading: "せがたかくなった",
+    meaning: "became tall / grew taller",
+  },
+  払いました: { reading: "はらいました", meaning: "paid" },
+  払う: { reading: "はらう", meaning: "pay" },
+  湖: { reading: "みずうみ", meaning: "lake" },
+  プール: { reading: "ぷーる", meaning: "pool" },
+  アマチュア: { reading: "あまちゅあ", meaning: "amateur" },
+  歌手: { reading: "かしゅ", meaning: "singer" },
+  無視する: { reading: "むしする", meaning: "ignore" },
+  怒って: { reading: "おこって", meaning: "angrily / getting angry" },
+  早口で: { reading: "はやくちで", meaning: "speaking fast" },
+  泣きながら: { reading: "なきながら", meaning: "while crying" },
+  厳しい: { reading: "きびしい", meaning: "strict" },
+  うるさい: { reading: "うるさい", meaning: "noisy / annoying" },
+  変な: { reading: "へんな", meaning: "strange / weird" },
+  エスカレーター: { reading: "えすかれーたー", meaning: "escalator" },
+  ロープ: { reading: "ろーぷ", meaning: "rope" },
+  草: { reading: "くさ", meaning: "grass" },
+  刈った: { reading: "かった", meaning: "cut / mowed" },
+  花を植えた: { reading: "はなをうえた", meaning: "planted flowers" },
+  暗い: { reading: "くらい", meaning: "dark" },
+  汚い: { reading: "きたない", meaning: "dirty" },
+  面接: { reading: "めんせつ", meaning: "interview" },
+  早退: { reading: "そうたい", meaning: "leaving early" },
+  病気: { reading: "びょうき", meaning: "sickness / illness" },
+  大きく: { reading: "おおきく", meaning: "loudly / big (adverb)" },
+  小さく: { reading: "ちいさく", meaning: "quietly / small (adverb)" },
 };
 
 // Make wordDict available globally
