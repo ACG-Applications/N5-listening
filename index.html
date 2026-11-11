@@ -41,13 +41,23 @@
       }
       .wrap { max-width: 760px; margin: 0 auto; }
 
+      /* ===== STICKY HEADER ===== */
       header {
         text-align: center;
         margin-bottom: 20px;
         padding-bottom: 20px;
         border-bottom: 1px solid var(--line);
-        position: relative;
+        position: sticky;
+        top: 0;
+        background: var(--paper);
+        z-index: 1000;
+        padding-top: 40px; /* Offset for sticky positioning */
+        transition: box-shadow 0.3s ease;
       }
+      header.stuck {
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
       .eyebrow { font-size: 12px; letter-spacing: 0.35em; color: var(--indigo); font-weight: 700; }
       h1 {
         font-family: "Noto Serif JP", serif;
@@ -56,32 +66,47 @@
         letter-spacing: 0.04em;
       }
       .sub { font-size: 14px; color: #6b6455; }
+      
+      /* ===== STAMPS / ICONS ===== */
       .stamp {
-        position: absolute; top: -6px; right: 0;
+        position: absolute; top: 6px; right: 0;
         width: 56px; height: 56px;
         border: 2px solid var(--shu); color: var(--shu);
         border-radius: 6px;
         display: flex; align-items: center; justify-content: center;
         font-family: "Noto Serif JP", serif; font-size: 13px; font-weight: 700;
         transform: rotate(6deg); opacity: 0.85; writing-mode: vertical-rl;
+        background: var(--paper); /* Prevent bleed-through */
       }
 
-      /* ===== GLOBAL TOGGLE BAR ===== */
+      /* Updated Antonio Icon to Pill shape */
+      .antonio-icon {
+        position: absolute; top: 4px; left: 0;
+        width: 80px; height: 56px;
+        border: 2px solid var(--shu);
+        border-radius: 30px; /* Elongated pill shape */
+        object-fit: cover;
+        transform: rotate(-4deg);
+        opacity: 0.85;
+        background: var(--paper);
+      }
+
+      /* ===== GLOBAL TOGGLE BAR (Modified for inline use) ===== */
       .global-toggles {
-        display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
-        margin: 16px 0 4px; padding: 12px;
-        background: #fffdf8; border: 1px solid var(--line); border-radius: 8px;
+        display: flex; gap: 10px; flex-wrap: wrap;
+        margin: 0; padding: 0;
+        background: none; border: none;
       }
       .global-toggle {
-        display: flex; align-items: center; gap: 8px;
-        padding: 8px 16px; border: 1px solid var(--line); border-radius: 20px;
-        background: #fff; cursor: pointer; font-size: 14px; font-weight: 500;
+        display: flex; align-items: center; gap: 6px;
+        padding: 6px 12px; border: 1px solid var(--line); border-radius: 20px;
+        background: #fff; cursor: pointer; font-size: 12px; font-weight: 500;
         font-family: "Noto Sans JP", sans-serif; transition: all 0.15s ease;
         color: var(--ink);
       }
       .global-toggle:hover { border-color: var(--indigo); }
       .global-toggle.active { background: var(--indigo); color: #fff; border-color: var(--indigo); }
-      .global-toggle .toggle-icon { font-size: 16px; }
+      .global-toggle .toggle-icon { font-size: 14px; }
 
       /* ===== MODE TABS ===== */
       .mode-tabs { display: flex; gap: 10px; justify-content: center; margin: 16px 0 24px; }
@@ -451,7 +476,8 @@
   </head>
   <body>
     <div class="wrap">
-      <header>
+      <header id="appHeader">
+        <img src="images/icons/Antonio.png" alt="Antonio" class="antonio-icon" />
         <div class="stamp">
           <ruby>聴<rt>ちょう</rt>解<rt>かい</rt></ruby>
         </div>
@@ -462,17 +488,6 @@
           📖 Story: Read and answer comprehension questions.
         </div>
       </header>
-
-      <div class="global-toggles">
-        <button class="global-toggle active" id="globalFuriganaBtn" type="button">
-          <span class="toggle-icon">🔤</span>
-          <span id="globalFuriganaLabel">Furigana On</span>
-        </button>
-        <button class="global-toggle" id="globalTranslationBtn" type="button">
-          <span class="toggle-icon">🌎</span>
-          <span id="globalTranslationLabel">Translation Off</span>
-        </button>
-      </div>
 
       <div class="mode-tabs">
         <button class="mode-tab active" data-mode="listening" type="button">
@@ -917,18 +932,26 @@
       // ============================================================
       function applyGlobalToggles() {
         document.body.classList.toggle("furigana-hidden", !globalShowFurigana);
-        document.getElementById("globalFuriganaBtn").classList.toggle("active", globalShowFurigana);
-        document.getElementById("globalFuriganaLabel").textContent =
-          globalShowFurigana ? "Furigana On" : "Furigana Off";
+        document.querySelectorAll(".global-toggle#globalFuriganaBtn").forEach(btn => {
+            btn.classList.toggle("active", globalShowFurigana);
+            const label = btn.querySelector(".toggle-label");
+            if(label) label.textContent = globalShowFurigana ? "Furigana On" : "Furigana Off";
+        });
 
-        document.getElementById("globalTranslationBtn").classList.toggle("active", globalShowTranslation);
-        document.getElementById("globalTranslationLabel").textContent =
-          globalShowTranslation ? "Translation On" : "Translation Off";
+        document.querySelectorAll(".global-toggle#globalTranslationBtn").forEach(btn => {
+            btn.classList.toggle("active", globalShowTranslation);
+            const label = btn.querySelector(".toggle-label");
+            if(label) label.textContent = globalShowTranslation ? "Translation On" : "Translation Off";
+        });
 
+        // Apply to listening section
         document.querySelectorAll(".qtext-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
         document.querySelectorAll(".choice-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
         document.querySelectorAll(".feedback .script-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
+        // *** FIX: Apply to listening transcript translation ***
+        document.querySelectorAll(".question-transcript .transcript-translation").forEach((el) => el.classList.toggle("show", globalShowTranslation));
 
+        // Apply to story section
         const storyEnBlock = document.getElementById("storyEnglishBlock");
         if (storyEnBlock) storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
 
@@ -938,18 +961,24 @@
         const transcriptTranslation = document.getElementById("transcriptTranslation");
         if (transcriptTranslation) transcriptTranslation.classList.toggle("show", globalShowTranslation);
         document.querySelectorAll(".question-feedback .q-note-en").forEach((el) => el.classList.toggle("show", globalShowTranslation));
-
-        // NOTE: No renderStory() here to avoid infinite loops!
       }
 
-      document.getElementById("globalFuriganaBtn").addEventListener("click", () => {
-        globalShowFurigana = !globalShowFurigana;
-        applyGlobalToggles();
-      });
-      document.getElementById("globalTranslationBtn").addEventListener("click", () => {
-        globalShowTranslation = !globalShowTranslation;
-        applyGlobalToggles();
-      });
+      // Moved event listener setup to account for dynamically created buttons
+      function setupGlobalToggles() {
+        // Handler for toggles on the page
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('.global-toggle');
+            if (!target) return;
+
+            const type = target.id.includes('Furigana') ? 'furigana' : 'translation';
+            if (type === 'furigana') {
+                globalShowFurigana = !globalShowFurigana;
+            } else {
+                globalShowTranslation = !globalShowTranslation;
+            }
+            applyGlobalToggles();
+        });
+      }
 
       // ============================================================
       // PROGRESS
@@ -996,6 +1025,16 @@
             <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" type="button">
               📖 Transcript
             </button>
+            <div class="global-toggles">
+              <button class="global-toggle" id="globalFuriganaBtn" type="button">
+                <span class="toggle-icon">🔤</span>
+                <span class="toggle-label">Furigana On</span>
+              </button>
+              <button class="global-toggle" id="globalTranslationBtn" type="button">
+                <span class="toggle-icon">🌎</span>
+                <span class="toggle-label">Translation Off</span>
+              </button>
+            </div>
           </div>
 
           ${transcriptHtml}
@@ -1051,6 +1090,13 @@
           panel.classList.toggle("show", listeningTranscriptsOpen[qi]);
           transcriptBtn.classList.toggle("active", listeningTranscriptsOpen[qi]);
           transcriptBtn.textContent = listeningTranscriptsOpen[qi] ? "📖 Hide Transcript" : "📖 Transcript";
+          
+          // Ensure translations are correctly toggled when opening
+          if (listeningTranscriptsOpen[qi]) {
+            const transEl = panel.querySelector('.transcript-translation');
+            if (transEl) transEl.classList.toggle("show", globalShowTranslation);
+          }
+          
           return;
         }
 
@@ -1555,6 +1601,17 @@
         } catch (err) {
           console.error("Error binding story controls:", err);
         }
+
+        // Setup sticky header observer
+        const header = document.getElementById('appHeader');
+        const headerObserver = new IntersectionObserver(
+            ([e]) => e.target.classList.toggle('stuck', e.intersectionRatio < 1),
+            { threshold: [1] }
+        );
+        headerObserver.observe(header);
+
+        // Setup global toggle handlers
+        setupGlobalToggles();
 
         try {
           const stories = getStories();
