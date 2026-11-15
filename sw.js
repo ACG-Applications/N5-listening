@@ -1,18 +1,17 @@
 // Service Worker for N5-listening
-const CACHE_NAME = "n5-listening-v1";
+const CACHE_NAME = "n5-listening-v2"; // Bump this version!
 const ASSETS = [
-  "/N5-listening/",
-  "/N5-listening/index.html",
-  "/N5-listening/manifest.json",
-  "/N5-listening/js/sw.js",
-  // Data files (add these if they exist)
-  "/N5-listening/js/data/sentences.js",
-  "/N5-listening/js/data/sprints.js",
-  "/N5-listening/js/data/stories.js",
-  "/N5-listening/js/data/storiesQ&A.js",
-  "/N5-listening/js/data/wordDict.js",
-  "/N5-listening/images/icons/icon-192.png",
-  "/N5-listening/images/icons/icon-512.png",
+  "./",
+  "./index.html",
+  "./manifest.json",
+  // Data files
+  "./js/data/sentences.js",
+  "./js/data/sprints.js",
+  "./js/data/stories.js",
+  "./js/data/storiesQ&A.js",
+  "./js/data/wordDict.js",
+  "./images/icons/icon-192.png",
+  "./images/icons/icon-512.png",
 ];
 
 // Install event - cache assets
@@ -67,7 +66,7 @@ self.addEventListener("fetch", (event) => {
       })
       .catch(() => {
         // Optional: Return offline fallback page
-        return caches.match("/N5-listening/offline.html");
+        return caches.match("./offline.html");
       }),
   );
 });

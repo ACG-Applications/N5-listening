@@ -235,6 +235,16 @@
         color: #fff;
         border-color: var(--shu);
       }
+      .sprint-pill.revision-pill {
+        border-color: var(--shu);
+        color: var(--shu);
+        font-weight: 600;
+      }
+      .sprint-pill.revision-pill.active {
+        background: var(--shu);
+        color: #fff;
+        border-color: var(--shu);
+      }
 
       .progress-row {
         display: flex;
@@ -703,6 +713,17 @@
         font-weight: 300;
         letter-spacing: 0.02em;
       }
+      .story-sentence {
+        padding: 2px 0;
+        transition: background 0.2s ease;
+      }
+      .story-sentence.context-highlight {
+        background: #fdf3d8;
+        border-left: 3px solid var(--shu);
+        padding-left: 8px;
+        margin-left: -11px;
+        border-radius: 0 4px 4px 0;
+      }
       .story-english-block {
         font-size: 16px;
         line-height: 1.8;
@@ -989,10 +1010,7 @@
         opacity: 0.4;
         cursor: not-allowed;
       }
-      .question-transcript .transcript-text rt {
-        font-size: 0.55em;
-        color: #8b0000;
-      }
+
       /* ===== RESPONSIVE ===== */
       @media (max-width: 600px) {
         .story-header {
@@ -1216,7 +1234,7 @@
 
             <div id="questionTranscript" class="question-transcript">
               <div class="transcript-label">
-                <span>📖 関連文 (Related text)</span>
+                <span id="transcriptLabelText">📖 関連文 (Related text)</span>
                 <button
                   class="transcript-play-btn"
                   id="transcriptPlayBtn"
@@ -1265,11 +1283,8 @@
     </div>
 
     <!-- Data scripts -->
-    <script src="js/data/sentences.js"></script>
-    <script src="js/data/sprints.js"></script>
-    <script src="js/data/stories.js"></script>
-    <script src="js/data/wordDict.js"></script>
     <script src="js/data/storiesQ&A.js"></script>
+    <script src="js/data/wordDict.js"></script>
 
     <script>
       // ============================================================
@@ -1279,80 +1294,54 @@
       let globalShowTranslation = false;
 
       // ============================================================
-      // LISTENING MODE DATA — auto-built from all sprints
+      // FURIGANA HELPER — must be defined before first use
       // ============================================================
-
-      // Helper: find the story sentence most related to a question
-      function findRelatedSentence(story, question) {
-        if (!story || !story.storyJp) return "";
-        const sentences = story.storyJp
-          .split(/(?<=。)/)
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const plain = (question.question || "").replace(/（[^（）]+）/g, "");
-        const kws = [
-          ...(plain.match(/[一-龯]{2,}/g) || []),
-          ...(question.choices || []).flatMap(
-            (c) => c.replace(/（[^（）]+）/g, "").match(/[一-龯]{2,}/g) || [],
-          ),
-        ];
-        const uniq = [...new Set(kws)];
-        if (!uniq.length) return sentences[0] || "";
-        let best = sentences[0],
-          bestScore = 0;
-        sentences.forEach((s) => {
-          const clean = s.replace(/（[^（）]+）/g, "");
-          let score = 0;
-          uniq.forEach((k) => {
-            if (clean.includes(k)) score += k.length;
-          });
-          if (score > bestScore) {
-            bestScore = score;
-            best = s;
-          }
-        });
-        return best;
+      function convertFurigana(text) {
+        if (!text) return "";
+        return text.replace(
+          /([一-龯ぁ-んァ-ヶ]+)（([^（）]+)）/g,
+          (match, kanji, furigana) =>
+            `<ruby>${kanji}<rt>${furigana}</rt></ruby>`,
+        );
       }
 
-      // Build the master listening pool from all sprints
+      // ============================================================
+      // LISTENING MODE DATA — built from vignettes
+      // ============================================================
       const allListeningQuestions = (() => {
         const stories =
           typeof sprintStoriesWithQA !== "undefined" ? sprintStoriesWithQA : [];
         const out = [];
         stories.forEach((story) => {
           story.questions.forEach((q) => {
-            const cleanQ = (q.question || "")
-              .replace(/（[^（）]+）/g, "")
-              .replace(/<[^>]*>/g, "");
-            const related = findRelatedSentence(story, q)
-              .replace(/（[^（）]+）/g, "")
-              .replace(/<[^>]*>/g, "");
-            const cleanChoices = (q.choices || []).map((c) =>
-              c.replace(/（[^（）]+）/g, ""),
+            const ctxSentences = story.sentences.slice(
+              q.contextRange[0],
+              q.contextRange[1] + 1,
             );
+            const cleanCtx = ctxSentences.map((s) =>
+              s.jp.replace(/（[^（）]+）/g, ""),
+            );
+            const cleanQ = (q.question || "").replace(/（[^（）]+）/g, "");
             out.push({
               sprintId: story.id,
               sprintTitle: story.title,
-              // Used for Text-to-Speech (reads question, then context)
-              script: cleanQ + "。" + related,
-              // Used for the Transcript UI (Question + Context with furigana)
-              html:
-                (q.questionHtml || q.question) +
-                (related
-                  ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line);"><span style="font-size: 13px; color: var(--indigo); font-weight: bold;">💡 Context:</span><br>${convertFurigana(findRelatedSentence(story, q))}</div>`
-                  : "") +
-                (q.inferenceHint
-                  ? `<div style="margin-top: 8px; font-size: 13px; color: #6b6455; font-style: italic;"><br>🤔 <strong>Hint:</strong> ${q.inferenceHint}</div>`
-                  : ""),
-              scriptEn: (q.questionEn || "") + " " + (q.transcriptEn || ""),
-              questionHtml: q.questionHtml || q.question,
+              // TTS: narrative lead-up, then the question
+              script: cleanCtx.join("。") + "。" + cleanQ,
+              // Transcript UI: furigana-preserved context sentences
+              html: ctxSentences.map((s) => convertFurigana(s.jp)).join("<br>"),
+              scriptEn:
+                ctxSentences.map((s) => s.en).join(" ") +
+                " " +
+                (q.questionEn || ""),
+              questionHtml: convertFurigana(q.question),
               questionEn: q.questionEn || "",
-              choices: cleanChoices,
+              choices: q.choices,
               choicesEn: q.choicesEn || [],
-              choicesHtml: q.choicesHtml || q.choices,
+              choicesHtml: q.choices.map((c) => convertFurigana(c)),
               answer: q.answer,
               note: q.note,
               noteEn: q.noteEn,
+              requiresInference: !!q.requiresInference,
             });
           });
         });
@@ -1522,8 +1511,9 @@
       // ============================================================
       function applyGlobalToggles() {
         document.body.classList.toggle("furigana-hidden", !globalShowFurigana);
+
         document
-          .querySelectorAll(".global-toggle#globalFuriganaBtn")
+          .querySelectorAll('.global-toggle[data-toggle="furigana"]')
           .forEach((btn) => {
             btn.classList.toggle("active", globalShowFurigana);
             const label = btn.querySelector(".toggle-label");
@@ -1534,7 +1524,7 @@
           });
 
         document
-          .querySelectorAll(".global-toggle#globalTranslationBtn")
+          .querySelectorAll('.global-toggle[data-toggle="translation"]')
           .forEach((btn) => {
             btn.classList.toggle("active", globalShowTranslation);
             const label = btn.querySelector(".toggle-label");
@@ -1584,13 +1574,13 @@
           const target = e.target.closest(".global-toggle");
           if (!target) return;
 
-          const type = target.id.includes("Furigana")
-            ? "furigana"
-            : "translation";
+          const type = target.dataset.toggle;
           if (type === "furigana") {
             globalShowFurigana = !globalShowFurigana;
-          } else {
+          } else if (type === "translation") {
             globalShowTranslation = !globalShowTranslation;
+          } else {
+            return;
           }
           applyGlobalToggles();
         });
@@ -1623,7 +1613,11 @@
           const transcriptHtml = `
             <div class="question-transcript" id="transcript-panel-${qi}">
               <div class="transcript-label">
-                <span>📖 スクリプト (Script)</span>
+                <span>📖 ${
+                  q.requiresInference
+                    ? "つながりを考（かんが）えよう (Connect the sentences)"
+                    : "ここまで読めば分かります (Read up to here)"
+                }</span>
                 <button class="transcript-play-btn" data-qi="${qi}" type="button">🔊 Play</button>
               </div>
               <div class="transcript-text">${q.html}</div>
@@ -1650,19 +1644,19 @@
                 <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
                 Stop
               </button>
-              <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" type="button">
-                📖 Transcript
+              <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" data-state="pre" type="button">
+                🔊 Hear Context
               </button>
               <div class="global-toggles">
-                <button class="global-toggle" id="globalFuriganaBtn" type="button">
-                  <span class="toggle-icon">🔤</span>
-                  <span class="toggle-label">Furigana On</span>
-                </button>
-                <button class="global-toggle" id="globalTranslationBtn" type="button">
-                  <span class="toggle-icon">🌎</span>
-                  <span class="toggle-label">Translation Off</span>
-                </button>
-              </div>
+  <button class="global-toggle" data-toggle="furigana" type="button">
+    <span class="toggle-icon">🔤</span>
+    <span class="toggle-label">Furigana On</span>
+  </button>
+  <button class="global-toggle" data-toggle="translation" type="button">
+    <span class="toggle-icon">🌎</span>
+    <span class="toggle-label">Translation Off</span>
+  </button>
+</div>
             </div>
 
             ${transcriptHtml}
@@ -1704,9 +1698,11 @@
         stories.forEach((story) => {
           const btn = document.createElement("button");
           btn.className = "sprint-pill";
+          if (story.id === 10) btn.classList.add("revision-pill");
           btn.type = "button";
           btn.dataset.sprint = story.id;
-          btn.textContent = `S${String(story.id).padStart(2, "0")}`;
+          btn.textContent =
+            story.id === 10 ? "S10 ★" : `S${String(story.id).padStart(2, "0")}`;
           btn.title = story.title;
           selector.appendChild(btn);
         });
@@ -1769,6 +1765,17 @@
         const transcriptBtn = e.target.closest(".transcript-btn");
         if (transcriptBtn) {
           const qi = transcriptBtn.dataset.qi;
+          const q = listeningQuestions[qi];
+          const answeredYet =
+            quizEl.querySelector(`.choice[data-qi="${qi}"].disabled`) !== null;
+
+          // PRE-ANSWER: audio only, no text reveal
+          if (!answeredYet) {
+            speak(q.script, transcriptBtn);
+            return;
+          }
+
+          // POST-ANSWER: reveal transcript text
           const panel = document.getElementById(`transcript-panel-${qi}`);
           listeningTranscriptsOpen[qi] = !listeningTranscriptsOpen[qi];
           panel.classList.toggle("show", listeningTranscriptsOpen[qi]);
@@ -1778,7 +1785,7 @@
           );
           transcriptBtn.textContent = listeningTranscriptsOpen[qi]
             ? "📖 Hide Transcript"
-            : "📖 Transcript";
+            : "📖 Show Transcript";
 
           if (listeningTranscriptsOpen[qi]) {
             const transEl = panel.querySelector(".transcript-translation");
@@ -1802,7 +1809,7 @@
           const qi = parseInt(choiceAudioBtn.dataset.qi);
           const ci = parseInt(choiceAudioBtn.dataset.ci);
           const q = listeningQuestions[qi];
-          speak(q.choices[ci], null);
+          speak(q.choices[ci].replace(/（[^（）]+）/g, ""), null);
           return;
         }
 
@@ -1828,6 +1835,13 @@
           applyGlobalToggles();
           answered++;
           updateProgress();
+
+          // Flip transcript button to post-answer state
+          const tBtn = quizEl.querySelector(`.transcript-btn[data-qi="${qi}"]`);
+          if (tBtn) {
+            tBtn.dataset.state = "post";
+            tBtn.textContent = "📖 Show Transcript";
+          }
         }
       });
 
@@ -1852,6 +1866,13 @@
             fb.classList.add("show", "good");
             fb.innerHTML = `Correct answer (正解)：${String.fromCharCode(65 + listeningQuestions[qi].answer)}　${listeningQuestions[qi].note}
               <div class="script-translation">${listeningQuestions[qi].scriptEn || ""}</div>`;
+          }
+        });
+        // Flip all transcript buttons to post-answer state
+        document.querySelectorAll(".transcript-btn").forEach((btn) => {
+          if (btn.dataset.state !== "post") {
+            btn.dataset.state = "post";
+            btn.textContent = "📖 Show Transcript";
           }
         });
         applyGlobalToggles();
@@ -1898,20 +1919,15 @@
       const transcriptTranslation = document.getElementById(
         "transcriptTranslation",
       );
+      const transcriptLabelText = document.getElementById(
+        "transcriptLabelText",
+      );
       const transcriptPlayBtn = document.getElementById("transcriptPlayBtn");
       const questionPlayBtn = document.getElementById("questionPlayBtn");
       const questionStopBtn = document.getElementById("questionStopBtn");
       const questionTranscriptBtn = document.getElementById(
         "questionTranscriptBtn",
       );
-
-      function convertFurigana(text) {
-        return text.replace(
-          /([一-龯ぁ-んァ-ヶ]+)（([^（）]+)）/g,
-          (match, kanji, furigana) =>
-            `<ruby>${kanji}<rt>${furigana}</rt></ruby>`,
-        );
-      }
 
       function getStories() {
         if (
@@ -1946,8 +1962,12 @@
         return questions[currentQuestionIndex];
       }
 
-      function findRelatedTranscript(story, question) {
-        return findRelatedSentence(story, question);
+      function getQuestionContextSentences(story, question) {
+        if (!story || !question || !question.contextRange) return [];
+        return story.sentences.slice(
+          question.contextRange[0],
+          question.contextRange[1] + 1,
+        );
       }
 
       function renderStory(keepQuestionState) {
@@ -1970,8 +1990,15 @@
         storyTotal.textContent = stories.length;
         storyProgress.textContent = `${currentStoryIndex + 1}`;
 
-        storyJpBlock.innerHTML = convertFurigana(story.storyJp);
-        storyEnBlock.textContent = story.storyEn;
+        storyJpBlock.innerHTML = story.sentences
+          .map(
+            (s, i) =>
+              `<div class="story-sentence" data-idx="${i}">${convertFurigana(s.jp)}</div>`,
+          )
+          .join("");
+        storyEnBlock.innerHTML = story.sentences
+          .map((s) => `<div>${s.en}</div>`)
+          .join("");
         storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
 
         storyPrevBtn.disabled = currentStoryIndex === 0;
@@ -2003,23 +2030,32 @@
 
         questionProgress.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
 
-        const questionHtml = q.questionHtml || q.question;
-        currentQuestionEl.innerHTML = convertFurigana(questionHtml);
+        currentQuestionEl.innerHTML = convertFurigana(q.question);
 
         const qTranslation = q.questionEn || "";
         questionTranslation.textContent = qTranslation;
         questionTranslation.classList.toggle("show", globalShowTranslation);
 
         const story = getCurrentStory();
-        const relatedText = findRelatedTranscript(story, q);
-        if (relatedText) {
-          transcriptText.innerHTML = convertFurigana(relatedText);
-          transcriptTranslation.textContent =
-            q.transcriptEn || qTranslation || "";
+        const ctxSentences = getQuestionContextSentences(story, q);
+        if (ctxSentences.length > 0) {
+          transcriptText.innerHTML = ctxSentences
+            .map((s) => convertFurigana(s.jp))
+            .join("<br>");
+          transcriptTranslation.textContent = ctxSentences
+            .map((s) => s.en)
+            .join(" ");
         } else {
           transcriptText.textContent = "";
           transcriptTranslation.textContent = "";
         }
+
+        if (transcriptLabelText) {
+          transcriptLabelText.textContent = q.requiresInference
+            ? "📖 つながりを考（かんが）えよう (Connect the sentences)"
+            : "📖 ここまで読めば分かります (Read up to here)";
+        }
+
         questionTranscript.classList.toggle("show", transcriptOpen);
         questionTranscriptBtn.classList.toggle(
           "transcript-open",
@@ -2030,10 +2066,23 @@
           : "📖 Transcript";
         transcriptTranslation.classList.toggle("show", globalShowTranslation);
 
+        // Highlight the context sentences in the story block
+        document
+          .querySelectorAll(".story-sentence.context-highlight")
+          .forEach((el) => el.classList.remove("context-highlight"));
+        if (q.contextRange) {
+          for (let i = q.contextRange[0]; i <= q.contextRange[1]; i++) {
+            const el = document.querySelector(
+              `.story-sentence[data-idx="${i}"]`,
+            );
+            if (el) el.classList.add("context-highlight");
+          }
+        }
+
         const letters = ["A", "B", "C", "D"];
         let choicesHtml = "";
         const selected = storySelectedChoices[currentQuestionIndex] || -1;
-        q.choicesHtml.forEach((choiceHtml, idx) => {
+        q.choices.forEach((choiceText, idx) => {
           const isSelected = selected === idx;
           let extraClass = "";
           if (storyAnswered) {
@@ -2047,7 +2096,7 @@
             <div class="question-choice ${extraClass}" data-qidx="${currentQuestionIndex}" data-choice="${idx}">
               <span class="choice-mark">${letters[idx]}</span>
               <span class="q-choice-text">
-                <span>${convertFurigana(choiceHtml)}</span>
+                <span>${convertFurigana(choiceText)}</span>
                 <span class="q-choice-translation">${q.choicesEn && q.choicesEn[idx] ? q.choicesEn[idx] : ""}</span>
               </span>
               <button class="q-choice-audio-btn" data-qidx="${currentQuestionIndex}" data-choice="${idx}" title="Play this option" type="button">
@@ -2092,7 +2141,7 @@
         const choice = parseInt(e.currentTarget.dataset.choice);
         const q = getCurrentStoryQuestions()[qidx];
         if (!q) return;
-        speak(q.choices[choice], null);
+        speak(q.choices[choice].replace(/（[^（）]+）/g, ""), null);
       }
 
       function handleQuestionChoice(e) {
@@ -2171,9 +2220,9 @@
           storyPlayBtn.textContent = "🔊 Play Story";
           return;
         }
-        let text = story.storyJp
-          .replace(/（[^（）]+）/g, "")
-          .replace(/<[^>]*>/g, "");
+        let text = story.sentences
+          .map((s) => s.jp.replace(/（[^（）]+）/g, ""))
+          .join("。");
         if (!("speechSynthesis" in window)) {
           alert("Speech synthesis not supported.");
           return;
@@ -2200,11 +2249,11 @@
         const story = getCurrentStory();
         const q = getCurrentQuestion();
         if (!story || !q) return;
-        const relatedText = findRelatedTranscript(story, q);
-        if (!relatedText) return;
-        const text = relatedText
-          .replace(/（[^（）]+）/g, "")
-          .replace(/<[^>]*>/g, "");
+        const ctxSentences = getQuestionContextSentences(story, q);
+        if (ctxSentences.length === 0) return;
+        const text = ctxSentences
+          .map((s) => s.jp.replace(/（[^（）]+）/g, ""))
+          .join("。");
         speak(text, null);
       }
 
@@ -2250,6 +2299,16 @@
       }
 
       function toggleTranscript() {
+        // Story mode: before answering, read the context aloud only;
+        // after answering, reveal the text.
+        const q = getCurrentQuestion();
+        if (!q) return;
+
+        if (!storyAnswered) {
+          playTranscript();
+          return;
+        }
+
         transcriptOpen = !transcriptOpen;
         questionTranscript.classList.toggle("show", transcriptOpen);
         questionTranscriptBtn.classList.toggle(
@@ -2258,7 +2317,7 @@
         );
         questionTranscriptBtn.textContent = transcriptOpen
           ? "📖 Hide Transcript"
-          : "📖 Transcript";
+          : "📖 Show Transcript";
       }
 
       // ============================================================

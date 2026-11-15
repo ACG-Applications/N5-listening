@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline - N5 Listening</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #f6f1e6;
+        --ink: #26241f;
+        --indigo-deep: #1a3441;
+        --shu: #b5482f;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Noto Sans JP", sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        padding: 20px;
+      }
+      .container {
+        background: #fffdf8;
+        border: 1px solid #c9bda1;
+        border-radius: 8px;
+        padding: 40px 30px;
+        max-width: 400px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      h1 {
+        font-family: "Noto Serif JP", serif;
+        color: var(--indigo-deep);
+        font-size: 24px;
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+      p {
+        font-size: 14px;
+        color: #6b6455;
+        line-height: 1.6;
+      }
+      .icon {
+        font-size: 40px;
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+      button {
+        margin-top: 24px;
+        background: var(--shu);
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: "Noto Sans JP", sans-serif;
+        transition: background 0.2s ease;
+      }
+      button:hover {
+        background: #9a3b25;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="icon">📡</div>
+      <h1>You are offline</h1>
+      <p>
+        It looks like you don't have an internet connection right now. 
+        Please check your network and try again.
+      </p>
+      <button onclick="window.location.reload()">Try Again</button>
+    </div>
+  </body>
+</html>
