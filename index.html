@@ -616,7 +616,59 @@
         background: #fff;
         color: var(--ink);
       }
+      /* ===== TOP SPEED BAR ===== */
+      .speed-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 0 0 18px;
+        padding: 10px 14px;
+        background: #fffdf8;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--ink);
+      }
+      .speed-bar .speed-label {
+        font-weight: 600;
+        color: var(--indigo);
+        letter-spacing: 0.03em;
+      }
+      .speed-bar select {
+        font-size: 13px;
+        padding: 4px 12px;
+      }
+      .rate-indicator {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--indigo);
+        background: #eef3f5;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 2px 9px;
+        min-width: 46px;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
 
+      /* Hide the speed bar in story mode (the story section has its own controls) */
+      #storyModeSection:not([style*="display: none"])
+        ~ #listeningSection
+        .speed-bar {
+        /* no-op; the listening section is hidden anyway when story mode is active */
+      }
+
+      @media (max-width: 600px) {
+        .speed-bar {
+          font-size: 12px;
+          padding: 8px 10px;
+        }
+        .speed-bar select {
+          font-size: 12px;
+        }
+      }
       /* ===== STORY SECTION ===== */
       #storyModeSection {
         display: none;
@@ -1142,7 +1194,19 @@
           </button>
           <!-- Sprint pills injected by JS -->
         </div>
-
+        <!-- Speed control (top of section) -->
+        <div class="speed-bar" id="speedBar">
+          <span class="speed-label">🔊 Speech speed:</span>
+          <select id="rateSelect">
+            <option value="0.6">とてもゆっくり (0.6×)</option>
+            <option value="0.75">ゆっくり (0.75×)</option>
+            <option value="0.85" selected>ふつう (0.85×)</option>
+            <option value="0.95">すこしはやい (0.95×)</option>
+            <option value="1">はやい (1.0×)</option>
+            <option value="1.2">もっとはやい (1.2×)</option>
+          </select>
+          <span id="rateIndicator" class="rate-indicator">0.85×</span>
+        </div>
         <div id="quiz"></div>
 
         <footer>
@@ -1153,12 +1217,6 @@
             <span>Voice:</span>
             <select id="voiceSelect">
               <option value="">Loading voices...</option>
-            </select>
-            <span>Speed:</span>
-            <select id="rateSelect">
-              <option value="0.75">ゆっくり</option>
-              <option value="0.85" selected>ふつう</option>
-              <option value="1">はやい</option>
             </select>
           </div>
           <div class="score-banner" id="scoreBanner">
@@ -2421,6 +2479,22 @@
           applyGlobalToggles();
         } catch (err) {
           console.error(err);
+        }
+
+        const rateSelectEl = document.getElementById("rateSelect");
+        const rateIndicatorEl = document.getElementById("rateIndicator");
+        if (rateSelectEl && rateIndicatorEl) {
+          const updateRateIndicator = () => {
+            rateIndicatorEl.textContent =
+              parseFloat(rateSelectEl.value).toFixed(2) + "×";
+          };
+          updateRateIndicator();
+          rateSelectEl.addEventListener("change", () => {
+            updateRateIndicator();
+            if (window.speechSynthesis && window.speechSynthesis.speaking) {
+              window.speechSynthesis.cancel();
+            }
+          });
         }
 
         console.log("✅ App initialized");
