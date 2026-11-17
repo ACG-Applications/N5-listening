@@ -512,12 +512,12 @@
       }
       .feedback.good {
         background: #eaf2ec;
-        color: #2600fc;
+        color: #1a4a1a;
         border: 1px solid #bcd6c4;
       }
       .feedback.bad {
         background: #fbece7;
-        color: #ff0000;
+        color: #8a1a1a;
         border: 1px solid #e6c2b6;
       }
       .feedback .script {
@@ -616,6 +616,7 @@
         background: #fff;
         color: var(--ink);
       }
+
       /* ===== TOP SPEED BAR ===== */
       .speed-bar {
         display: flex;
@@ -653,13 +654,6 @@
         font-variant-numeric: tabular-nums;
       }
 
-      /* Hide the speed bar in story mode (the story section has its own controls) */
-      #storyModeSection:not([style*="display: none"])
-        ~ #listeningSection
-        .speed-bar {
-        /* no-op; the listening section is hidden anyway when story mode is active */
-      }
-
       @media (max-width: 600px) {
         .speed-bar {
           font-size: 12px;
@@ -669,6 +663,7 @@
           font-size: 12px;
         }
       }
+
       /* ===== STORY SECTION ===== */
       #storyModeSection {
         display: none;
@@ -1123,7 +1118,8 @@
         .q-choice-audio-btn,
         .question-controls,
         .transcript-play-btn,
-        .transcript-btn {
+        .transcript-btn,
+        .speed-bar {
           display: none !important;
         }
         .story-display {
@@ -1194,6 +1190,7 @@
           </button>
           <!-- Sprint pills injected by JS -->
         </div>
+        
         <!-- Speed control (top of section) -->
         <div class="speed-bar" id="speedBar">
           <span class="speed-label">🔊 Speech speed:</span>
@@ -1207,6 +1204,7 @@
           </select>
           <span id="rateIndicator" class="rate-indicator">0.85×</span>
         </div>
+        
         <div id="quiz"></div>
 
         <footer>
@@ -1556,7 +1554,7 @@
         if (!chosenVoice) chosenVoice = pickFemaleVoice();
         if (chosenVoice) utter.voice = chosenVoice;
         document
-          .querySelectorAll(".play-btn, .question-ctrl-btn.playing")
+          .querySelectorAll(".play-btn, .question-ctrl-btn.playing, .feedback-audio-btn, .q-feedback-audio-btn")
           .forEach((b) => b.classList.remove("playing"));
         if (btn) btn.classList.add("playing");
         utter.onend = () => {
@@ -1810,8 +1808,16 @@
         if (stopBtn) {
           window.speechSynthesis.cancel();
           document
-            .querySelectorAll(".play-btn, .question-ctrl-btn.playing")
+            .querySelectorAll(".play-btn, .question-ctrl-btn.playing, .feedback-audio-btn, .q-feedback-audio-btn")
             .forEach((b) => b.classList.remove("playing"));
+          return;
+        }
+
+        const fbAudioBtn = e.target.closest(".feedback-audio-btn");
+        if (fbAudioBtn) {
+          e.stopPropagation();
+          const textToSpeak = fbAudioBtn.dataset.text;
+          speak(textToSpeak, fbAudioBtn);
           return;
         }
 
@@ -1890,8 +1896,16 @@
           }
           const fb = document.getElementById("fb-" + qi);
           fb.classList.add("show", isCorrect ? "good" : "bad");
-          fb.innerHTML = `${isCorrect ? "正解です。" : "残念、不正解です。"} ${q.note}
-            <div class="script-translation">${q.scriptEn || ""}</div>`;
+          fb.innerHTML = `
+            <strong>${isCorrect ? "✅ 正解です！" : "❌ 残念、不正解です。"}</strong><br>
+            <div style="margin-top: 8px; font-size: 15px;">
+              <strong>Full Sentence:</strong> ${convertFurigana(q.note)}
+            </div>
+            <button class="feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+              🔊 Play Sentence
+            </button>
+            <div class="script-translation" style="margin-top: 10px;">${q.noteEn || q.scriptEn || ""}</div>
+          `;
           applyGlobalToggles();
           answered++;
           updateProgress();
@@ -1924,8 +1938,16 @@
         document.querySelectorAll(".feedback").forEach((fb, qi) => {
           if (!fb.classList.contains("show")) {
             fb.classList.add("show", "good");
-            fb.innerHTML = `Correct answer (正解)：${String.fromCharCode(65 + listeningQuestions[qi].answer)}　${listeningQuestions[qi].note}
-              <div class="script-translation">${listeningQuestions[qi].scriptEn || ""}</div>`;
+            fb.innerHTML = `
+              <strong>Correct answer (正解):</strong> ${String.fromCharCode(65 + listeningQuestions[qi].answer)}<br>
+              <div style="margin-top: 8px; font-size: 15px;">
+                <strong>Full Sentence:</strong> ${convertFurigana(listeningQuestions[qi].note)}
+              </div>
+              <button class="feedback-audio-btn" data-text="${listeningQuestions[qi].note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                🔊 Play Sentence
+              </button>
+              <div class="script-translation">${listeningQuestions[qi].noteEn || listeningQuestions[qi].scriptEn || ""}</div>
+            `;
           }
         });
         // Flip all transcript buttons to post-answer state
@@ -2172,8 +2194,13 @@
           questionFeedback.className = `question-feedback show ${isCorrect ? "correct" : "wrong"}`;
           questionFeedback.innerHTML = `
             <strong>${isCorrect ? "✅ Correct!" : "❌ Not quite."}</strong><br>
-            ${q.note}
-            ${q.noteEn ? `<div class="q-note-en ${globalShowTranslation ? "show" : ""}">${q.noteEn}</div>` : ""}
+            <div style="margin-top: 8px; font-size: 15px;">
+              <strong>Full Sentence:</strong> ${convertFurigana(q.note)}
+            </div>
+            <button class="q-feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+              🔊 Play Sentence
+            </button>
+            ${q.noteEn ? `<div class="q-note-en ${globalShowTranslation ? "show" : ""}" style="margin-top: 8px;">${q.noteEn}</div>` : ""}
           `;
         } else {
           questionFeedback.className = "question-feedback";
@@ -2190,6 +2217,12 @@
           });
         document.querySelectorAll(".q-choice-audio-btn").forEach((el) => {
           el.addEventListener("click", handleChoiceAudio);
+        });
+        document.querySelectorAll(".q-feedback-audio-btn").forEach((el) => {
+          el.addEventListener("click", (e) => {
+            e.stopPropagation();
+            speak(e.currentTarget.dataset.text, e.currentTarget);
+          });
         });
 
         applyGlobalToggles();
