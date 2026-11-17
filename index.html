@@ -1190,7 +1190,7 @@
           </button>
           <!-- Sprint pills injected by JS -->
         </div>
-        
+
         <!-- Speed control (top of section) -->
         <div class="speed-bar" id="speedBar">
           <span class="speed-label">🔊 Speech speed:</span>
@@ -1204,7 +1204,7 @@
           </select>
           <span id="rateIndicator" class="rate-indicator">0.85×</span>
         </div>
-        
+
         <div id="quiz"></div>
 
         <footer>
@@ -1343,1203 +1343,1226 @@
     <script src="js/data/wordDict.js"></script>
 
     <script>
-      // ============================================================
-      // GLOBAL STATE
-      // ============================================================
-      let globalShowFurigana = true;
-      let globalShowTranslation = false;
+            // ============================================================
+            // GLOBAL STATE
+            // ============================================================
+            let globalShowFurigana = true;
+            let globalShowTranslation = false;
 
-      // ============================================================
-      // FURIGANA HELPER — must be defined before first use
-      // ============================================================
-      function convertFurigana(text) {
-        if (!text) return "";
-        return text.replace(
-          // Base = kanji + katakana + long-vowel mark only.
-          // Hiragana is deliberately excluded so preceding particles
-          // (は / が / に / お / から …) stay OUTSIDE the ruby base.
-          /([一-龯ァ-ヶー]+)（([^（）]+)）/g,
-          (match, base, furigana) => `<ruby>${base}<rt>${furigana}</rt></ruby>`,
-        );
-      }
+            // ============================================================
+            // FURIGANA HELPER — must be defined before first use
+            // ============================================================
+            function convertFurigana(text) {
+              if (!text) return "";
+              return text.replace(
+                // Base = kanji + katakana + long-vowel mark only.
+                // Hiragana is deliberately excluded so preceding particles
+                // (は / が / に / お / から …) stay OUTSIDE the ruby base.
+                /([一-龯ァ-ヶー]+)（([^（）]+)）/g,
+                (match, base, furigana) => `<ruby>${base}<rt>${furigana}</rt></ruby>`,
+              );
+            }
 
-      // ============================================================
-      // LISTENING MODE DATA — built from vignettes
-      // ============================================================
-      const allListeningQuestions = (() => {
-        const stories =
-          typeof sprintStoriesWithQA !== "undefined" ? sprintStoriesWithQA : [];
-        const out = [];
-        stories.forEach((story) => {
-          story.questions.forEach((q) => {
-            const ctxSentences = story.sentences.slice(
-              q.contextRange[0],
-              q.contextRange[1] + 1,
-            );
-            const cleanCtx = ctxSentences.map((s) =>
-              s.jp.replace(/（[^（）]+）/g, ""),
-            );
-            const cleanQ = (q.question || "").replace(/（[^（）]+）/g, "");
-            out.push({
-              sprintId: story.id,
-              sprintTitle: story.title,
-              // TTS: narrative lead-up, then the question
-              script: cleanCtx.join("。") + "。" + cleanQ,
-              // Transcript UI: furigana-preserved context sentences
-              html: ctxSentences.map((s) => convertFurigana(s.jp)).join("<br>"),
-              scriptEn:
-                ctxSentences.map((s) => s.en).join(" ") +
-                " " +
-                (q.questionEn || ""),
-              questionHtml: convertFurigana(q.question),
-              questionEn: q.questionEn || "",
-              choices: q.choices,
-              choicesEn: q.choicesEn || [],
-              choicesHtml: q.choices.map((c) => convertFurigana(c)),
-              answer: q.answer,
-              note: q.note,
-              noteEn: q.noteEn,
-              requiresInference: !!q.requiresInference,
-            });
-          });
-        });
-        return out;
-      })();
+            function getAnnotatedNote(q, story) {
+              if (!q.note) return "";
+              // If the note already has furigana brackets, just use it
+              if (q.note.includes("（")) {
+                return convertFurigana(q.note);
+              }
+              // Otherwise, try to find the matching sentence in the story
+              if (story && q.contextRange) {
+                const sentences = story.sentences.slice(q.contextRange[0], q.contextRange[1] + 1);
+                for (const s of sentences) {
+                  // Strip brackets from story sentence and note to compare them
+                  const cleanS = s.jp.replace(/（[^（）]+）/g, "");
+                  const cleanNote = q.note.replace(/（[^（）]+）/g, "").replace(/。$/, "");
 
-      // Mutable active set (changes when user picks a sprint)
-      let listeningQuestions = [...allListeningQuestions];
-      let currentListeningSprint = "all";
+                  if (cleanS.includes(cleanNote) || cleanNote.includes(cleanS.replace(/。$/, ""))) {
+                    return convertFurigana(s.jp);
+                  }
+                }
+              }
+              // Fallback if no match found
+              return convertFurigana(q.note);
+            }
 
-      const kanjiNums = [
-        "一",
-        "二",
-        "三",
-        "四",
-        "五",
-        "六",
-        "七",
-        "八",
-        "九",
-        "十",
-      ];
-      const quizEl = document.getElementById("quiz");
-      let answered = 0,
-        correct = 0;
-      let currentUtterance = null;
-      let japaneseVoices = [];
-      let chosenVoice = null;
-      let listeningTranscriptsOpen = {};
+            // ============================================================
+            // LISTENING MODE DATA — built from vignettes
+            // ============================================================
+            const allListeningQuestions = (() => {
+              const stories =
+                typeof sprintStoriesWithQA !== "undefined" ? sprintStoriesWithQA : [];
+              const out = [];
+              stories.forEach((story) => {
+                story.questions.forEach((q) => {
+                  const ctxSentences = story.sentences.slice(
+                    q.contextRange[0],
+                    q.contextRange[1] + 1,
+                  );
+                  const cleanCtx = ctxSentences.map((s) =>
+                    s.jp.replace(/（[^（）]+）/g, ""),
+                  );
+                  const cleanQ = (q.question || "").replace(/（[^（）]+）/g, "");
+                  out.push({
+                    sprintId: story.id,
+                    sprintTitle: story.title,
+                    // TTS: narrative lead-up, then the question
+                    script: cleanCtx.join("。") + "。" + cleanQ,
+                    // Transcript UI: furigana-preserved context sentences
+                    html: ctxSentences.map((s) => convertFurigana(s.jp)).join("<br>"),
+                    scriptEn:
+                      ctxSentences.map((s) => s.en).join(" ") +
+                      " " +
+                      (q.questionEn || ""),
+                    questionHtml: convertFurigana(q.question),
+                    questionEn: q.questionEn || "",
+                    choices: q.choices,
+                    choicesEn: q.choicesEn || [],
+                    choicesHtml: q.choices.map((c) => convertFurigana(c)),
+                    answer: q.answer,
+                    note: q.note,
+                    noteEn: q.noteEn,
+                    requiresInference: !!q.requiresInference,
+                  });
+                });
+              });
+              return out;
+            })();
 
-      // ============================================================
-      // VOICE SELECTOR
-      // ============================================================
-      const voiceSelect = document.getElementById("voiceSelect");
+            // Mutable active set (changes when user picks a sprint)
+            let listeningQuestions = [...allListeningQuestions];
+            let currentListeningSprint = "all";
 
-      function populateVoiceList() {
-        const voices = window.speechSynthesis.getVoices();
-        const jpVoices = voices.filter((v) => v.lang.startsWith("ja"));
-        voiceSelect.innerHTML = "";
-        if (jpVoices.length === 0) {
-          voices.forEach((v) => {
-            const opt = document.createElement("option");
-            opt.value = v.name;
-            opt.textContent = `${v.name} (${v.lang})`;
-            voiceSelect.appendChild(opt);
-          });
-        } else {
-          jpVoices.forEach((v) => {
-            const opt = document.createElement("option");
-            opt.value = v.name;
-            opt.textContent = `${v.name} (${v.lang})`;
-            const femaleHints = [
-              "female",
-              "女性",
-              "kyoko",
-              "o-ren",
-              "mizuki",
-              "nanami",
-              "haruka",
-              "sayaka",
-              "ayumi",
+            const kanjiNums = [
+              "一",
+              "二",
+              "三",
+              "四",
+              "五",
+              "六",
+              "七",
+              "八",
+              "九",
+              "十",
             ];
-            if (femaleHints.some((h) => v.name.toLowerCase().includes(h)))
-              opt.selected = true;
-            voiceSelect.appendChild(opt);
-          });
-        }
-        const selectedName = voiceSelect.value;
-        const selectedVoice = voices.find((v) => v.name === selectedName);
-        if (selectedVoice) chosenVoice = selectedVoice;
-      }
+            const quizEl = document.getElementById("quiz");
+            let answered = 0,
+              correct = 0;
+            let currentUtterance = null;
+            let japaneseVoices = [];
+            let chosenVoice = null;
+            let listeningTranscriptsOpen = {};
 
-      if (window.speechSynthesis) {
-        window.speechSynthesis.onvoiceschanged = () => {
-          populateVoiceList();
-          chosenVoice = pickFemaleVoice();
-        };
-        setTimeout(populateVoiceList, 100);
-      }
+            // ============================================================
+            // VOICE SELECTOR
+            // ============================================================
+            const voiceSelect = document.getElementById("voiceSelect");
 
-      if (voiceSelect) {
-        voiceSelect.addEventListener("change", function () {
-          const voices = window.speechSynthesis.getVoices();
-          const selected = voices.find((v) => v.name === this.value);
-          if (selected) {
-            chosenVoice = selected;
-            window.speechSynthesis.cancel();
-            document
-              .querySelectorAll(".play-btn, .question-ctrl-btn.playing")
-              .forEach((b) => b.classList.remove("playing"));
-            const storyBtn = document.getElementById("storyPlayBtn");
-            if (storyBtn) {
-              storyBtn.classList.remove("playing");
-              storyBtn.textContent = "🔊 Play Story";
+            function populateVoiceList() {
+              const voices = window.speechSynthesis.getVoices();
+              const jpVoices = voices.filter((v) => v.lang.startsWith("ja"));
+              voiceSelect.innerHTML = "";
+              if (jpVoices.length === 0) {
+                voices.forEach((v) => {
+                  const opt = document.createElement("option");
+                  opt.value = v.name;
+                  opt.textContent = `${v.name} (${v.lang})`;
+                  voiceSelect.appendChild(opt);
+                });
+              } else {
+                jpVoices.forEach((v) => {
+                  const opt = document.createElement("option");
+                  opt.value = v.name;
+                  opt.textContent = `${v.name} (${v.lang})`;
+                  const femaleHints = [
+                    "female",
+                    "女性",
+                    "kyoko",
+                    "o-ren",
+                    "mizuki",
+                    "nanami",
+                    "haruka",
+                    "sayaka",
+                    "ayumi",
+                  ];
+                  if (femaleHints.some((h) => v.name.toLowerCase().includes(h)))
+                    opt.selected = true;
+                  voiceSelect.appendChild(opt);
+                });
+              }
+              const selectedName = voiceSelect.value;
+              const selectedVoice = voices.find((v) => v.name === selectedName);
+              if (selectedVoice) chosenVoice = selectedVoice;
             }
-          }
-        });
-      }
 
-      function pickFemaleVoice() {
-        const selectedName = voiceSelect ? voiceSelect.value : "";
-        if (selectedName) {
-          const voices = window.speechSynthesis.getVoices();
-          const selected = voices.find((v) => v.name === selectedName);
-          if (selected) return selected;
-        }
-        const voices = window.speechSynthesis
-          .getVoices()
-          .filter(
-            (v) =>
-              v.lang === "ja-JP" ||
-              v.lang === "ja_JP" ||
-              v.lang.startsWith("ja"),
-          );
-        if (voices.length === 0) return null;
-        const femaleHints = [
-          "female",
-          "女性",
-          "kyoko",
-          "o-ren",
-          "mizuki",
-          "nanami",
-          "haruka",
-          "sayaka",
-          "ayumi",
-        ];
-        let v = voices.find((v) =>
-          femaleHints.some((h) => v.name.toLowerCase().includes(h)),
-        );
-        if (!v) v = voices[0];
-        return v;
-      }
-
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.onvoiceschanged = () => {
-          chosenVoice = pickFemaleVoice();
-        };
-        chosenVoice = pickFemaleVoice();
-      }
-
-      function speak(text, btn) {
-        if (!("speechSynthesis" in window)) {
-          alert("お使いのブラウザは音声読み上げに対応していません。");
-          return;
-        }
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = "ja-JP";
-        const rateSelect = document.getElementById("rateSelect");
-        utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
-        utter.pitch = 1.0;
-        if (!chosenVoice) chosenVoice = pickFemaleVoice();
-        if (chosenVoice) utter.voice = chosenVoice;
-        document
-          .querySelectorAll(".play-btn, .question-ctrl-btn.playing, .feedback-audio-btn, .q-feedback-audio-btn")
-          .forEach((b) => b.classList.remove("playing"));
-        if (btn) btn.classList.add("playing");
-        utter.onend = () => {
-          if (btn) btn.classList.remove("playing");
-        };
-        currentUtterance = utter;
-        window.speechSynthesis.speak(utter);
-      }
-
-      // ============================================================
-      // GLOBAL TOGGLE HANDLERS
-      // ============================================================
-      function applyGlobalToggles() {
-        document.body.classList.toggle("furigana-hidden", !globalShowFurigana);
-
-        document
-          .querySelectorAll('.global-toggle[data-toggle="furigana"]')
-          .forEach((btn) => {
-            btn.classList.toggle("active", globalShowFurigana);
-            const label = btn.querySelector(".toggle-label");
-            if (label)
-              label.textContent = globalShowFurigana
-                ? "Furigana On"
-                : "Furigana Off";
-          });
-
-        document
-          .querySelectorAll('.global-toggle[data-toggle="translation"]')
-          .forEach((btn) => {
-            btn.classList.toggle("active", globalShowTranslation);
-            const label = btn.querySelector(".toggle-label");
-            if (label)
-              label.textContent = globalShowTranslation
-                ? "Translation On"
-                : "Translation Off";
-          });
-
-        document
-          .querySelectorAll(".qtext-translation")
-          .forEach((el) => el.classList.toggle("show", globalShowTranslation));
-        document
-          .querySelectorAll(".choice-translation")
-          .forEach((el) => el.classList.toggle("show", globalShowTranslation));
-        document
-          .querySelectorAll(".feedback .script-translation")
-          .forEach((el) => el.classList.toggle("show", globalShowTranslation));
-        document
-          .querySelectorAll(".question-transcript .transcript-translation")
-          .forEach((el) => el.classList.toggle("show", globalShowTranslation));
-
-        const storyEnBlock = document.getElementById("storyEnglishBlock");
-        if (storyEnBlock)
-          storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
-
-        const questionTranslation = document.getElementById(
-          "questionTranslation",
-        );
-        if (questionTranslation)
-          questionTranslation.classList.toggle("show", globalShowTranslation);
-        document
-          .querySelectorAll(".q-choice-translation")
-          .forEach((el) => el.classList.toggle("show", globalShowTranslation));
-        const transcriptTranslation = document.getElementById(
-          "transcriptTranslation",
-        );
-        if (transcriptTranslation)
-          transcriptTranslation.classList.toggle("show", globalShowTranslation);
-        document
-          .querySelectorAll(".question-feedback .q-note-en")
-          .forEach((el) => el.classList.toggle("show", globalShowTranslation));
-      }
-
-      function setupGlobalToggles() {
-        document.body.addEventListener("click", (e) => {
-          const target = e.target.closest(".global-toggle");
-          if (!target) return;
-
-          const type = target.dataset.toggle;
-          if (type === "furigana") {
-            globalShowFurigana = !globalShowFurigana;
-          } else if (type === "translation") {
-            globalShowTranslation = !globalShowTranslation;
-          } else {
-            return;
-          }
-          applyGlobalToggles();
-        });
-      }
-
-      // ============================================================
-      // PROGRESS
-      // ============================================================
-      function updateProgress() {
-        document.getElementById("progressLabel").textContent =
-          answered + " / " + listeningQuestions.length + " Question 問";
-        document.getElementById("scoreLabel").textContent =
-          "Correct 正解 " + correct;
-        const pct =
-          listeningQuestions.length === 0
-            ? 0
-            : (answered / listeningQuestions.length) * 100;
-        document.getElementById("progressFill").style.width = pct + "%";
-      }
-
-      // ============================================================
-      // BUILD LISTENING CARDS (re-runnable)
-      // ============================================================
-      function buildListeningCards(questions) {
-        quizEl.innerHTML = "";
-        questions.forEach((q, qi) => {
-          const card = document.createElement("div");
-          card.className = "card";
-
-          const transcriptHtml = `
-            <div class="question-transcript" id="transcript-panel-${qi}">
-              <div class="transcript-label">
-                <span>📖 ${
-                  q.requiresInference
-                    ? "つながりを考（かんが）えよう (Connect the sentences)"
-                    : "ここまで読めば分かります (Read up to here)"
-                }</span>
-                <button class="transcript-play-btn" data-qi="${qi}" type="button">🔊 Play</button>
-              </div>
-              <div class="transcript-text">${q.html}</div>
-              <div class="transcript-translation">${q.scriptEn || ""}</div>
-            </div>
-          `;
-
-          const numLabel = qi < 10 ? kanjiNums[qi] : qi + 1;
-
-          card.innerHTML = `
-            <div class="qnum">
-              <span class="kanji-num">${numLabel}</span>Question 問${qi + 1}
-              <span style="font-size: 11px; color: #8a8270; margin-left: auto; font-weight: 400;">
-                📖 ${q.sprintTitle || ""}
-              </span>
-            </div>
-
-            <div class="audio-row">
-              <button class="play-btn" data-qi="${qi}" type="button">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Play Audio
-              </button>
-              <button class="stop-btn" data-qi="${qi}" type="button">
-                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
-                Stop
-              </button>
-              <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" data-state="pre" type="button">
-                🔊 Hear Context
-              </button>
-              <div class="global-toggles">
-  <button class="global-toggle" data-toggle="furigana" type="button">
-    <span class="toggle-icon">🔤</span>
-    <span class="toggle-label">Furigana On</span>
-  </button>
-  <button class="global-toggle" data-toggle="translation" type="button">
-    <span class="toggle-icon">🌎</span>
-    <span class="toggle-label">Translation Off</span>
-  </button>
-</div>
-            </div>
-
-            ${transcriptHtml}
-
-            <p class="qtext">${q.questionHtml}</p>
-            <p class="qtext-translation">${q.questionEn || ""}</p>
-            <div class="choices">
-              ${q.choicesHtml
-                .map(
-                  (c, ci) => `
-                <div class="choice" data-qi="${qi}" data-ci="${ci}">
-                  <span class="mark">${String.fromCharCode(65 + ci)}</span>
-                  <span class="choice-text">
-                    <span>${c}</span>
-                    <span class="choice-translation">${q.choicesEn && q.choicesEn[ci] ? q.choicesEn[ci] : ""}</span>
-                  </span>
-                  <button class="choice-audio-btn" data-qi="${qi}" data-ci="${ci}" title="Play this option" type="button">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                  </button>
-                </div>`,
-                )
-                .join("")}
-            </div>
-            <div class="feedback" id="fb-${qi}"></div>
-          `;
-          quizEl.appendChild(card);
-        });
-      }
-
-      // ============================================================
-      // SPRINT SELECTOR
-      // ============================================================
-      function buildSprintSelector() {
-        const selector = document.getElementById("sprintSelector");
-        if (!selector) return;
-        selector.innerHTML = `<button class="sprint-pill all-pill active" data-sprint="all" type="button">All Sprints</button>`;
-        const stories =
-          typeof sprintStoriesWithQA !== "undefined" ? sprintStoriesWithQA : [];
-        stories.forEach((story) => {
-          const btn = document.createElement("button");
-          btn.className = "sprint-pill";
-          if (story.id === 10) btn.classList.add("revision-pill");
-          btn.type = "button";
-          btn.dataset.sprint = story.id;
-          btn.textContent =
-            story.id === 10 ? "S10 ★" : `S${String(story.id).padStart(2, "0")}`;
-          btn.title = story.title;
-          selector.appendChild(btn);
-        });
-      }
-
-      function selectListeningSprint(sprintVal) {
-        currentListeningSprint = sprintVal;
-
-        document
-          .querySelectorAll("#sprintSelector .sprint-pill")
-          .forEach((p) => {
-            p.classList.toggle(
-              "active",
-              p.dataset.sprint === String(sprintVal),
-            );
-          });
-
-        if (sprintVal === "all") {
-          listeningQuestions = [...allListeningQuestions];
-        } else {
-          listeningQuestions = allListeningQuestions.filter(
-            (q) => q.sprintId === parseInt(sprintVal),
-          );
-        }
-
-        answered = 0;
-        correct = 0;
-        listeningTranscriptsOpen = {};
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
-        document
-          .querySelectorAll(".play-btn.playing, .question-ctrl-btn.playing")
-          .forEach((b) => b.classList.remove("playing"));
-
-        buildListeningCards(listeningQuestions);
-        updateProgress();
-        document.getElementById("scoreBanner").classList.remove("show");
-        applyGlobalToggles();
-      }
-
-      // ============================================================
-      // LISTENING CLICK HANDLERS
-      // ============================================================
-      quizEl.addEventListener("click", (e) => {
-        const stopBtn = e.target.closest(".stop-btn");
-        if (stopBtn) {
-          window.speechSynthesis.cancel();
-          document
-            .querySelectorAll(".play-btn, .question-ctrl-btn.playing, .feedback-audio-btn, .q-feedback-audio-btn")
-            .forEach((b) => b.classList.remove("playing"));
-          return;
-        }
-
-        const fbAudioBtn = e.target.closest(".feedback-audio-btn");
-        if (fbAudioBtn) {
-          e.stopPropagation();
-          const textToSpeak = fbAudioBtn.dataset.text;
-          speak(textToSpeak, fbAudioBtn);
-          return;
-        }
-
-        const playBtn = e.target.closest(".play-btn");
-        if (playBtn) {
-          const qi = playBtn.dataset.qi;
-          speak(listeningQuestions[qi].script, playBtn);
-          return;
-        }
-
-        const transcriptBtn = e.target.closest(".transcript-btn");
-        if (transcriptBtn) {
-          const qi = transcriptBtn.dataset.qi;
-          const q = listeningQuestions[qi];
-          const answeredYet =
-            quizEl.querySelector(`.choice[data-qi="${qi}"].disabled`) !== null;
-
-          // PRE-ANSWER: audio only, no text reveal
-          if (!answeredYet) {
-            speak(q.script, transcriptBtn);
-            return;
-          }
-
-          // POST-ANSWER: reveal transcript text
-          const panel = document.getElementById(`transcript-panel-${qi}`);
-          listeningTranscriptsOpen[qi] = !listeningTranscriptsOpen[qi];
-          panel.classList.toggle("show", listeningTranscriptsOpen[qi]);
-          transcriptBtn.classList.toggle(
-            "active",
-            listeningTranscriptsOpen[qi],
-          );
-          transcriptBtn.textContent = listeningTranscriptsOpen[qi]
-            ? "📖 Hide Transcript"
-            : "📖 Show Transcript";
-
-          if (listeningTranscriptsOpen[qi]) {
-            const transEl = panel.querySelector(".transcript-translation");
-            if (transEl)
-              transEl.classList.toggle("show", globalShowTranslation);
-          }
-          return;
-        }
-
-        const transcriptPlayBtn = e.target.closest(".transcript-play-btn");
-        if (transcriptPlayBtn) {
-          const qi = transcriptPlayBtn.dataset.qi;
-          const text = listeningQuestions[qi].script;
-          speak(text, null);
-          return;
-        }
-
-        const choiceAudioBtn = e.target.closest(".choice-audio-btn");
-        if (choiceAudioBtn) {
-          e.stopPropagation();
-          const qi = parseInt(choiceAudioBtn.dataset.qi);
-          const ci = parseInt(choiceAudioBtn.dataset.ci);
-          const q = listeningQuestions[qi];
-          speak(q.choices[ci].replace(/（[^（）]+）/g, ""), null);
-          return;
-        }
-
-        const choice = e.target.closest(".choice");
-        if (choice && !choice.classList.contains("disabled")) {
-          const qi = parseInt(choice.dataset.qi);
-          const ci = parseInt(choice.dataset.ci);
-          const q = listeningQuestions[qi];
-          const siblings = quizEl.querySelectorAll(`.choice[data-qi="${qi}"]`);
-          siblings.forEach((s) => s.classList.add("disabled"));
-          const isCorrect = ci === q.answer;
-          if (isCorrect) {
-            choice.classList.add("correct");
-            correct++;
-          } else {
-            choice.classList.add("wrong");
-            siblings[q.answer].classList.add("correct");
-          }
-          const fb = document.getElementById("fb-" + qi);
-          fb.classList.add("show", isCorrect ? "good" : "bad");
-          fb.innerHTML = `
-            <strong>${isCorrect ? "✅ 正解です！" : "❌ 残念、不正解です。"}</strong><br>
-            <div style="margin-top: 8px; font-size: 15px;">
-              <strong>Full Sentence:</strong> ${convertFurigana(q.note)}
-            </div>
-            <button class="feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
-              🔊 Play Sentence
-            </button>
-            <div class="script-translation" style="margin-top: 10px;">${q.noteEn || q.scriptEn || ""}</div>
-          `;
-          applyGlobalToggles();
-          answered++;
-          updateProgress();
-
-          // Flip transcript button to post-answer state
-          const tBtn = quizEl.querySelector(`.transcript-btn[data-qi="${qi}"]`);
-          if (tBtn) {
-            tBtn.dataset.state = "post";
-            tBtn.textContent = "📖 Show Transcript";
-          }
-        }
-      });
-
-      // Sprint pill click handler
-      document
-        .getElementById("sprintSelector")
-        .addEventListener("click", (e) => {
-          const pill = e.target.closest(".sprint-pill");
-          if (!pill) return;
-          selectListeningSprint(pill.dataset.sprint);
-        });
-
-      document.getElementById("summaryBtn").addEventListener("click", () => {
-        document.querySelectorAll(".choice").forEach((c) => {
-          const qi = parseInt(c.dataset.qi),
-            ci = parseInt(c.dataset.ci);
-          c.classList.add("disabled");
-          if (ci === listeningQuestions[qi].answer) c.classList.add("correct");
-        });
-        document.querySelectorAll(".feedback").forEach((fb, qi) => {
-          if (!fb.classList.contains("show")) {
-            fb.classList.add("show", "good");
-            fb.innerHTML = `
-              <strong>Correct answer (正解):</strong> ${String.fromCharCode(65 + listeningQuestions[qi].answer)}<br>
-              <div style="margin-top: 8px; font-size: 15px;">
-                <strong>Full Sentence:</strong> ${convertFurigana(listeningQuestions[qi].note)}
-              </div>
-              <button class="feedback-audio-btn" data-text="${listeningQuestions[qi].note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
-                🔊 Play Sentence
-              </button>
-              <div class="script-translation">${listeningQuestions[qi].noteEn || listeningQuestions[qi].scriptEn || ""}</div>
-            `;
-          }
-        });
-        // Flip all transcript buttons to post-answer state
-        document.querySelectorAll(".transcript-btn").forEach((btn) => {
-          if (btn.dataset.state !== "post") {
-            btn.dataset.state = "post";
-            btn.textContent = "📖 Show Transcript";
-          }
-        });
-        applyGlobalToggles();
-        answered = listeningQuestions.length;
-        updateProgress();
-        document.getElementById("scoreBanner").classList.add("show");
-        document.getElementById("finalScore").textContent =
-          correct + " / " + listeningQuestions.length;
-      });
-
-      // ============================================================
-      // STORY MODE
-      // ============================================================
-      let currentStoryIndex = 0;
-      let currentQuestionIndex = 0;
-      let storyAnswered = false;
-      let storyCorrect = 0;
-      let storySelectedChoices = [];
-      let storyUtterance = null;
-      let questionUtterance = null;
-      let transcriptOpen = false;
-
-      const storySection = document.getElementById("storyModeSection");
-      const storyTitle = document.getElementById("storyTitle");
-      const storyProgress = document.getElementById("storyProgress");
-      const storyTotal = document.getElementById("storyTotal");
-      const storyJpBlock = document.getElementById("storyJapaneseBlock");
-      const storyEnBlock = document.getElementById("storyEnglishBlock");
-      const storyPlayBtn = document.getElementById("storyPlayBtn");
-      const storyPrevBtn = document.getElementById("storyPrevBtn");
-      const storyNextBtn = document.getElementById("storyNextBtn");
-      const questionProgress = document.getElementById("questionProgress");
-      const currentQuestionEl = document.getElementById("currentQuestion");
-      const questionTranslation = document.getElementById(
-        "questionTranslation",
-      );
-      const questionChoicesEl = document.getElementById("questionChoices");
-      const questionFeedback = document.getElementById("questionFeedback");
-      const prevQuestionBtn = document.getElementById("prevQuestionBtn");
-      const nextQuestionBtn = document.getElementById("nextQuestionBtn");
-      const showAnswersBtn = document.getElementById("showAnswersBtn");
-      const questionTranscript = document.getElementById("questionTranscript");
-      const transcriptText = document.getElementById("transcriptText");
-      const transcriptTranslation = document.getElementById(
-        "transcriptTranslation",
-      );
-      const transcriptLabelText = document.getElementById(
-        "transcriptLabelText",
-      );
-      const transcriptPlayBtn = document.getElementById("transcriptPlayBtn");
-      const questionPlayBtn = document.getElementById("questionPlayBtn");
-      const questionStopBtn = document.getElementById("questionStopBtn");
-      const questionTranscriptBtn = document.getElementById(
-        "questionTranscriptBtn",
-      );
-
-      function getStories() {
-        if (
-          typeof sprintStoriesWithQA !== "undefined" &&
-          sprintStoriesWithQA.length > 0
-        ) {
-          return sprintStoriesWithQA;
-        }
-        console.warn("⚠️ sprintStoriesWithQA not found!");
-        return [];
-      }
-
-      function getCurrentStory() {
-        const stories = getStories();
-        if (currentStoryIndex < 0 || currentStoryIndex >= stories.length)
-          return null;
-        return stories[currentStoryIndex];
-      }
-
-      function getCurrentStoryQuestions() {
-        const story = getCurrentStory();
-        return story ? story.questions : [];
-      }
-
-      function getCurrentQuestion() {
-        const questions = getCurrentStoryQuestions();
-        if (
-          currentQuestionIndex < 0 ||
-          currentQuestionIndex >= questions.length
-        )
-          return null;
-        return questions[currentQuestionIndex];
-      }
-
-      function getQuestionContextSentences(story, question) {
-        if (!story || !question || !question.contextRange) return [];
-        return story.sentences.slice(
-          question.contextRange[0],
-          question.contextRange[1] + 1,
-        );
-      }
-
-      function renderStory(keepQuestionState) {
-        const stories = getStories();
-        if (stories.length === 0) {
-          storyJpBlock.innerHTML =
-            '<p style="color: #a02020;">⚠️ No stories loaded. Check storiesQ&A.js</p>';
-          storyEnBlock.innerHTML = "";
-          storyTitle.textContent = "No stories";
-          storyTotal.textContent = "0";
-          return;
-        }
-        const story = getCurrentStory();
-        if (!story) {
-          storyJpBlock.innerHTML =
-            '<p style="color: #a02020;">⚠️ Story not found.</p>';
-          return;
-        }
-        storyTitle.textContent = `📖 ${story.title}`;
-        storyTotal.textContent = stories.length;
-        storyProgress.textContent = `${currentStoryIndex + 1}`;
-
-        storyJpBlock.innerHTML = story.sentences
-          .map(
-            (s, i) =>
-              `<div class="story-sentence" data-idx="${i}">${convertFurigana(s.jp)}</div>`,
-          )
-          .join("");
-        storyEnBlock.innerHTML = story.sentences
-          .map((s) => `<div>${s.en}</div>`)
-          .join("");
-        storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
-
-        storyPrevBtn.disabled = currentStoryIndex === 0;
-        storyNextBtn.disabled = currentStoryIndex >= stories.length - 1;
-
-        if (!keepQuestionState) {
-          currentQuestionIndex = 0;
-          storyAnswered = false;
-          storySelectedChoices = [];
-          storyCorrect = 0;
-        }
-        renderQuestion();
-      }
-
-      function renderQuestion() {
-        const container = document.getElementById("questionContainer");
-        const questions = getCurrentStoryQuestions();
-        if (questions.length === 0) {
-          container.innerHTML =
-            '<p style="color: #8a8270;">No questions for this story.</p>';
-          return;
-        }
-        const q = getCurrentQuestion();
-        if (!q) {
-          container.innerHTML =
-            '<p style="color: #8a8270;">Question not found.</p>';
-          return;
-        }
-
-        questionProgress.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
-
-        currentQuestionEl.innerHTML = convertFurigana(q.question);
-
-        const qTranslation = q.questionEn || "";
-        questionTranslation.textContent = qTranslation;
-        questionTranslation.classList.toggle("show", globalShowTranslation);
-
-        const story = getCurrentStory();
-        const ctxSentences = getQuestionContextSentences(story, q);
-        if (ctxSentences.length > 0) {
-          transcriptText.innerHTML = ctxSentences
-            .map((s) => convertFurigana(s.jp))
-            .join("<br>");
-          transcriptTranslation.textContent = ctxSentences
-            .map((s) => s.en)
-            .join(" ");
-        } else {
-          transcriptText.textContent = "";
-          transcriptTranslation.textContent = "";
-        }
-
-        if (transcriptLabelText) {
-          transcriptLabelText.textContent = q.requiresInference
-            ? "📖 つながりを考（かんが）えよう (Connect the sentences)"
-            : "📖 ここまで読めば分かります (Read up to here)";
-        }
-
-        questionTranscript.classList.toggle("show", transcriptOpen);
-        questionTranscriptBtn.classList.toggle(
-          "transcript-open",
-          transcriptOpen,
-        );
-        questionTranscriptBtn.textContent = transcriptOpen
-          ? "📖 Hide Transcript"
-          : "📖 Transcript";
-        transcriptTranslation.classList.toggle("show", globalShowTranslation);
-
-        // Highlight the context sentences in the story block
-        document
-          .querySelectorAll(".story-sentence.context-highlight")
-          .forEach((el) => el.classList.remove("context-highlight"));
-        if (q.contextRange) {
-          for (let i = q.contextRange[0]; i <= q.contextRange[1]; i++) {
-            const el = document.querySelector(
-              `.story-sentence[data-idx="${i}"]`,
-            );
-            if (el) el.classList.add("context-highlight");
-          }
-        }
-
-        const letters = ["A", "B", "C", "D"];
-        let choicesHtml = "";
-        const selected = storySelectedChoices[currentQuestionIndex] || -1;
-        q.choices.forEach((choiceText, idx) => {
-          const isSelected = selected === idx;
-          let extraClass = "";
-          if (storyAnswered) {
-            if (idx === q.answer) extraClass += " correct";
-            else if (selected === idx) extraClass += " wrong";
-            extraClass += " disabled";
-          } else if (isSelected) {
-            extraClass += " selected";
-          }
-          choicesHtml += `
-            <div class="question-choice ${extraClass}" data-qidx="${currentQuestionIndex}" data-choice="${idx}">
-              <span class="choice-mark">${letters[idx]}</span>
-              <span class="q-choice-text">
-                <span>${convertFurigana(choiceText)}</span>
-                <span class="q-choice-translation">${q.choicesEn && q.choicesEn[idx] ? q.choicesEn[idx] : ""}</span>
-              </span>
-              <button class="q-choice-audio-btn" data-qidx="${currentQuestionIndex}" data-choice="${idx}" title="Play this option" type="button">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              </button>
-            </div>
-          `;
-        });
-        questionChoicesEl.innerHTML = choicesHtml;
-
-        if (storyAnswered && q.note) {
-          const isCorrect = selected === q.answer;
-          questionFeedback.className = `question-feedback show ${isCorrect ? "correct" : "wrong"}`;
-          questionFeedback.innerHTML = `
-            <strong>${isCorrect ? "✅ Correct!" : "❌ Not quite."}</strong><br>
-            <div style="margin-top: 8px; font-size: 15px;">
-              <strong>Full Sentence:</strong> ${convertFurigana(q.note)}
-            </div>
-            <button class="q-feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
-              🔊 Play Sentence
-            </button>
-            ${q.noteEn ? `<div class="q-note-en ${globalShowTranslation ? "show" : ""}" style="margin-top: 8px;">${q.noteEn}</div>` : ""}
-          `;
-        } else {
-          questionFeedback.className = "question-feedback";
-          questionFeedback.innerHTML = "";
-        }
-
-        prevQuestionBtn.disabled = currentQuestionIndex === 0;
-        nextQuestionBtn.disabled = currentQuestionIndex >= questions.length - 1;
-
-        document
-          .querySelectorAll(".question-choice:not(.disabled)")
-          .forEach((el) => {
-            el.addEventListener("click", handleQuestionChoice);
-          });
-        document.querySelectorAll(".q-choice-audio-btn").forEach((el) => {
-          el.addEventListener("click", handleChoiceAudio);
-        });
-        document.querySelectorAll(".q-feedback-audio-btn").forEach((el) => {
-          el.addEventListener("click", (e) => {
-            e.stopPropagation();
-            speak(e.currentTarget.dataset.text, e.currentTarget);
-          });
-        });
-
-        applyGlobalToggles();
-      }
-
-      function handleChoiceAudio(e) {
-        e.stopPropagation();
-        const qidx = parseInt(e.currentTarget.dataset.qidx);
-        const choice = parseInt(e.currentTarget.dataset.choice);
-        const q = getCurrentStoryQuestions()[qidx];
-        if (!q) return;
-        speak(q.choices[choice].replace(/（[^（）]+）/g, ""), null);
-      }
-
-      function handleQuestionChoice(e) {
-        const el = e.currentTarget;
-        if (storyAnswered) return;
-        const qidx = parseInt(el.dataset.qidx);
-        const choice = parseInt(el.dataset.choice);
-        const q = getCurrentStoryQuestions()[qidx];
-        if (isNaN(choice) || !q) return;
-        storySelectedChoices[qidx] = choice;
-        storyAnswered = true;
-        if (choice === q.answer) storyCorrect++;
-        renderQuestion();
-      }
-
-      function goToStory(index) {
-        const stories = getStories();
-        if (index < 0 || index >= stories.length) return;
-        currentStoryIndex = index;
-        currentQuestionIndex = 0;
-        storyAnswered = false;
-        storyCorrect = 0;
-        storySelectedChoices = [];
-        transcriptOpen = false;
-        if (storyUtterance) {
-          window.speechSynthesis.cancel();
-          storyUtterance = null;
-          storyPlayBtn.classList.remove("playing");
-          storyPlayBtn.textContent = "🔊 Play Story";
-        }
-        renderStory(false);
-      }
-
-      function prevStory() {
-        if (currentStoryIndex > 0) goToStory(currentStoryIndex - 1);
-      }
-      function nextStory() {
-        if (currentStoryIndex < getStories().length - 1)
-          goToStory(currentStoryIndex + 1);
-      }
-      function prevQuestion() {
-        if (currentQuestionIndex > 0) {
-          currentQuestionIndex--;
-          storyAnswered = false;
-          transcriptOpen = false;
-          renderQuestion();
-        }
-      }
-      function nextQuestion() {
-        const questions = getCurrentStoryQuestions();
-        if (currentQuestionIndex < questions.length - 1) {
-          currentQuestionIndex++;
-          storyAnswered = false;
-          transcriptOpen = false;
-          renderQuestion();
-        }
-      }
-
-      function showAllAnswers() {
-        const questions = getCurrentStoryQuestions();
-        questions.forEach((q, idx) => {
-          if (storySelectedChoices[idx] === undefined)
-            storySelectedChoices[idx] = q.answer;
-          if (idx === currentQuestionIndex) storyAnswered = true;
-        });
-        renderQuestion();
-      }
-
-      function playStoryAudio() {
-        const story = getCurrentStory();
-        if (!story) return;
-        if (storyUtterance) {
-          window.speechSynthesis.cancel();
-          storyUtterance = null;
-          storyPlayBtn.classList.remove("playing");
-          storyPlayBtn.textContent = "🔊 Play Story";
-          return;
-        }
-        let text = story.sentences
-          .map((s) => s.jp.replace(/（[^（）]+）/g, ""))
-          .join("。");
-        if (!("speechSynthesis" in window)) {
-          alert("Speech synthesis not supported.");
-          return;
-        }
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = "ja-JP";
-        const rateSelect = document.getElementById("rateSelect");
-        utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
-        utter.pitch = 1.0;
-        if (!chosenVoice) chosenVoice = pickFemaleVoice();
-        if (chosenVoice) utter.voice = chosenVoice;
-        storyUtterance = utter;
-        storyPlayBtn.classList.add("playing");
-        storyPlayBtn.textContent = "⏹️ Stop";
-        utter.onend = () => {
-          storyUtterance = null;
-          storyPlayBtn.classList.remove("playing");
-          storyPlayBtn.textContent = "🔊 Play Story";
-        };
-        window.speechSynthesis.speak(utter);
-      }
-
-      function playTranscript() {
-        const story = getCurrentStory();
-        const q = getCurrentQuestion();
-        if (!story || !q) return;
-        const ctxSentences = getQuestionContextSentences(story, q);
-        if (ctxSentences.length === 0) return;
-        const text = ctxSentences
-          .map((s) => s.jp.replace(/（[^（）]+）/g, ""))
-          .join("。");
-        speak(text, null);
-      }
-
-      function playQuestionAudio() {
-        const q = getCurrentQuestion();
-        if (!q) return;
-        if (questionUtterance) {
-          window.speechSynthesis.cancel();
-          questionUtterance = null;
-          questionPlayBtn.classList.remove("playing");
-          return;
-        }
-        const text = [
-          q.question.replace(/（[^（）]+）/g, ""),
-          ...q.choices.map((c) => c.replace(/（[^（）]+）/g, "")),
-        ].join("。");
-        if (!("speechSynthesis" in window)) {
-          alert("Speech synthesis not supported.");
-          return;
-        }
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = "ja-JP";
-        const rateSelect = document.getElementById("rateSelect");
-        utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
-        utter.pitch = 1.0;
-        if (!chosenVoice) chosenVoice = pickFemaleVoice();
-        if (chosenVoice) utter.voice = chosenVoice;
-        questionUtterance = utter;
-        questionPlayBtn.classList.add("playing");
-        utter.onend = () => {
-          questionUtterance = null;
-          questionPlayBtn.classList.remove("playing");
-        };
-        window.speechSynthesis.speak(utter);
-      }
-
-      function stopQuestionAudio() {
-        if (questionUtterance) {
-          window.speechSynthesis.cancel();
-          questionUtterance = null;
-        }
-        questionPlayBtn.classList.remove("playing");
-      }
-
-      function toggleTranscript() {
-        // Story mode: before answering, read the context aloud only;
-        // after answering, reveal the text.
-        const q = getCurrentQuestion();
-        if (!q) return;
-
-        if (!storyAnswered) {
-          playTranscript();
-          return;
-        }
-
-        transcriptOpen = !transcriptOpen;
-        questionTranscript.classList.toggle("show", transcriptOpen);
-        questionTranscriptBtn.classList.toggle(
-          "transcript-open",
-          transcriptOpen,
-        );
-        questionTranscriptBtn.textContent = transcriptOpen
-          ? "📖 Hide Transcript"
-          : "📖 Show Transcript";
-      }
-
-      // ============================================================
-      // MODE SWITCHING
-      // ============================================================
-      function switchMode(mode) {
-        const listeningSection = document.getElementById("listeningSection");
-        const storySectionEl = document.getElementById("storyModeSection");
-        const progressRow = document.querySelector(".progress-row");
-        const footer = document.querySelector("footer");
-
-        if (mode === "story") {
-          listeningSection.style.display = "none";
-          storySectionEl.style.display = "block";
-          if (progressRow) progressRow.style.display = "none";
-          if (footer) footer.style.display = "none";
-          if (getStories().length > 0) renderStory(true);
-        } else {
-          listeningSection.style.display = "block";
-          storySectionEl.style.display = "none";
-          if (progressRow) progressRow.style.display = "flex";
-          if (footer) footer.style.display = "block";
-        }
-
-        document.querySelectorAll(".mode-tab").forEach((tab) => {
-          tab.classList.toggle("active", tab.dataset.mode === mode);
-        });
-      }
-
-      // ============================================================
-      // INIT
-      // ============================================================
-      let __appInitialized = false;
-
-      function initApp() {
-        if (__appInitialized) return;
-        __appInitialized = true;
-
-        const tabs = document.querySelectorAll(".mode-tab");
-        tabs.forEach((tab) => {
-          tab.addEventListener("click", () => switchMode(tab.dataset.mode));
-        });
-
-        try {
-          if (storyPrevBtn) storyPrevBtn.addEventListener("click", prevStory);
-          if (storyNextBtn) storyNextBtn.addEventListener("click", nextStory);
-          if (storyPlayBtn)
-            storyPlayBtn.addEventListener("click", playStoryAudio);
-          if (prevQuestionBtn)
-            prevQuestionBtn.addEventListener("click", prevQuestion);
-          if (nextQuestionBtn)
-            nextQuestionBtn.addEventListener("click", nextQuestion);
-          if (showAnswersBtn)
-            showAnswersBtn.addEventListener("click", showAllAnswers);
-          if (transcriptPlayBtn)
-            transcriptPlayBtn.addEventListener("click", playTranscript);
-          if (questionPlayBtn)
-            questionPlayBtn.addEventListener("click", playQuestionAudio);
-          if (questionStopBtn)
-            questionStopBtn.addEventListener("click", stopQuestionAudio);
-          if (questionTranscriptBtn)
-            questionTranscriptBtn.addEventListener("click", toggleTranscript);
-        } catch (err) {
-          console.error("Error binding story controls:", err);
-        }
-
-        const header = document.getElementById("appHeader");
-        const headerObserver = new IntersectionObserver(
-          ([e]) => e.target.classList.toggle("stuck", e.intersectionRatio < 1),
-          { threshold: [1] },
-        );
-        headerObserver.observe(header);
-
-        setupGlobalToggles();
-
-        // === Initialize Listening UI ===
-        buildSprintSelector();
-        buildListeningCards(listeningQuestions);
-        updateProgress();
-
-        try {
-          const stories = getStories();
-          if (stories.length > 0) {
-            console.log(`✅ Loaded ${stories.length} stories with Q&A`);
-            storyTotal.textContent = stories.length;
-            currentStoryIndex = 0;
-            renderStory(false);
-          }
-        } catch (err) {
-          console.error("Error initializing story mode:", err);
-        }
-
-        const activeTab = document.querySelector(".mode-tab.active");
-        if (activeTab && activeTab.dataset.mode === "story") {
-          switchMode("story");
-        }
-
-        try {
-          applyGlobalToggles();
-        } catch (err) {
-          console.error(err);
-        }
-
-        const rateSelectEl = document.getElementById("rateSelect");
-        const rateIndicatorEl = document.getElementById("rateIndicator");
-        if (rateSelectEl && rateIndicatorEl) {
-          const updateRateIndicator = () => {
-            rateIndicatorEl.textContent =
-              parseFloat(rateSelectEl.value).toFixed(2) + "×";
-          };
-          updateRateIndicator();
-          rateSelectEl.addEventListener("change", () => {
-            updateRateIndicator();
-            if (window.speechSynthesis && window.speechSynthesis.speaking) {
+            if (window.speechSynthesis) {
+              window.speechSynthesis.onvoiceschanged = () => {
+                populateVoiceList();
+                chosenVoice = pickFemaleVoice();
+              };
+              setTimeout(populateVoiceList, 100);
+            }
+
+            if (voiceSelect) {
+              voiceSelect.addEventListener("change", function () {
+                const voices = window.speechSynthesis.getVoices();
+                const selected = voices.find((v) => v.name === this.value);
+                if (selected) {
+                  chosenVoice = selected;
+                  window.speechSynthesis.cancel();
+                  document
+                    .querySelectorAll(".play-btn, .question-ctrl-btn.playing")
+                    .forEach((b) => b.classList.remove("playing"));
+                  const storyBtn = document.getElementById("storyPlayBtn");
+                  if (storyBtn) {
+                    storyBtn.classList.remove("playing");
+                    storyBtn.textContent = "🔊 Play Story";
+                  }
+                }
+              });
+            }
+
+            function pickFemaleVoice() {
+              const selectedName = voiceSelect ? voiceSelect.value : "";
+              if (selectedName) {
+                const voices = window.speechSynthesis.getVoices();
+                const selected = voices.find((v) => v.name === selectedName);
+                if (selected) return selected;
+              }
+              const voices = window.speechSynthesis
+                .getVoices()
+                .filter(
+                  (v) =>
+                    v.lang === "ja-JP" ||
+                    v.lang === "ja_JP" ||
+                    v.lang.startsWith("ja"),
+                );
+              if (voices.length === 0) return null;
+              const femaleHints = [
+                "female",
+                "女性",
+                "kyoko",
+                "o-ren",
+                "mizuki",
+                "nanami",
+                "haruka",
+                "sayaka",
+                "ayumi",
+              ];
+              let v = voices.find((v) =>
+                femaleHints.some((h) => v.name.toLowerCase().includes(h)),
+              );
+              if (!v) v = voices[0];
+              return v;
+            }
+
+            if ("speechSynthesis" in window) {
+              window.speechSynthesis.onvoiceschanged = () => {
+                chosenVoice = pickFemaleVoice();
+              };
+              chosenVoice = pickFemaleVoice();
+            }
+
+            function speak(text, btn) {
+              if (!("speechSynthesis" in window)) {
+                alert("お使いのブラウザは音声読み上げに対応していません。");
+                return;
+              }
               window.speechSynthesis.cancel();
+              const utter = new SpeechSynthesisUtterance(text);
+              utter.lang = "ja-JP";
+              const rateSelect = document.getElementById("rateSelect");
+              utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
+              utter.pitch = 1.0;
+              if (!chosenVoice) chosenVoice = pickFemaleVoice();
+              if (chosenVoice) utter.voice = chosenVoice;
+              document
+                .querySelectorAll(".play-btn, .question-ctrl-btn.playing, .feedback-audio-btn, .q-feedback-audio-btn")
+                .forEach((b) => b.classList.remove("playing"));
+              if (btn) btn.classList.add("playing");
+              utter.onend = () => {
+                if (btn) btn.classList.remove("playing");
+              };
+              currentUtterance = utter;
+              window.speechSynthesis.speak(utter);
             }
-          });
-        }
 
-        console.log("✅ App initialized");
-      }
+            // ============================================================
+            // GLOBAL TOGGLE HANDLERS
+            // ============================================================
+            function applyGlobalToggles() {
+              document.body.classList.toggle("furigana-hidden", !globalShowFurigana);
 
-      document.addEventListener("DOMContentLoaded", initApp);
-      if (
-        document.readyState === "complete" ||
-        document.readyState === "interactive"
-      ) {
-        initApp();
-      }
+              document
+                .querySelectorAll('.global-toggle[data-toggle="furigana"]')
+                .forEach((btn) => {
+                  btn.classList.toggle("active", globalShowFurigana);
+                  const label = btn.querySelector(".toggle-label");
+                  if (label)
+                    label.textContent = globalShowFurigana
+                      ? "Furigana On"
+                      : "Furigana Off";
+                });
+
+              document
+                .querySelectorAll('.global-toggle[data-toggle="translation"]')
+                .forEach((btn) => {
+                  btn.classList.toggle("active", globalShowTranslation);
+                  const label = btn.querySelector(".toggle-label");
+                  if (label)
+                    label.textContent = globalShowTranslation
+                      ? "Translation On"
+                      : "Translation Off";
+                });
+
+              document
+                .querySelectorAll(".qtext-translation")
+                .forEach((el) => el.classList.toggle("show", globalShowTranslation));
+              document
+                .querySelectorAll(".choice-translation")
+                .forEach((el) => el.classList.toggle("show", globalShowTranslation));
+              document
+                .querySelectorAll(".feedback .script-translation")
+                .forEach((el) => el.classList.toggle("show", globalShowTranslation));
+              document
+                .querySelectorAll(".question-transcript .transcript-translation")
+                .forEach((el) => el.classList.toggle("show", globalShowTranslation));
+
+              const storyEnBlock = document.getElementById("storyEnglishBlock");
+              if (storyEnBlock)
+                storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
+
+              const questionTranslation = document.getElementById(
+                "questionTranslation",
+              );
+              if (questionTranslation)
+                questionTranslation.classList.toggle("show", globalShowTranslation);
+              document
+                .querySelectorAll(".q-choice-translation")
+                .forEach((el) => el.classList.toggle("show", globalShowTranslation));
+              const transcriptTranslation = document.getElementById(
+                "transcriptTranslation",
+              );
+              if (transcriptTranslation)
+                transcriptTranslation.classList.toggle("show", globalShowTranslation);
+              document
+                .querySelectorAll(".question-feedback .q-note-en")
+                .forEach((el) => el.classList.toggle("show", globalShowTranslation));
+            }
+
+            function setupGlobalToggles() {
+              document.body.addEventListener("click", (e) => {
+                const target = e.target.closest(".global-toggle");
+                if (!target) return;
+
+                const type = target.dataset.toggle;
+                if (type === "furigana") {
+                  globalShowFurigana = !globalShowFurigana;
+                } else if (type === "translation") {
+                  globalShowTranslation = !globalShowTranslation;
+                } else {
+                  return;
+                }
+                applyGlobalToggles();
+              });
+            }
+
+            // ============================================================
+            // PROGRESS
+            // ============================================================
+            function updateProgress() {
+              document.getElementById("progressLabel").textContent =
+                answered + " / " + listeningQuestions.length + " Question 問";
+              document.getElementById("scoreLabel").textContent =
+                "Correct 正解 " + correct;
+              const pct =
+                listeningQuestions.length === 0
+                  ? 0
+                  : (answered / listeningQuestions.length) * 100;
+              document.getElementById("progressFill").style.width = pct + "%";
+            }
+
+            // ============================================================
+            // BUILD LISTENING CARDS (re-runnable)
+            // ============================================================
+            function buildListeningCards(questions) {
+              quizEl.innerHTML = "";
+              questions.forEach((q, qi) => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                const transcriptHtml = `
+                  <div class="question-transcript" id="transcript-panel-${qi}">
+                    <div class="transcript-label">
+                      <span>📖 ${
+                        q.requiresInference
+                          ? "つながりを考（かんが）えよう (Connect the sentences)"
+                          : "ここまで読めば分かります (Read up to here)"
+                      }</span>
+                      <button class="transcript-play-btn" data-qi="${qi}" type="button">🔊 Play</button>
+                    </div>
+                    <div class="transcript-text">${q.html}</div>
+                    <div class="transcript-translation">${q.scriptEn || ""}</div>
+                  </div>
+                `;
+
+                const numLabel = qi < 10 ? kanjiNums[qi] : qi + 1;
+
+                card.innerHTML = `
+                  <div class="qnum">
+                    <span class="kanji-num">${numLabel}</span>Question 問${qi + 1}
+                    <span style="font-size: 11px; color: #8a8270; margin-left: auto; font-weight: 400;">
+                      📖 ${q.sprintTitle || ""}
+                    </span>
+                  </div>
+
+                  <div class="audio-row">
+                    <button class="play-btn" data-qi="${qi}" type="button">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      Play Audio
+                    </button>
+                    <button class="stop-btn" data-qi="${qi}" type="button">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+                      Stop
+                    </button>
+                    <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" data-state="pre" type="button">
+                      🔊 Hear Context
+                    </button>
+                    <div class="global-toggles">
+        <button class="global-toggle" data-toggle="furigana" type="button">
+          <span class="toggle-icon">🔤</span>
+          <span class="toggle-label">Furigana On</span>
+        </button>
+        <button class="global-toggle" data-toggle="translation" type="button">
+          <span class="toggle-icon">🌎</span>
+          <span class="toggle-label">Translation Off</span>
+        </button>
+      </div>
+                  </div>
+
+                  ${transcriptHtml}
+
+                  <p class="qtext">${q.questionHtml}</p>
+                  <p class="qtext-translation">${q.questionEn || ""}</p>
+                  <div class="choices">
+                    ${q.choicesHtml
+                      .map(
+                        (c, ci) => `
+                      <div class="choice" data-qi="${qi}" data-ci="${ci}">
+                        <span class="mark">${String.fromCharCode(65 + ci)}</span>
+                        <span class="choice-text">
+                          <span>${c}</span>
+                          <span class="choice-translation">${q.choicesEn && q.choicesEn[ci] ? q.choicesEn[ci] : ""}</span>
+                        </span>
+                        <button class="choice-audio-btn" data-qi="${qi}" data-ci="${ci}" title="Play this option" type="button">
+                          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                      </div>`,
+                      )
+                      .join("")}
+                  </div>
+                  <div class="feedback" id="fb-${qi}"></div>
+                `;
+                quizEl.appendChild(card);
+              });
+            }
+
+            // ============================================================
+            // SPRINT SELECTOR
+            // ============================================================
+            function buildSprintSelector() {
+              const selector = document.getElementById("sprintSelector");
+              if (!selector) return;
+              selector.innerHTML = `<button class="sprint-pill all-pill active" data-sprint="all" type="button">All Sprints</button>`;
+              const stories =
+                typeof sprintStoriesWithQA !== "undefined" ? sprintStoriesWithQA : [];
+              stories.forEach((story) => {
+                const btn = document.createElement("button");
+                btn.className = "sprint-pill";
+                if (story.id === 10) btn.classList.add("revision-pill");
+                btn.type = "button";
+                btn.dataset.sprint = story.id;
+                btn.textContent =
+                  story.id === 10 ? "S10 ★" : `S${String(story.id).padStart(2, "0")}`;
+                btn.title = story.title;
+                selector.appendChild(btn);
+              });
+            }
+
+            function selectListeningSprint(sprintVal) {
+              currentListeningSprint = sprintVal;
+
+              document
+                .querySelectorAll("#sprintSelector .sprint-pill")
+                .forEach((p) => {
+                  p.classList.toggle(
+                    "active",
+                    p.dataset.sprint === String(sprintVal),
+                  );
+                });
+
+              if (sprintVal === "all") {
+                listeningQuestions = [...allListeningQuestions];
+              } else {
+                listeningQuestions = allListeningQuestions.filter(
+                  (q) => q.sprintId === parseInt(sprintVal),
+                );
+              }
+
+              answered = 0;
+              correct = 0;
+              listeningTranscriptsOpen = {};
+              if (window.speechSynthesis) window.speechSynthesis.cancel();
+              document
+                .querySelectorAll(".play-btn.playing, .question-ctrl-btn.playing")
+                .forEach((b) => b.classList.remove("playing"));
+
+              buildListeningCards(listeningQuestions);
+              updateProgress();
+              document.getElementById("scoreBanner").classList.remove("show");
+              applyGlobalToggles();
+            }
+
+            // ============================================================
+            // LISTENING CLICK HANDLERS
+            // ============================================================
+            quizEl.addEventListener("click", (e) => {
+              const stopBtn = e.target.closest(".stop-btn");
+              if (stopBtn) {
+                window.speechSynthesis.cancel();
+                document
+                  .querySelectorAll(".play-btn, .question-ctrl-btn.playing, .feedback-audio-btn, .q-feedback-audio-btn")
+                  .forEach((b) => b.classList.remove("playing"));
+                return;
+              }
+
+              const fbAudioBtn = e.target.closest(".feedback-audio-btn");
+              if (fbAudioBtn) {
+                e.stopPropagation();
+                const textToSpeak = fbAudioBtn.dataset.text;
+                speak(textToSpeak, fbAudioBtn);
+                return;
+              }
+
+              const playBtn = e.target.closest(".play-btn");
+              if (playBtn) {
+                const qi = playBtn.dataset.qi;
+                speak(listeningQuestions[qi].script, playBtn);
+                return;
+              }
+
+              const transcriptBtn = e.target.closest(".transcript-btn");
+              if (transcriptBtn) {
+                const qi = transcriptBtn.dataset.qi;
+                const q = listeningQuestions[qi];
+                const answeredYet =
+                  quizEl.querySelector(`.choice[data-qi="${qi}"].disabled`) !== null;
+
+                // PRE-ANSWER: audio only, no text reveal
+                if (!answeredYet) {
+                  speak(q.script, transcriptBtn);
+                  return;
+                }
+
+                // POST-ANSWER: reveal transcript text
+                const panel = document.getElementById(`transcript-panel-${qi}`);
+                listeningTranscriptsOpen[qi] = !listeningTranscriptsOpen[qi];
+                panel.classList.toggle("show", listeningTranscriptsOpen[qi]);
+                transcriptBtn.classList.toggle(
+                  "active",
+                  listeningTranscriptsOpen[qi],
+                );
+                transcriptBtn.textContent = listeningTranscriptsOpen[qi]
+                  ? "📖 Hide Transcript"
+                  : "📖 Show Transcript";
+
+                if (listeningTranscriptsOpen[qi]) {
+                  const transEl = panel.querySelector(".transcript-translation");
+                  if (transEl)
+                    transEl.classList.toggle("show", globalShowTranslation);
+                }
+                return;
+              }
+
+              const transcriptPlayBtn = e.target.closest(".transcript-play-btn");
+              if (transcriptPlayBtn) {
+                const qi = transcriptPlayBtn.dataset.qi;
+                const text = listeningQuestions[qi].script;
+                speak(text, null);
+                return;
+              }
+
+              const choiceAudioBtn = e.target.closest(".choice-audio-btn");
+              if (choiceAudioBtn) {
+                e.stopPropagation();
+                const qi = parseInt(choiceAudioBtn.dataset.qi);
+                const ci = parseInt(choiceAudioBtn.dataset.ci);
+                const q = listeningQuestions[qi];
+                speak(q.choices[ci].replace(/（[^（）]+）/g, ""), null);
+                return;
+              }
+
+              const choice = e.target.closest(".choice");
+              if (choice && !choice.classList.contains("disabled")) {
+                const qi = parseInt(choice.dataset.qi);
+                const ci = parseInt(choice.dataset.ci);
+                const q = listeningQuestions[qi];
+                const siblings = quizEl.querySelectorAll(`.choice[data-qi="${qi}"]`);
+                siblings.forEach((s) => s.classList.add("disabled"));
+                const isCorrect = ci === q.answer;
+                if (isCorrect) {
+                  choice.classList.add("correct");
+                  correct++;
+                } else {
+                  choice.classList.add("wrong");
+                  siblings[q.answer].classList.add("correct");
+                }
+                const fb = document.getElementById("fb-" + qi);
+                fb.classList.add("show", isCorrect ? "good" : "bad");
+                fb.innerHTML = `
+                  <strong>${isCorrect ? "✅ 正解です！" : "❌ 残念、不正解です。"}</strong><br>
+                  <div style="margin-top: 8px; font-size: 15px;">
+                    <strong>Full Sentence:</strong> ${getAnnotatedNote(q, getStories().find(s => s.id === q.sprintId))}
+                  </div>
+                  <button class="feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                    🔊 Play Sentence
+                  </button>
+                  <div class="script-translation" style="margin-top: 10px;">${q.noteEn || q.scriptEn || ""}</div>
+                `;
+                applyGlobalToggles();
+                answered++;
+                updateProgress();
+
+                // Flip transcript button to post-answer state
+                const tBtn = quizEl.querySelector(`.transcript-btn[data-qi="${qi}"]`);
+                if (tBtn) {
+                  tBtn.dataset.state = "post";
+                  tBtn.textContent = "📖 Show Transcript";
+                }
+              }
+            });
+
+            // Sprint pill click handler
+            document
+              .getElementById("sprintSelector")
+              .addEventListener("click", (e) => {
+                const pill = e.target.closest(".sprint-pill");
+                if (!pill) return;
+                selectListeningSprint(pill.dataset.sprint);
+              });
+
+            document.getElementById("summaryBtn").addEventListener("click", () => {
+              document.querySelectorAll(".choice").forEach((c) => {
+                const qi = parseInt(c.dataset.qi),
+                  ci = parseInt(c.dataset.ci);
+                c.classList.add("disabled");
+                if (ci === listeningQuestions[qi].answer) c.classList.add("correct");
+              });
+              document.querySelectorAll(".feedback").forEach((fb, qi) => {
+                if (!fb.classList.contains("show")) {
+                  fb.classList.add("show", "good");
+                  fb.innerHTML = `
+                    <strong>Correct answer (正解):</strong> ${String.fromCharCode(65 + listeningQuestions[qi].answer)}<br>
+                    <div style="margin-top: 8px; font-size: 15px;">
+                      <strong>Full Sentence:</strong> ${convertFurigana(listeningQuestions[qi].note)}
+                    </div>
+                    <button class="feedback-audio-btn" data-text="${listeningQuestions[qi].note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                      🔊 Play Sentence
+                    </button>
+                    <div class="script-translation">${listeningQuestions[qi].noteEn || listeningQuestions[qi].scriptEn || ""}</div>
+                  `;
+                }
+              });
+              // Flip all transcript buttons to post-answer state
+              document.querySelectorAll(".transcript-btn").forEach((btn) => {
+                if (btn.dataset.state !== "post") {
+                  btn.dataset.state = "post";
+                  btn.textContent = "📖 Show Transcript";
+                }
+              });
+              applyGlobalToggles();
+              answered = listeningQuestions.length;
+              updateProgress();
+              document.getElementById("scoreBanner").classList.add("show");
+              document.getElementById("finalScore").textContent =
+                correct + " / " + listeningQuestions.length;
+            });
+
+            // ============================================================
+            // STORY MODE
+            // ============================================================
+            let currentStoryIndex = 0;
+            let currentQuestionIndex = 0;
+            let storyAnswered = false;
+            let storyCorrect = 0;
+            let storySelectedChoices = [];
+            let storyUtterance = null;
+            let questionUtterance = null;
+            let transcriptOpen = false;
+
+            const storySection = document.getElementById("storyModeSection");
+            const storyTitle = document.getElementById("storyTitle");
+            const storyProgress = document.getElementById("storyProgress");
+            const storyTotal = document.getElementById("storyTotal");
+            const storyJpBlock = document.getElementById("storyJapaneseBlock");
+            const storyEnBlock = document.getElementById("storyEnglishBlock");
+            const storyPlayBtn = document.getElementById("storyPlayBtn");
+            const storyPrevBtn = document.getElementById("storyPrevBtn");
+            const storyNextBtn = document.getElementById("storyNextBtn");
+            const questionProgress = document.getElementById("questionProgress");
+            const currentQuestionEl = document.getElementById("currentQuestion");
+            const questionTranslation = document.getElementById(
+              "questionTranslation",
+            );
+            const questionChoicesEl = document.getElementById("questionChoices");
+            const questionFeedback = document.getElementById("questionFeedback");
+            const prevQuestionBtn = document.getElementById("prevQuestionBtn");
+            const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+            const showAnswersBtn = document.getElementById("showAnswersBtn");
+            const questionTranscript = document.getElementById("questionTranscript");
+            const transcriptText = document.getElementById("transcriptText");
+            const transcriptTranslation = document.getElementById(
+              "transcriptTranslation",
+            );
+            const transcriptLabelText = document.getElementById(
+              "transcriptLabelText",
+            );
+            const transcriptPlayBtn = document.getElementById("transcriptPlayBtn");
+            const questionPlayBtn = document.getElementById("questionPlayBtn");
+            const questionStopBtn = document.getElementById("questionStopBtn");
+            const questionTranscriptBtn = document.getElementById(
+              "questionTranscriptBtn",
+            );
+
+            function getStories() {
+              if (
+                typeof sprintStoriesWithQA !== "undefined" &&
+                sprintStoriesWithQA.length > 0
+              ) {
+                return sprintStoriesWithQA;
+              }
+              console.warn("⚠️ sprintStoriesWithQA not found!");
+              return [];
+            }
+
+            function getCurrentStory() {
+              const stories = getStories();
+              if (currentStoryIndex < 0 || currentStoryIndex >= stories.length)
+                return null;
+              return stories[currentStoryIndex];
+            }
+
+            function getCurrentStoryQuestions() {
+              const story = getCurrentStory();
+              return story ? story.questions : [];
+            }
+
+            function getCurrentQuestion() {
+              const questions = getCurrentStoryQuestions();
+              if (
+                currentQuestionIndex < 0 ||
+                currentQuestionIndex >= questions.length
+              )
+                return null;
+              return questions[currentQuestionIndex];
+            }
+
+            function getQuestionContextSentences(story, question) {
+              if (!story || !question || !question.contextRange) return [];
+              return story.sentences.slice(
+                question.contextRange[0],
+                question.contextRange[1] + 1,
+              );
+            }
+
+            function renderStory(keepQuestionState) {
+              const stories = getStories();
+              if (stories.length === 0) {
+                storyJpBlock.innerHTML =
+                  '<p style="color: #a02020;">⚠️ No stories loaded. Check storiesQ&A.js</p>';
+                storyEnBlock.innerHTML = "";
+                storyTitle.textContent = "No stories";
+                storyTotal.textContent = "0";
+                return;
+              }
+              const story = getCurrentStory();
+              if (!story) {
+                storyJpBlock.innerHTML =
+                  '<p style="color: #a02020;">⚠️ Story not found.</p>';
+                return;
+              }
+              storyTitle.textContent = `📖 ${story.title}`;
+              storyTotal.textContent = stories.length;
+              storyProgress.textContent = `${currentStoryIndex + 1}`;
+
+              storyJpBlock.innerHTML = story.sentences
+                .map(
+                  (s, i) =>
+                    `<div class="story-sentence" data-idx="${i}">${convertFurigana(s.jp)}</div>`,
+                )
+                .join("");
+              storyEnBlock.innerHTML = story.sentences
+                .map((s) => `<div>${s.en}</div>`)
+                .join("");
+              storyEnBlock.style.display = globalShowTranslation ? "block" : "none";
+
+              storyPrevBtn.disabled = currentStoryIndex === 0;
+              storyNextBtn.disabled = currentStoryIndex >= stories.length - 1;
+
+              if (!keepQuestionState) {
+                currentQuestionIndex = 0;
+                storyAnswered = false;
+                storySelectedChoices = [];
+                storyCorrect = 0;
+              }
+              renderQuestion();
+            }
+
+            function renderQuestion() {
+              const container = document.getElementById("questionContainer");
+              const questions = getCurrentStoryQuestions();
+              if (questions.length === 0) {
+                container.innerHTML =
+                  '<p style="color: #8a8270;">No questions for this story.</p>';
+                return;
+              }
+              const q = getCurrentQuestion();
+              if (!q) {
+                container.innerHTML =
+                  '<p style="color: #8a8270;">Question not found.</p>';
+                return;
+              }
+
+              questionProgress.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+
+              currentQuestionEl.innerHTML = convertFurigana(q.question);
+
+              const qTranslation = q.questionEn || "";
+              questionTranslation.textContent = qTranslation;
+              questionTranslation.classList.toggle("show", globalShowTranslation);
+
+              const story = getCurrentStory();
+              const ctxSentences = getQuestionContextSentences(story, q);
+              if (ctxSentences.length > 0) {
+                transcriptText.innerHTML = ctxSentences
+                  .map((s) => convertFurigana(s.jp))
+                  .join("<br>");
+                transcriptTranslation.textContent = ctxSentences
+                  .map((s) => s.en)
+                  .join(" ");
+              } else {
+                transcriptText.textContent = "";
+                transcriptTranslation.textContent = "";
+              }
+
+              if (transcriptLabelText) {
+                transcriptLabelText.textContent = q.requiresInference
+                  ? "📖 つながりを考（かんが）えよう (Connect the sentences)"
+                  : "📖 ここまで読めば分かります (Read up to here)";
+              }
+
+              questionTranscript.classList.toggle("show", transcriptOpen);
+              questionTranscriptBtn.classList.toggle(
+                "transcript-open",
+                transcriptOpen,
+              );
+              questionTranscriptBtn.textContent = transcriptOpen
+                ? "📖 Hide Transcript"
+                : "📖 Transcript";
+              transcriptTranslation.classList.toggle("show", globalShowTranslation);
+
+              // Highlight the context sentences in the story block
+              document
+                .querySelectorAll(".story-sentence.context-highlight")
+                .forEach((el) => el.classList.remove("context-highlight"));
+              if (q.contextRange) {
+                for (let i = q.contextRange[0]; i <= q.contextRange[1]; i++) {
+                  const el = document.querySelector(
+                    `.story-sentence[data-idx="${i}"]`,
+                  );
+                  if (el) el.classList.add("context-highlight");
+                }
+              }
+
+              const letters = ["A", "B", "C", "D"];
+              let choicesHtml = "";
+              const selected = storySelectedChoices[currentQuestionIndex] || -1;
+              q.choices.forEach((choiceText, idx) => {
+                const isSelected = selected === idx;
+                let extraClass = "";
+                if (storyAnswered) {
+                  if (idx === q.answer) extraClass += " correct";
+                  else if (selected === idx) extraClass += " wrong";
+                  extraClass += " disabled";
+                } else if (isSelected) {
+                  extraClass += " selected";
+                }
+                choicesHtml += `
+                  <div class="question-choice ${extraClass}" data-qidx="${currentQuestionIndex}" data-choice="${idx}">
+                    <span class="choice-mark">${letters[idx]}</span>
+                    <span class="q-choice-text">
+                      <span>${convertFurigana(choiceText)}</span>
+                      <span class="q-choice-translation">${q.choicesEn && q.choicesEn[idx] ? q.choicesEn[idx] : ""}</span>
+                    </span>
+                    <button class="q-choice-audio-btn" data-qidx="${currentQuestionIndex}" data-choice="${idx}" title="Play this option" type="button">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                `;
+              });
+              questionChoicesEl.innerHTML = choicesHtml;
+
+              if (storyAnswered && q.note) {
+                const isCorrect = selected === q.answer;
+                questionFeedback.className = `question-feedback show ${isCorrect ? "correct" : "wrong"}`;
+                questionFeedback.innerHTML = `
+                  <strong>${isCorrect ? "✅ Correct!" : "❌ Not quite."}</strong><br>
+                  <div style="margin-top: 8px; font-size: 15px;">
+                    <strong>Full Sentence:</strong> ${getAnnotatedNote(q, getCurrentStory())}
+                  </div>
+                  <button class="q-feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                    🔊 Play Sentence
+                  </button>
+                  ${q.noteEn ? `<div class="q-note-en ${globalShowTranslation ? "show" : ""}" style="margin-top: 8px;">${q.noteEn}</div>` : ""}
+                `;
+              } else {
+                questionFeedback.className = "question-feedback";
+                questionFeedback.innerHTML = "";
+              }
+
+              prevQuestionBtn.disabled = currentQuestionIndex === 0;
+              nextQuestionBtn.disabled = currentQuestionIndex >= questions.length - 1;
+
+              document
+                .querySelectorAll(".question-choice:not(.disabled)")
+                .forEach((el) => {
+                  el.addEventListener("click", handleQuestionChoice);
+                });
+              document.querySelectorAll(".q-choice-audio-btn").forEach((el) => {
+                el.addEventListener("click", handleChoiceAudio);
+              });
+              document.querySelectorAll(".q-feedback-audio-btn").forEach((el) => {
+                el.addEventListener("click", (e) => {
+                  e.stopPropagation();
+                  speak(e.currentTarget.dataset.text, e.currentTarget);
+                });
+              });
+
+              applyGlobalToggles();
+            }
+
+            function handleChoiceAudio(e) {
+              e.stopPropagation();
+              const qidx = parseInt(e.currentTarget.dataset.qidx);
+              const choice = parseInt(e.currentTarget.dataset.choice);
+              const q = getCurrentStoryQuestions()[qidx];
+              if (!q) return;
+              speak(q.choices[choice].replace(/（[^（）]+）/g, ""), null);
+            }
+
+            function handleQuestionChoice(e) {
+              const el = e.currentTarget;
+              if (storyAnswered) return;
+              const qidx = parseInt(el.dataset.qidx);
+              const choice = parseInt(el.dataset.choice);
+              const q = getCurrentStoryQuestions()[qidx];
+              if (isNaN(choice) || !q) return;
+              storySelectedChoices[qidx] = choice;
+              storyAnswered = true;
+              if (choice === q.answer) storyCorrect++;
+              renderQuestion();
+            }
+
+            function goToStory(index) {
+              const stories = getStories();
+              if (index < 0 || index >= stories.length) return;
+              currentStoryIndex = index;
+              currentQuestionIndex = 0;
+              storyAnswered = false;
+              storyCorrect = 0;
+              storySelectedChoices = [];
+              transcriptOpen = false;
+              if (storyUtterance) {
+                window.speechSynthesis.cancel();
+                storyUtterance = null;
+                storyPlayBtn.classList.remove("playing");
+                storyPlayBtn.textContent = "🔊 Play Story";
+              }
+              renderStory(false);
+            }
+
+            function prevStory() {
+              if (currentStoryIndex > 0) goToStory(currentStoryIndex - 1);
+            }
+            function nextStory() {
+              if (currentStoryIndex < getStories().length - 1)
+                goToStory(currentStoryIndex + 1);
+            }
+            function prevQuestion() {
+              if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                storyAnswered = false;
+                transcriptOpen = false;
+                renderQuestion();
+              }
+            }
+            function nextQuestion() {
+              const questions = getCurrentStoryQuestions();
+              if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                storyAnswered = false;
+                transcriptOpen = false;
+                renderQuestion();
+              }
+            }
+
+            function showAllAnswers() {
+              const questions = getCurrentStoryQuestions();
+              questions.forEach((q, idx) => {
+                if (storySelectedChoices[idx] === undefined)
+                  storySelectedChoices[idx] = q.answer;
+                if (idx === currentQuestionIndex) storyAnswered = true;
+              });
+              renderQuestion();
+            }
+
+            function playStoryAudio() {
+              const story = getCurrentStory();
+              if (!story) return;
+              if (storyUtterance) {
+                window.speechSynthesis.cancel();
+                storyUtterance = null;
+                storyPlayBtn.classList.remove("playing");
+                storyPlayBtn.textContent = "🔊 Play Story";
+                return;
+              }
+              let text = story.sentences
+                .map((s) => s.jp.replace(/（[^（）]+）/g, ""))
+                .join("。");
+              if (!("speechSynthesis" in window)) {
+                alert("Speech synthesis not supported.");
+                return;
+              }
+              const utter = new SpeechSynthesisUtterance(text);
+              utter.lang = "ja-JP";
+              const rateSelect = document.getElementById("rateSelect");
+              utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
+              utter.pitch = 1.0;
+              if (!chosenVoice) chosenVoice = pickFemaleVoice();
+              if (chosenVoice) utter.voice = chosenVoice;
+              storyUtterance = utter;
+              storyPlayBtn.classList.add("playing");
+              storyPlayBtn.textContent = "⏹️ Stop";
+              utter.onend = () => {
+                storyUtterance = null;
+                storyPlayBtn.classList.remove("playing");
+                storyPlayBtn.textContent = "🔊 Play Story";
+              };
+              window.speechSynthesis.speak(utter);
+            }
+
+            function playTranscript() {
+              const story = getCurrentStory();
+              const q = getCurrentQuestion();
+              if (!story || !q) return;
+              const ctxSentences = getQuestionContextSentences(story, q);
+              if (ctxSentences.length === 0) return;
+              const text = ctxSentences
+                .map((s) => s.jp.replace(/（[^（）]+）/g, ""))
+                .join("。");
+              speak(text, null);
+            }
+
+            function playQuestionAudio() {
+              const q = getCurrentQuestion();
+              if (!q) return;
+              if (questionUtterance) {
+                window.speechSynthesis.cancel();
+                questionUtterance = null;
+                questionPlayBtn.classList.remove("playing");
+                return;
+              }
+              const text = [
+                q.question.replace(/（[^（）]+）/g, ""),
+                ...q.choices.map((c) => c.replace(/（[^（）]+）/g, "")),
+              ].join("。");
+              if (!("speechSynthesis" in window)) {
+                alert("Speech synthesis not supported.");
+                return;
+              }
+              const utter = new SpeechSynthesisUtterance(text);
+              utter.lang = "ja-JP";
+              const rateSelect = document.getElementById("rateSelect");
+              utter.rate = rateSelect ? parseFloat(rateSelect.value) : 0.85;
+              utter.pitch = 1.0;
+              if (!chosenVoice) chosenVoice = pickFemaleVoice();
+              if (chosenVoice) utter.voice = chosenVoice;
+              questionUtterance = utter;
+              questionPlayBtn.classList.add("playing");
+              utter.onend = () => {
+                questionUtterance = null;
+                questionPlayBtn.classList.remove("playing");
+              };
+              window.speechSynthesis.speak(utter);
+            }
+
+            function stopQuestionAudio() {
+              if (questionUtterance) {
+                window.speechSynthesis.cancel();
+                questionUtterance = null;
+              }
+              questionPlayBtn.classList.remove("playing");
+            }
+
+            function toggleTranscript() {
+              // Story mode: before answering, read the context aloud only;
+              // after answering, reveal the text.
+              const q = getCurrentQuestion();
+              if (!q) return;
+
+              if (!storyAnswered) {
+                playTranscript();
+                return;
+              }
+
+              transcriptOpen = !transcriptOpen;
+              questionTranscript.classList.toggle("show", transcriptOpen);
+              questionTranscriptBtn.classList.toggle(
+                "transcript-open",
+                transcriptOpen,
+              );
+              questionTranscriptBtn.textContent = transcriptOpen
+                ? "📖 Hide Transcript"
+                : "📖 Show Transcript";
+            }
+
+            // ============================================================
+            // MODE SWITCHING
+            // ============================================================
+            function switchMode(mode) {
+              const listeningSection = document.getElementById("listeningSection");
+              const storySectionEl = document.getElementById("storyModeSection");
+              const progressRow = document.querySelector(".progress-row");
+              const footer = document.querySelector("footer");
+
+              if (mode === "story") {
+                listeningSection.style.display = "none";
+                storySectionEl.style.display = "block";
+                if (progressRow) progressRow.style.display = "none";
+                if (footer) footer.style.display = "none";
+                if (getStories().length > 0) renderStory(true);
+              } else {
+                listeningSection.style.display = "block";
+                storySectionEl.style.display = "none";
+                if (progressRow) progressRow.style.display = "flex";
+                if (footer) footer.style.display = "block";
+              }
+
+              document.querySelectorAll(".mode-tab").forEach((tab) => {
+                tab.classList.toggle("active", tab.dataset.mode === mode);
+              });
+            }
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            let __appInitialized = false;
+
+            function initApp() {
+              if (__appInitialized) return;
+              __appInitialized = true;
+
+              const tabs = document.querySelectorAll(".mode-tab");
+              tabs.forEach((tab) => {
+                tab.addEventListener("click", () => switchMode(tab.dataset.mode));
+              });
+
+              try {
+                if (storyPrevBtn) storyPrevBtn.addEventListener("click", prevStory);
+                if (storyNextBtn) storyNextBtn.addEventListener("click", nextStory);
+                if (storyPlayBtn)
+                  storyPlayBtn.addEventListener("click", playStoryAudio);
+                if (prevQuestionBtn)
+                  prevQuestionBtn.addEventListener("click", prevQuestion);
+                if (nextQuestionBtn)
+                  nextQuestionBtn.addEventListener("click", nextQuestion);
+                if (showAnswersBtn)
+                  showAnswersBtn.addEventListener("click", showAllAnswers);
+                if (transcriptPlayBtn)
+                  transcriptPlayBtn.addEventListener("click", playTranscript);
+                if (questionPlayBtn)
+                  questionPlayBtn.addEventListener("click", playQuestionAudio);
+                if (questionStopBtn)
+                  questionStopBtn.addEventListener("click", stopQuestionAudio);
+                if (questionTranscriptBtn)
+                  questionTranscriptBtn.addEventListener("click", toggleTranscript);
+              } catch (err) {
+                console.error("Error binding story controls:", err);
+              }
+
+              const header = document.getElementById("appHeader");
+              const headerObserver = new IntersectionObserver(
+                ([e]) => e.target.classList.toggle("stuck", e.intersectionRatio < 1),
+                { threshold: [1] },
+              );
+              headerObserver.observe(header);
+
+              setupGlobalToggles();
+
+              // === Initialize Listening UI ===
+              buildSprintSelector();
+              buildListeningCards(listeningQuestions);
+              updateProgress();
+
+              try {
+                const stories = getStories();
+                if (stories.length > 0) {
+                  console.log(`✅ Loaded ${stories.length} stories with Q&A`);
+                  storyTotal.textContent = stories.length;
+                  currentStoryIndex = 0;
+                  renderStory(false);
+                }
+              } catch (err) {
+                console.error("Error initializing story mode:", err);
+              }
+
+              const activeTab = document.querySelector(".mode-tab.active");
+              if (activeTab && activeTab.dataset.mode === "story") {
+                switchMode("story");
+              }
+
+              try {
+                applyGlobalToggles();
+              } catch (err) {
+                console.error(err);
+              }
+
+              const rateSelectEl = document.getElementById("rateSelect");
+              const rateIndicatorEl = document.getElementById("rateIndicator");
+              if (rateSelectEl && rateIndicatorEl) {
+                const updateRateIndicator = () => {
+                  rateIndicatorEl.textContent =
+                    parseFloat(rateSelectEl.value).toFixed(2) + "×";
+                };
+                updateRateIndicator();
+                rateSelectEl.addEventListener("change", () => {
+                  updateRateIndicator();
+                  if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                  }
+                });
+              }
+
+              console.log("✅ App initialized");
+            }
+
+            document.addEventListener("DOMContentLoaded", initApp);
+            if (
+              document.readyState === "complete" ||
+              document.readyState === "interactive"
+            ) {
+              initApp();
+            }
     </script>
     <script>
       if (
@@ -2550,7 +2573,7 @@
           navigator.serviceWorker
             .register("/N5-listening/sw.js")
             .then((registration) =>
-              console.log("✅ SW registered:", registration),
+              console.log("✅ SW Registered:", registration),
             )
             .catch((error) => console.log("❌ SW registration failed:", error));
         });
