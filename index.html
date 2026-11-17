@@ -383,6 +383,17 @@
         font-weight: 500;
         margin: 0 0 16px;
         color: var(--ink);
+        transition:
+          box-shadow 0.3s ease,
+          background 0.3s ease;
+        border-radius: 4px;
+        padding: 4px 6px;
+        margin-left: -6px;
+        margin-right: -6px;
+      }
+      .qtext.pulse {
+        background: #fff6d9;
+        box-shadow: 0 0 0 3px rgba(181, 72, 47, 0.18);
       }
       .qtext-translation {
         font-size: 13px;
@@ -1417,6 +1428,7 @@
               // 5) Last resort: no furigana available
               return cleanNote;
             }
+
             // ============================================================
             // LISTENING MODE DATA — built from vignettes
             // ============================================================
@@ -1437,8 +1449,12 @@
                   out.push({
                     sprintId: story.id,
                     sprintTitle: story.title,
-                    // TTS: narrative lead-up, then the question
-                    script: cleanCtx.join("。") + "。" + cleanQ,
+                    // TTS: passage only (context sentences)
+                    scriptPassage: cleanCtx.join("。") + "。",
+                    // TTS: question only
+                    scriptQuestion: cleanQ,
+                    // TTS: full simulation (passage + question) — used by Hear Transcript
+                    scriptFull: cleanCtx.join("。") + "。" + cleanQ,
                     // Transcript UI: furigana-preserved context sentences
                     html: ctxSentences.map((s) => convertFurigana(s.jp)).join("<br>"),
                     scriptEn:
@@ -1749,16 +1765,20 @@
                   </div>
 
                   <div class="audio-row">
-                    <button class="play-btn" data-qi="${qi}" type="button">
+                    <button class="play-btn play-passage-btn" data-qi="${qi}" type="button">
                       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                      Play Audio
+                      Play Passage
+                    </button>
+                    <button class="play-btn play-question-btn" data-qi="${qi}" type="button">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      Play Question
                     </button>
                     <button class="stop-btn" data-qi="${qi}" type="button">
                       <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
                       Stop
                     </button>
                     <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" data-state="pre" type="button">
-                      🔊 Hear Context
+                      🔊 Hear Transcript
                     </button>
                     <div class="global-toggles">
         <button class="global-toggle" data-toggle="furigana" type="button">
@@ -1774,7 +1794,7 @@
 
                   ${transcriptHtml}
 
-                  <p class="qtext">${q.questionHtml}</p>
+                  <p class="qtext" data-qi="${qi}">${q.questionHtml}</p>
                   <p class="qtext-translation">${q.questionEn || ""}</p>
                   <div class="choices">
                     ${q.choicesHtml
@@ -1876,10 +1896,24 @@
                 return;
               }
 
-              const playBtn = e.target.closest(".play-btn");
-              if (playBtn) {
-                const qi = playBtn.dataset.qi;
-                speak(listeningQuestions[qi].script, playBtn);
+              // Play Passage (context only)
+              const passageBtn = e.target.closest(".play-passage-btn");
+              if (passageBtn) {
+                const qi = passageBtn.dataset.qi;
+                speak(listeningQuestions[qi].scriptPassage, passageBtn);
+                return;
+              }
+
+              // Play Question (question text only) — pulse the question text
+              const questionBtn = e.target.closest(".play-question-btn");
+              if (questionBtn) {
+                const qi = questionBtn.dataset.qi;
+                const qTextEl = quizEl.querySelector(`.qtext[data-qi="${qi}"]`);
+                if (qTextEl) {
+                  qTextEl.classList.add("pulse");
+                  setTimeout(() => qTextEl.classList.remove("pulse"), 1200);
+                }
+                speak(listeningQuestions[qi].scriptQuestion, questionBtn);
                 return;
               }
 
@@ -1890,9 +1924,9 @@
                 const answeredYet =
                   quizEl.querySelector(`.choice[data-qi="${qi}"].disabled`) !== null;
 
-                // PRE-ANSWER: audio only, no text reveal
+                // PRE-ANSWER: full simulation (passage + question), no text reveal
                 if (!answeredYet) {
-                  speak(q.script, transcriptBtn);
+                  speak(q.scriptFull, transcriptBtn);
                   return;
                 }
 
@@ -1919,7 +1953,7 @@
               const transcriptPlayBtn = e.target.closest(".transcript-play-btn");
               if (transcriptPlayBtn) {
                 const qi = transcriptPlayBtn.dataset.qi;
-                const text = listeningQuestions[qi].script;
+                const text = listeningQuestions[qi].scriptFull;
                 speak(text, null);
                 return;
               }
