@@ -1382,52 +1382,76 @@
             function getAnnotatedNote(q, story) {
               if (!q || !q.note) return "";
 
-              // 1) If the note already has brackets, it's ready to convert.
+              // 1) If the note already has furigana brackets, use it directly.
               if (q.note.includes("（")) {
                 return convertFurigana(q.note);
               }
 
-              // 2) Look up the story by id if not passed in
+              // 2) Need a story to do anything smarter.
               if (!story && q.sprintId !== undefined) {
                 story = getStories().find((s) => s.id === q.sprintId);
               }
+              if (!story) return stripFurigana(q.note);
 
               const cleanNote = stripFurigana(q.note).replace(/。$/, "").trim();
+              // Split note into clauses on 。 and 、 so partial matches work.
+              const noteClauses = cleanNote
+                .split(/[。、]/)
+                .map((c) => c.trim())
+                .filter((c) => c.length > 1); // drop single chars like "が"
 
-              // 3) Prefer the note's own contextRange
-              if (story && q.contextRange) {
-                const slice = story.sentences.slice(
-                  q.contextRange[0],
-                  q.contextRange[1] + 1,
-                );
-                for (const s of slice) {
-                  const cleanS = stripFurigana(s.jp).replace(/。$/, "").trim();
-                  if (
-                    cleanS.includes(cleanNote) ||
-                    cleanNote.includes(cleanS) ||
-                    cleanS === cleanNote
-                  ) {
-                    return convertFurigana(s.jp);
-                  }
-                }
+              // 3) Search ONLY inside contextRange (small, reliable window).
+              let range = q.contextRange;
+              if (!range) {
+                // Fallback: whole story.
+                range = [0, story.sentences.length - 1];
               }
 
-              // 4) Fallback: scan the whole story
-              if (story) {
-                for (const s of story.sentences) {
-                  const cleanS = stripFurigana(s.jp).replace(/。$/, "").trim();
-                  if (
-                    cleanS.includes(cleanNote) ||
-                    cleanNote.includes(cleanS) ||
-                    cleanS === cleanNote
-                  ) {
-                    return convertFurigana(s.jp);
-                  }
-                }
+              const matched = [];
+              for (let i = range[0]; i <= range[1]; i++) {
+                const s = story.sentences[i];
+                if (!s) continue;
+                const cleanS = stripFurigana(s.jp).replace(/。$/, "").trim();
+                const sClauses = cleanS
+                  .split(/[。、]/)
+                  .map((c) => c.trim())
+                  .filter((c) => c.length > 1);
+
+                // A sentence matches if:
+                //  - the whole note contains it, or it contains the whole note, OR
+                //  - any clause of the note matches any clause of the sentence.
+                const wholeMatch =
+                  cleanS.includes(cleanNote) || cleanNote.includes(cleanS);
+                const clauseMatch =
+                  noteClauses.some((nc) =>
+                    sClauses.some((sc) => sc.includes(nc) || nc.includes(sc))
+                  );
+
+                if (wholeMatch || clauseMatch) matched.push(i);
               }
 
-              // 5) Last resort: no furigana available
+              // 4) If we found matches, render those sentences with furigana.
+              if (matched.length > 0) {
+                // Collapse to a contiguous range to avoid weird gaps.
+                const start = Math.min(...matched);
+                const end = Math.max(...matched);
+                return story.sentences
+                  .slice(start, end + 1)
+                  .map((s) => convertFurigana(s.jp))
+                  .join("<br>");
+              }
+
+              // 5) Last resort: plain note, no furigana.
               return cleanNote;
+            }
+
+            // Helper to get the exact speech text matching the display
+            function getNoteSpeech(q) {
+              const html = getAnnotatedNote(
+                q,
+                getStories().find((s) => s.id === q.sprintId)
+              );
+              return stripFurigana(html).replace(/<br\s*\/?>/gi, "。");
             }
 
             // ============================================================
@@ -1986,12 +2010,17 @@
                 }
                 const fb = document.getElementById("fb-" + qi);
                 fb.classList.add("show", isCorrect ? "good" : "bad");
+                
+                // Use the new synchronized helper
+                const noteDisplay = getAnnotatedNote(q, getStories().find(s => s.id === q.sprintId));
+                const noteSpeech = getNoteSpeech(q);
+
                 fb.innerHTML = `
                   <strong>${isCorrect ? "✅ 正解です！" : "❌ 残念、不正解です。"}</strong><br>
                   <div style="margin-top: 8px; font-size: 15px;">
-                    <strong>Full Sentence:</strong> ${getAnnotatedNote(q, getStories().find(s => s.id === q.sprintId))}
+                    <strong>Full Sentence:</strong> ${noteDisplay}
                   </div>
-                  <button class="feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                  <button class="feedback-audio-btn" data-text="${noteSpeech}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
                     🔊 Play Sentence
                   </button>
                   <div class="script-translation" style="margin-top: 10px;">${q.noteEn || q.scriptEn || ""}</div>
@@ -2029,12 +2058,17 @@
                 if (!fb.classList.contains("show")) {
                   const q = listeningQuestions[qi];
                   fb.classList.add("show", "good");
+                  
+                  // Use the new synchronized helper
+                  const noteDisplay = getAnnotatedNote(q, getStories().find(s => s.id === q.sprintId));
+                  const noteSpeech = getNoteSpeech(q);
+
                   fb.innerHTML = `
                     <strong>Correct answer (正解):</strong> ${String.fromCharCode(65 + q.answer)}<br>
                     <div style="margin-top: 8px; font-size: 15px;">
-                      <strong>Full Sentence:</strong> ${getAnnotatedNote(q, getStories().find(s => s.id === q.sprintId))}
+                      <strong>Full Sentence:</strong> ${noteDisplay}
                     </div>
-                    <button class="feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                    <button class="feedback-audio-btn" data-text="${noteSpeech}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
                       🔊 Play Sentence
                     </button>
                     <div class="script-translation">${q.noteEn || q.scriptEn || ""}</div>
@@ -2283,12 +2317,16 @@
               if (storyAnswered && q.note) {
                 const isCorrect = selected === q.answer;
                 questionFeedback.className = `question-feedback show ${isCorrect ? "correct" : "wrong"}`;
+                
+                const noteDisplay = getAnnotatedNote(q, getCurrentStory());
+                const noteSpeech = getNoteSpeech(q);
+
                 questionFeedback.innerHTML = `
                   <strong>${isCorrect ? "✅ Correct!" : "❌ Not quite."}</strong><br>
                   <div style="margin-top: 8px; font-size: 15px;">
-                    <strong>Full Sentence:</strong> ${getAnnotatedNote(q, getCurrentStory())}
+                    <strong>Full Sentence:</strong> ${noteDisplay}
                   </div>
-                  <button class="q-feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                  <button class="q-feedback-audio-btn" data-text="${noteSpeech}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
                     🔊 Play Sentence
                   </button>
                   ${q.noteEn ? `<div class="q-note-en ${globalShowTranslation ? "show" : ""}" style="margin-top: 8px;">${q.noteEn}</div>` : ""}
