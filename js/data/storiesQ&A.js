@@ -86,10 +86,12 @@ const sprintStoriesWithQA = [
         contextRange: [3, 3],
         answerSentence: 3,
         choices: [
-          "はい、近いです",
-          "いいえ、遠いです",
-          "はい、とても遠いです",
-          "いいえ、近くないです",
+          choices: [
+  "はい、近（ちか）いです",
+  "いいえ、遠（とお）いです",
+  "はい、とても遠（とお）いです",
+  "いいえ、近（ちか）くないです",
+],
         ],
         choicesEn: [
           "Yes, it's close",

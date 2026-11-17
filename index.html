@@ -1299,9 +1299,11 @@
       function convertFurigana(text) {
         if (!text) return "";
         return text.replace(
-          /([一-龯ぁ-んァ-ヶ]+)（([^（）]+)）/g,
-          (match, kanji, furigana) =>
-            `<ruby>${kanji}<rt>${furigana}</rt></ruby>`,
+          // Base = kanji + katakana + long-vowel mark only.
+          // Hiragana is deliberately excluded so preceding particles
+          // (は / が / に / お / から …) stay OUTSIDE the ruby base.
+          /([一-龯ァ-ヶー]+)（([^（）]+)）/g,
+          (match, base, furigana) => `<ruby>${base}<rt>${furigana}</rt></ruby>`,
         );
       }
 
