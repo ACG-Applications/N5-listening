@@ -307,7 +307,7 @@
       .audio-row {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         margin-bottom: 18px;
         flex-wrap: wrap;
       }
@@ -317,14 +317,15 @@
       .question-ctrl-btn {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
+        gap: 6px;
+        padding: 8px 14px;
         border-radius: 24px;
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
         font-family: "Noto Sans JP", sans-serif;
         transition: all 0.15s ease;
+        white-space: nowrap;
       }
       .play-btn,
       .question-ctrl-btn {
@@ -1648,8 +1649,8 @@
                   const label = btn.querySelector(".toggle-label");
                   if (label)
                     label.textContent = globalShowFurigana
-                      ? "Furigana On"
-                      : "Furigana Off";
+                      ? "+Furigana"
+                      : "-Furigana";
                 });
 
               document
@@ -1659,8 +1660,8 @@
                   const label = btn.querySelector(".toggle-label");
                   if (label)
                     label.textContent = globalShowTranslation
-                      ? "Translation On"
-                      : "Translation Off";
+                      ? "+Translation"
+                      : "-Translation";
                 });
 
               document
@@ -1765,31 +1766,31 @@
                   </div>
 
                   <div class="audio-row">
-                    <button class="play-btn play-passage-btn" data-qi="${qi}" type="button">
+                    <button class="play-btn play-passage-btn" data-qi="${qi}" type="button" title="Play Passage">
                       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                      Play Passage
+                      Passage
                     </button>
-                    <button class="play-btn play-question-btn" data-qi="${qi}" type="button">
+                    <button class="play-btn play-question-btn" data-qi="${qi}" type="button" title="Play Question">
                       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                      Play Question
+                      Question
                     </button>
-                    <button class="stop-btn" data-qi="${qi}" type="button">
+                    <button class="stop-btn" data-qi="${qi}" type="button" title="Stop Audio">
                       <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
                       Stop
                     </button>
-                    <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" data-state="pre" type="button">
-                      🔊 Hear Transcript
+                    <button class="question-ctrl-btn transcript-btn" data-qi="${qi}" data-state="pre" type="button" title="Hear/Show Transcript">
+                      🔊 Transcript
                     </button>
                     <div class="global-toggles">
-        <button class="global-toggle" data-toggle="furigana" type="button">
-          <span class="toggle-icon">🔤</span>
-          <span class="toggle-label">Furigana On</span>
-        </button>
-        <button class="global-toggle" data-toggle="translation" type="button">
-          <span class="toggle-icon">🌎</span>
-          <span class="toggle-label">Translation Off</span>
-        </button>
-      </div>
+                      <button class="global-toggle" data-toggle="furigana" type="button">
+                        <span class="toggle-icon">🔤</span>
+                        <span class="toggle-label">${globalShowFurigana ? "+Furigana" : "-Furigana"}</span>
+                      </button>
+                      <button class="global-toggle" data-toggle="translation" type="button">
+                        <span class="toggle-icon">🌎</span>
+                        <span class="toggle-label">${globalShowTranslation ? "+Translation" : "-Translation"}</span>
+                      </button>
+                    </div>
                   </div>
 
                   ${transcriptHtml}
