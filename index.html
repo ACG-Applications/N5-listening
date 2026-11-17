@@ -1350,42 +1350,73 @@
             let globalShowTranslation = false;
 
             // ============================================================
-            // FURIGANA HELPER — must be defined before first use
+            // FURIGANA HELPERS
             // ============================================================
             function convertFurigana(text) {
               if (!text) return "";
               return text.replace(
-                // Base = kanji + katakana + long-vowel mark only.
-                // Hiragana is deliberately excluded so preceding particles
-                // (は / が / に / お / から …) stay OUTSIDE the ruby base.
                 /([一-龯ァ-ヶー]+)（([^（）]+)）/g,
                 (match, base, furigana) => `<ruby>${base}<rt>${furigana}</rt></ruby>`,
               );
             }
 
+            // Strip all furigana brackets from a string
+            function stripFurigana(text) {
+              return (text || "").replace(/（[^（）]+）/g, "");
+            }
+
+            // Robust: take a question, find its annotated story sentence,
+            // return furigana-annotated HTML for the "Full Sentence".
             function getAnnotatedNote(q, story) {
-              if (!q.note) return "";
-              // If the note already has furigana brackets, just use it
+              if (!q || !q.note) return "";
+
+              // 1) If the note already has brackets, it's ready to convert.
               if (q.note.includes("（")) {
                 return convertFurigana(q.note);
               }
-              // Otherwise, try to find the matching sentence in the story
-              if (story && q.contextRange) {
-                const sentences = story.sentences.slice(q.contextRange[0], q.contextRange[1] + 1);
-                for (const s of sentences) {
-                  // Strip brackets from story sentence and note to compare them
-                  const cleanS = s.jp.replace(/（[^（）]+）/g, "");
-                  const cleanNote = q.note.replace(/（[^（）]+）/g, "").replace(/。$/, "");
 
-                  if (cleanS.includes(cleanNote) || cleanNote.includes(cleanS.replace(/。$/, ""))) {
+              // 2) Look up the story by id if not passed in
+              if (!story && q.sprintId !== undefined) {
+                story = getStories().find((s) => s.id === q.sprintId);
+              }
+
+              const cleanNote = stripFurigana(q.note).replace(/。$/, "").trim();
+
+              // 3) Prefer the note's own contextRange
+              if (story && q.contextRange) {
+                const slice = story.sentences.slice(
+                  q.contextRange[0],
+                  q.contextRange[1] + 1,
+                );
+                for (const s of slice) {
+                  const cleanS = stripFurigana(s.jp).replace(/。$/, "").trim();
+                  if (
+                    cleanS.includes(cleanNote) ||
+                    cleanNote.includes(cleanS) ||
+                    cleanS === cleanNote
+                  ) {
                     return convertFurigana(s.jp);
                   }
                 }
               }
-              // Fallback if no match found
-              return convertFurigana(q.note);
-            }
 
+              // 4) Fallback: scan the whole story
+              if (story) {
+                for (const s of story.sentences) {
+                  const cleanS = stripFurigana(s.jp).replace(/。$/, "").trim();
+                  if (
+                    cleanS.includes(cleanNote) ||
+                    cleanNote.includes(cleanS) ||
+                    cleanS === cleanNote
+                  ) {
+                    return convertFurigana(s.jp);
+                  }
+                }
+              }
+
+              // 5) Last resort: no furigana available
+              return cleanNote;
+            }
             // ============================================================
             // LISTENING MODE DATA — built from vignettes
             // ============================================================
@@ -1423,6 +1454,7 @@
                     note: q.note,
                     noteEn: q.noteEn,
                     requiresInference: !!q.requiresInference,
+                    contextRange: q.contextRange,
                   });
                 });
               });
@@ -1960,16 +1992,17 @@
               });
               document.querySelectorAll(".feedback").forEach((fb, qi) => {
                 if (!fb.classList.contains("show")) {
+                  const q = listeningQuestions[qi];
                   fb.classList.add("show", "good");
                   fb.innerHTML = `
-                    <strong>Correct answer (正解):</strong> ${String.fromCharCode(65 + listeningQuestions[qi].answer)}<br>
+                    <strong>Correct answer (正解):</strong> ${String.fromCharCode(65 + q.answer)}<br>
                     <div style="margin-top: 8px; font-size: 15px;">
-                      <strong>Full Sentence:</strong> ${convertFurigana(listeningQuestions[qi].note)}
+                      <strong>Full Sentence:</strong> ${getAnnotatedNote(q, getStories().find(s => s.id === q.sprintId))}
                     </div>
-                    <button class="feedback-audio-btn" data-text="${listeningQuestions[qi].note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
+                    <button class="feedback-audio-btn" data-text="${q.note.replace(/（[^（）]+）/g, "")}" type="button" style="margin-top: 8px; padding: 4px 10px; font-size: 12px; border-radius: 12px; border: 1px solid var(--indigo); background: #fff; color: var(--indigo); cursor: pointer;">
                       🔊 Play Sentence
                     </button>
-                    <div class="script-translation">${listeningQuestions[qi].noteEn || listeningQuestions[qi].scriptEn || ""}</div>
+                    <div class="script-translation">${q.noteEn || q.scriptEn || ""}</div>
                   `;
                 }
               });
