@@ -66,7 +66,6 @@ const sprintStoriesWithQA = [
           "田中（たなか）さんは毎朝（まいあさ）何時（なんじ）に起（お）きますか。",
         questionEn: "What time does Tanaka wake up every morning?",
         contextRange: [0, 0],
-        answerSentence: 0,
         choices: [
           "六時（ろくじ）",
           "七時（しちじ）",
@@ -84,7 +83,6 @@ const sprintStoriesWithQA = [
           "田中（たなか）さんの会社（かいしゃ）は駅（えき）から近（ちか）いですか。",
         questionEn: "Is Tanaka's office close to the station?",
         contextRange: [3, 3],
-        answerSentence: 3,
         choices: [
           "はい、近（ちか）いです",
           "いいえ、遠（とお）いです",
@@ -107,7 +105,6 @@ const sprintStoriesWithQA = [
         question: "昨日（きのう）の天気（てんき）はどうでしたか。",
         questionEn: "What was the weather like yesterday?",
         contextRange: [4, 4],
-        answerSentence: 4,
         choices: [
           "雨（あめ）でした",
           "晴（は）れでした",
@@ -126,7 +123,6 @@ const sprintStoriesWithQA = [
         question: "田中（たなか）さんはなぜバスで行（い）きましたか。",
         questionEn: "Why did Tanaka go by bus?",
         contextRange: [4, 8],
-        answerSentence: 7,
         choices: [
           "雨（あめ）でしたから",
           "車（くるま）がありませんでしたから",
@@ -149,7 +145,6 @@ const sprintStoriesWithQA = [
         question: "雨（あめ）の日（ひ）はどうして大変（たいへん）ですか。",
         questionEn: "Why are rainy days tough?",
         contextRange: [4, 6],
-        answerSentence: 5,
         choices: [
           "歩（ある）くのが大変（たいへん）ですから",
           "バスが高（たか）いですから",
@@ -173,7 +168,6 @@ const sprintStoriesWithQA = [
           "田中（たなか）さんはなぜバスが便利（べんり）だと思（おも）いましたか。",
         questionEn: "Why did Tanaka think the bus was convenient?",
         contextRange: [7, 11],
-        answerSentence: 11,
         choices: [
           "いつもより早（はや）く着（つ）いたから",
           "バスが安（やす）かったから",
@@ -199,7 +193,6 @@ const sprintStoriesWithQA = [
           "田中（たなか）さんは朝（あさ）ごはんを食（た）べてから何（なに）をしますか。",
         questionEn: "What does Tanaka do after eating breakfast?",
         contextRange: [1, 1],
-        answerSentence: 1,
         choices: [
           "歯（は）を磨（みが）きます",
           "会社（かいしゃ）へ行（い）きます",
@@ -223,7 +216,6 @@ const sprintStoriesWithQA = [
           "田中（たなか）さんはバスで会社（かいしゃ）までどのくらいかかりましたか。",
         questionEn: "How long did it take Tanaka to get to the office by bus?",
         contextRange: [9, 10],
-        answerSentence: 9,
         choices: [
           "十分（じゅっぷん）",
           "二十分（にじゅっぷん）",
@@ -243,7 +235,6 @@ const sprintStoriesWithQA = [
         question: "バスはどうでしたか。",
         questionEn: "How was the bus?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "少（すこ）し高（たか）かったですが、速（はや）かったです",
           "安（やす）くて速（はや）かったです",
@@ -336,7 +327,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんの家族（かぞく）は何人（なんにん）ですか。",
         questionEn: "How many people are in Maria's family?",
         contextRange: [2, 3],
-        answerSentence: 2,
         choices: [
           "五人（ごにん）",
           "四人（よにん）",
@@ -355,7 +345,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんは今（いま）何（なに）を勉強（べんきょう）していますか。",
         questionEn: "What is Maria studying now?",
         contextRange: [1, 1],
-        answerSentence: 1,
         choices: [
           "英語（えいご）",
           "日本語（にほんご）",
@@ -373,7 +362,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんの父（ちち）の仕事（しごと）は何（なん）ですか。",
         questionEn: "What is Maria's father's job?",
         contextRange: [4, 4],
-        answerSentence: 4,
         choices: [
           "医者（いしゃ）",
           "先生（せんせい）",
@@ -398,7 +386,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんの兄（あに）はなぜあまり家（いえ）に帰（かえ）りませんか。",
         questionEn: "Why doesn't Maria's older brother come home much?",
         contextRange: [5, 7],
-        answerSentence: 6,
         choices: [
           "忙（いそが）しいですから",
           "東京（とうきょう）が嫌（きら）いですから",
@@ -422,7 +409,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんはなぜ毎週（まいしゅう）兄（あに）に電話（でんわ）をかけますか。",
         questionEn: "Why does Maria call her older brother every week?",
         contextRange: [5, 8],
-        answerSentence: 8,
         choices: [
           "兄（あに）があまり家（いえ）に帰（かえ）りませんから",
           "兄（あに）が忙（いそが）しくないですから",
@@ -446,7 +432,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんの妹（いもうと）はどんな人（ひと）ですか。",
         questionEn: "What kind of person is Maria's younger sister?",
         contextRange: [9, 10],
-        answerSentence: 10,
         choices: [
           "高校生（こうこうせい）で、ピアノ（ぴあの）が上手（じょうず）です",
           "大学生（だいがくせい）で、英語（えいご）が上手（じょうず）です",
@@ -471,7 +456,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんの兄（あに）は電話（でんわ）でいつも何（なに）と言（い）いますか。",
         questionEn: "What does Maria's brother always say on the phone?",
         contextRange: [8, 9],
-        answerSentence: 9,
         choices: [
           "「元気（げんき）だよ」",
           "「忙（いそが）しいよ」",
@@ -494,7 +478,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんは来年（らいねん）何（なに）をしますか。",
         questionEn: "What will Maria do next year?",
         contextRange: [11, 11],
-        answerSentence: 11,
         choices: [
           "家族（かぞく）に会（あ）いにブラジル（ぶらじる）へ帰（かえ）ります",
           "日本（にほん）で働（はたら）きます",
@@ -519,7 +502,6 @@ const sprintStoriesWithQA = [
           "マリア（まりあ）さんは家族（かぞく）についてどう思（おも）っていますか。",
         questionEn: "How does Maria feel about her family?",
         contextRange: [10, 11],
-        answerSentence: 11,
         choices: [
           "家族（かぞく）がとても好（す）きです",
           "家族（かぞく）が少（すこ）し嫌（きら）いです",
@@ -608,7 +590,6 @@ const sprintStoriesWithQA = [
         question: "リー（りー）さんの家（いえ）はどこにありますか。",
         questionEn: "Where is Lee's house?",
         contextRange: [0, 0],
-        answerSentence: 0,
         choices: [
           "駅（えき）の近（ちか）く",
           "駅（えき）の中（なか）",
@@ -630,7 +611,6 @@ const sprintStoriesWithQA = [
         question: "映画（えいが）は何時（なんじ）に始（はじ）まりますか。",
         questionEn: "What time does the movie start?",
         contextRange: [3, 3],
-        answerSentence: 3,
         choices: [
           "十時（じゅうじ）",
           "九時（くじ）",
@@ -648,7 +628,6 @@ const sprintStoriesWithQA = [
           "リー（りー）さんは誰（だれ）に道（みち）を聞（き）きましたか。",
         questionEn: "Who did Lee ask for directions?",
         contextRange: [7, 7],
-        answerSentence: 7,
         choices: [
           "お巡（まわ）りさん",
           "友達（ともだち）",
@@ -673,7 +652,6 @@ const sprintStoriesWithQA = [
           "リー（りー）さんはなぜ交番（こうばん）へ行（い）きましたか。",
         questionEn: "Why did Lee go to the police box?",
         contextRange: [3, 7],
-        answerSentence: 6,
         choices: [
           "道（みち）が分（わ）かりませんでしたから",
           "映画（えいが）が嫌（きら）いでしたから",
@@ -696,7 +674,6 @@ const sprintStoriesWithQA = [
         question: "リー（りー）さんはなぜ走（はし）りましたか。",
         questionEn: "Why did Lee run?",
         contextRange: [4, 11],
-        answerSentence: 10,
         choices: [
           "映画（えいが）に間（ま）に合（あ）いたかったから",
           "雨（あめ）が降（ふ）っていましたから",
@@ -719,7 +696,6 @@ const sprintStoriesWithQA = [
         question: "お巡（まわ）りさんはどんな人（ひと）でしたか。",
         questionEn: "What kind of person was the police officer?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "親切（しんせつ）な人（ひと）",
           "忙（いそが）しい人（ひと）",
@@ -743,7 +719,6 @@ const sprintStoriesWithQA = [
         question: "お巡（まわ）りさんはどう行（い）けと言（い）いましたか。",
         questionEn: "How did the officer say to go?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "この道（みち）をまっすぐ行（い）って、次（つぎ）の角（かど）を右（みぎ）です",
           "この道（みち）を左（ひだり）に曲（ま）がってください",
@@ -765,7 +740,6 @@ const sprintStoriesWithQA = [
         question: "リー（りー）さんは駅（えき）までどのくらいかかりましたか。",
         questionEn: "How long did it take Lee to reach the station?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "五分（ごふん）",
           "十分（じゅっぷん）",
@@ -784,7 +758,6 @@ const sprintStoriesWithQA = [
         question: "リー（りー）さんの気持（きも）ちはどうでしたか。",
         questionEn: "How did Lee feel?",
         contextRange: [11, 11],
-        answerSentence: 11,
         choices: [
           "とても嬉（うれ）しかったです",
           "とても悲（かな）しかったです",
@@ -871,7 +844,6 @@ const sprintStoriesWithQA = [
         question: "ユキ（ゆき）さんは何（なに）を作（つく）りますか。",
         questionEn: "What will Yuki make?",
         contextRange: [2, 2],
-        answerSentence: 2,
         choices: [
           "カレー（かれー）",
           "寿司（すし）",
@@ -889,7 +861,6 @@ const sprintStoriesWithQA = [
           "ユキ（ゆき）さんは肉（にく）をどのくらい買（か）いましたか。",
         questionEn: "How much meat did Yuki buy?",
         contextRange: [3, 3],
-        answerSentence: 3,
         choices: [
           "三百（さんびゃく）グラム（ぐらむ）",
           "五百（ごひゃく）グラム（ぐらむ）",
@@ -906,7 +877,6 @@ const sprintStoriesWithQA = [
         question: "ユキ（ゆき）さんはどうやって払（はら）いましたか。",
         questionEn: "How did Yuki pay?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "カード（かーど）で",
           "現金（げんきん）で",
@@ -926,7 +896,6 @@ const sprintStoriesWithQA = [
           "ユキ（ゆき）さんはなぜりんご（りんご）を一（ひと）つ返（かえ）しましたか。",
         questionEn: "Why did Yuki return one apple?",
         contextRange: [5, 7],
-        answerSentence: 6,
         choices: [
           "お金（かね）が足（た）りませんでしたから",
           "りんご（りんご）が嫌（きら）いでしたから",
@@ -950,7 +919,6 @@ const sprintStoriesWithQA = [
           "ユキ（ゆき）さんはなぜカード（かーど）で払（はら）いましたか。",
         questionEn: "Why did Yuki pay by card?",
         contextRange: [5, 9],
-        answerSentence: 9,
         choices: [
           "店員（てんいん）さんがカード（かーど）が使（つか）えると言（い）いましたから",
           "現金（げんきん）が好（す）きでしたから",
@@ -974,7 +942,6 @@ const sprintStoriesWithQA = [
           "ユキ（ゆき）さんは全部（ぜんぶ）で何（なに）を買（か）きましたか。",
         questionEn: "What did Yuki buy in total?",
         contextRange: [3, 5],
-        answerSentence: 4,
         choices: [
           "肉（にく）と野菜（やさい）とりんご（りんご）",
           "肉（にく）と果物（くだもの）だけ",
@@ -1000,7 +967,6 @@ const sprintStoriesWithQA = [
           "ユキ（ゆき）さんは店員（てんいん）さんに何（なに）を返（かえ）しましたか。",
         questionEn: "What did Yuki return to the clerk?",
         contextRange: [7, 7],
-        answerSentence: 7,
         choices: [
           "りんご（りんご）を一（ひと）つ",
           "肉（にく）を三百（さんびゃく）グラム（ぐらむ）",
@@ -1023,7 +989,6 @@ const sprintStoriesWithQA = [
           "ユキ（ゆき）さんは家（いえ）に帰（かえ）ってから何（なに）をしましたか。",
         questionEn: "What did Yuki do after going home?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "カレー（かれー）を作（つく）りました",
           "友達（ともだち）に電話（でんわ）をかけました",
@@ -1048,7 +1013,6 @@ const sprintStoriesWithQA = [
           "友達（ともだち）はカレー（かれー）についてどう言（い）いましたか。",
         questionEn: "What did the friends say about the curry?",
         contextRange: [11, 11],
-        answerSentence: 11,
         choices: [
           "「美味（おい）しい！」",
           "「辛（から）い！」",
@@ -1131,7 +1095,6 @@ const sprintStoriesWithQA = [
         question: "朝（あさ）の天気（てんき）はどうでしたか。",
         questionEn: "How was the morning weather?",
         contextRange: [1, 2],
-        answerSentence: 1,
         choices: [
           "とてもいい天気（てんき）でした",
           "雨（あめ）でした",
@@ -1148,7 +1111,6 @@ const sprintStoriesWithQA = [
         question: "午後（ごご）は何（なに）が降（ふ）るそうですか。",
         questionEn: "What was forecast to fall in the afternoon?",
         contextRange: [4, 4],
-        answerSentence: 4,
         choices: ["雨（あめ）", "雪（ゆき）", "葉（は）", "ゴミ（ごみ）"],
         choicesEn: ["Rain", "Snow", "Leaves", "Trash"],
         answer: 0,
@@ -1160,7 +1122,6 @@ const sprintStoriesWithQA = [
         question: "ケン（けん）さんたちはどこに入（はい）りましたか。",
         questionEn: "Where did Ken and his friends go in?",
         contextRange: [7, 7],
-        answerSentence: 7,
         choices: [
           "近（ちか）くのカフェ（かふぇ）",
           "公園（こうえん）のベンチ（べんち）",
@@ -1180,7 +1141,6 @@ const sprintStoriesWithQA = [
           "ケン（けん）さんたちはなぜ急（いそ）いで荷物（にもつ）を片付（かたづ）けましたか。",
         questionEn: "Why did Ken and his friends hurry to pack up?",
         contextRange: [3, 6],
-        answerSentence: 5,
         choices: [
           "雨（あめ）が降（ふ）りそうでしたから",
           "公園（こうえん）が閉（し）まりましたから",
@@ -1204,7 +1164,6 @@ const sprintStoriesWithQA = [
           "ケン（けん）さんたちはなぜカフェ（かふぇ）に入（はい）りましたか。",
         questionEn: "Why did Ken and his friends go into the café?",
         contextRange: [3, 7],
-        answerSentence: 7,
         choices: [
           "雨（あめ）が降（ふ）りそうでしたから",
           "コーヒー（こーひー）が飲（の）みたかったから",
@@ -1227,7 +1186,6 @@ const sprintStoriesWithQA = [
         question: "カフェ（かふぇ）の中（なか）はどうでしたか。",
         questionEn: "How was it inside the café?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "暖（あたた）かかったです",
           "寒（さむ）かったです",
@@ -1247,7 +1205,6 @@ const sprintStoriesWithQA = [
           "ケン（けん）さんたちは荷物（にもつ）を片付（かたづ）けてから何（なに）をしましたか。",
         questionEn: "What did Ken and his friends do after packing up?",
         contextRange: [6, 7],
-        answerSentence: 7,
         choices: [
           "近（ちか）くのカフェ（かふぇ）に入（はい）りました",
           "家（いえ）に帰（かえ）りました",
@@ -1270,7 +1227,6 @@ const sprintStoriesWithQA = [
           "ケン（けん）さんたちはカフェ（かふぇ）で何（なに）をしましたか。",
         questionEn: "What did they do at the café?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "コーヒー（こーひー）を飲（の）みながら話（はな）しました",
           "昼（ひる）ごはんを食（た）べました",
@@ -1295,7 +1251,6 @@ const sprintStoriesWithQA = [
           "ケン（けん）さんはピクニック（ぴくにっく）についてどう思（おも）いましたか。",
         questionEn: "How did Ken feel about the picnic?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "できなかったけど、楽（たの）しかった",
           "できなくて、とても悲（かな）しかった",
@@ -1387,7 +1342,6 @@ const sprintStoriesWithQA = [
         question: "サラ（さら）さんの誕生日（たんじょうび）はいつですか。",
         questionEn: "When is Sarah's birthday?",
         contextRange: [0, 0],
-        answerSentence: 0,
         choices: [
           "来週（らいしゅう）の水曜日（すいようび）",
           "今週（こんしゅう）の金曜日（きんようび）",
@@ -1409,7 +1363,6 @@ const sprintStoriesWithQA = [
         question: "サラ（さら）さんの趣味（しゅみ）は何（なん）ですか。",
         questionEn: "What is Sarah's hobby?",
         contextRange: [1, 1],
-        answerSentence: 1,
         choices: [
           "写真（しゃしん）を撮（と）ること",
           "料理（りょうり）をすること",
@@ -1432,7 +1385,6 @@ const sprintStoriesWithQA = [
           "アレックス（あれっくす）さんはプレゼント（ぷれぜんと）をいくらで買（か）いましたか。",
         questionEn: "How much did Alex pay for the present?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "千五百円（せんごひゃくえん）",
           "千円（せんえん）",
@@ -1452,7 +1404,6 @@ const sprintStoriesWithQA = [
           "アレックス（あれっくす）さんはなぜカメラ（かめら）を買（か）いませんでしたか。",
         questionEn: "Why didn't Alex buy a camera?",
         contextRange: [3, 4],
-        answerSentence: 4,
         // ============ CONTINUATION of Sprint 06 (from where it was cut off) ============
         choices: [
           "高（たか）すぎますから",
@@ -1477,7 +1428,6 @@ const sprintStoriesWithQA = [
           "アレックス（あれっくす）さんはなぜ写真（しゃしん）の本（ほん）を選（えら）びましたか。",
         questionEn: "Why did Alex choose the photography book?",
         contextRange: [1, 7],
-        answerSentence: 7,
         choices: [
           "サラ（さら）さんの趣味（しゅみ）が写真（しゃしん）ですから",
           "本（ほん）が安（やす）かったから",
@@ -1501,7 +1451,6 @@ const sprintStoriesWithQA = [
           "サラ（さら）さんはその本（ほん）についてどう言（い）いましたか。",
         questionEn: "What did Sarah say about the book?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "「ずっと欲（ほ）しかった本（ほん）です」",
           "「もう持（も）っています」",
@@ -1525,7 +1474,6 @@ const sprintStoriesWithQA = [
           "アレックス（あれっくす）さんは本屋（ほんや）で何（なに）をしましたか。",
         questionEn: "What did Alex do at the bookstore?",
         contextRange: [6, 8],
-        answerSentence: 7,
         choices: [
           "写真（しゃしん）の技術（ぎじゅつ）の本（ほん）を見（み）つけました",
           "カメラ（かめら）を買（か）いました",
@@ -1548,7 +1496,6 @@ const sprintStoriesWithQA = [
           "アレックス（あれっくす）さんは本（ほん）を買（か）ってから何（なに）をしましたか。",
         questionEn: "What did Alex do after buying the book?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "サラ（さら）さんにあげました",
           "自分（じぶん）で読（よ）みました",
@@ -1572,7 +1519,6 @@ const sprintStoriesWithQA = [
           "アレックス（あれっくす）さんの気持（きも）ちはどうでしたか。",
         questionEn: "How did Alex feel?",
         contextRange: [11, 11],
-        answerSentence: 11,
         choices: [
           "とても嬉（うれ）しそうでした",
           "とても悲（かな）しそうでした",
@@ -1660,7 +1606,6 @@ const sprintStoriesWithQA = [
         question: "ミゲル（みげる）さんは何（なに）が苦手（にがて）ですか。",
         questionEn: "What is Miguel weak at?",
         contextRange: [3, 3],
-        answerSentence: 3,
         choices: [
           "漢字（かんじ）",
           "文法（ぶんぽう）",
@@ -1677,7 +1622,6 @@ const sprintStoriesWithQA = [
         question: "テストはいつありますか。",
         questionEn: "When is the test?",
         contextRange: [1, 1],
-        answerSentence: 1,
         choices: [
           "来月（らいげつ）",
           "来週（らいしゅう）",
@@ -1695,7 +1639,6 @@ const sprintStoriesWithQA = [
           "リン（りん）さんはミゲル（みげる）さんに何（なに）を教（おし）えてくれましたか。",
         questionEn: "What did Lin tell Miguel about?",
         contextRange: [7, 8],
-        answerSentence: 8,
         choices: [
           "いい漢字（かんじ）のアプリ（あぷり）",
           "いい本（ほん）",
@@ -1720,7 +1663,6 @@ const sprintStoriesWithQA = [
           "ミゲル（みげる）さんはなぜ勉強（べんきょう）する時間（じかん）が少（すく）ないですか。",
         questionEn: "Why does Miguel have little time to study?",
         contextRange: [5, 5],
-        answerSentence: 5,
         choices: [
           "毎日（まいにち）仕事（しごと）がありますから",
           "学校（がっこう）が遠（とお）いですから",
@@ -1744,7 +1686,6 @@ const sprintStoriesWithQA = [
           "ミゲル（みげる）さんはなぜ毎朝（まいあさ）漢字（かんじ）を練習（れんしゅう）することにしましたか。",
         questionEn: "Why did Miguel decide to practice kanji every morning?",
         contextRange: [3, 7],
-        answerSentence: 7,
         choices: [
           "漢字（かんじ）が苦手（にがて）で、時間（じかん）が少（すく）ないですから",
           "朝（あさ）が好（す）きですから",
@@ -1768,7 +1709,6 @@ const sprintStoriesWithQA = [
           "ミゲル（みげる）さんは今（いま）どう思（おも）っていますか。",
         questionEn: "How does Miguel feel now?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "漢字（かんじ）が少（すこ）し楽（たの）しいです",
           "漢字（かんじ）がもっと嫌（きら）いになりました",
@@ -1793,7 +1733,6 @@ const sprintStoriesWithQA = [
           "ミゲル（みげる）さんはアプリ（あぷり）で毎日（まいにち）何（なん）の漢字（かんじ）を覚（おぼ）えていますか。",
         questionEn: "How many kanji does Miguel memorize daily with the app?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "十（じゅう）",
           "五（ご）",
@@ -1811,7 +1750,6 @@ const sprintStoriesWithQA = [
           "三週間（さんしゅうかん）で、ミゲル（みげる）さんはどのくらい漢字（かんじ）を覚（おぼ）えましたか。",
         questionEn: "How many kanji did Miguel memorize in three weeks?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "百（ひゃく）以上（いじょう）",
           "五十（ごじゅう）",
@@ -1830,7 +1768,6 @@ const sprintStoriesWithQA = [
         question: "リン（りん）さんはどんな人（ひと）ですか。",
         questionEn: "What kind of person is Lin?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "親切（しんせつ）な人（ひと）",
           "厳（きび）しい人（ひと）",
@@ -1916,7 +1853,6 @@ const sprintStoriesWithQA = [
         question: "ハナ（はな）さんは朝（あさ）どうでしたか。",
         questionEn: "How was Hana in the morning?",
         contextRange: [0, 1],
-        answerSentence: 0,
         choices: [
           "頭（あたま）が痛（いた）くて、熱（ねつ）もありました",
           "お腹（なか）が痛（いた）かったです",
@@ -1939,7 +1875,6 @@ const sprintStoriesWithQA = [
           "ハナ（はな）さんの会社（かいしゃ）の同僚（どうりょう）は誰（だれ）ですか。",
         questionEn: "Who is Hana's colleague?",
         contextRange: [5, 5],
-        answerSentence: 5,
         choices: [
           "トム（とむ）さん",
           "リン（りん）さん",
@@ -1957,7 +1892,6 @@ const sprintStoriesWithQA = [
           "ハナ（はな）さんは病院（びょういん）で何（なに）をもらいましたか。",
         questionEn: "What did Hana receive at the hospital?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "薬（くすり）",
           "お金（かね）",
@@ -1977,7 +1911,6 @@ const sprintStoriesWithQA = [
           "ハナ（はな）さんは熱（ねつ）がありましたが、なぜ会社（かいしゃ）へ行（い）きましたか。",
         questionEn: "Hana had a fever — why did she go to the office?",
         contextRange: [1, 2],
-        answerSentence: 2,
         choices: [
           "大切（たいせつ）な会議（かいぎ）がありましたから",
           "病院（びょういん）が嫌（きら）いですから",
@@ -2001,7 +1934,6 @@ const sprintStoriesWithQA = [
           "トム（とむ）さんはなぜハナ（はな）さんに病院（びょういん）へ行（い）ったほうがいいと言（い）いましたか。",
         questionEn: "Why did Tom tell Hana she should go to the hospital?",
         contextRange: [3, 5],
-        answerSentence: 5,
         choices: [
           "咳（せき）をして、顔（かお）も赤（あか）かったから",
           "ハナ（はな）さんが病院（びょういん）で働（はたら）いていますから",
@@ -2025,7 +1957,6 @@ const sprintStoriesWithQA = [
           "医者（いしゃ）はハナ（はな）さんに何（なに）をしろと言（い）いましたか。",
         questionEn: "What did the doctor tell Hana to do?",
         contextRange: [7, 7],
-        answerSentence: 7,
         choices: [
           "仕事（しごと）を休（やす）んで、早（はや）く寝（ね）ること",
           "たくさん運動（うんどう）すること",
@@ -2050,7 +1981,6 @@ const sprintStoriesWithQA = [
           "ハナ（はな）さんは病院（びょういん）へ行（い）ってから何（なに）をしましたか。",
         questionEn: "What did Hana do after going to the hospital?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "家（いえ）に帰（かえ）って、薬（くすり）を飲（の）んで寝（ね）ました",
           "会社（かいしゃ）に戻（もど）りました",
@@ -2072,7 +2002,6 @@ const sprintStoriesWithQA = [
         question: "次（つぎ）の日（ひ）、ハナ（はな）さんはどうなりましたか。",
         questionEn: "What happened to Hana the next day?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "熱（ねつ）が下（さ）がって、元気（げんき）になりました",
           "もっと具合（ぐあい）が悪（わる）くなりました",
@@ -2096,7 +2025,6 @@ const sprintStoriesWithQA = [
         question: "トム（とむ）さんはどんな人（ひと）ですか。",
         questionEn: "What kind of person is Tom?",
         contextRange: [5, 5],
-        answerSentence: 5,
         choices: [
           "心配（しんぱい）してくれる人（ひと）",
           "厳（きび）しい人（ひと）",
@@ -2189,7 +2117,6 @@ const sprintStoriesWithQA = [
           "ソフィア（そふぃあ）さんはどこに行（い）きたいと思（おも）っていますか。",
         questionEn: "Where does Sophia want to go?",
         contextRange: [1, 2],
-        answerSentence: 2,
         choices: [
           "京都（きょうと）と北海道（ほっかいどう）",
           "京都（きょうと）だけ",
@@ -2211,7 +2138,6 @@ const sprintStoriesWithQA = [
         question: "北海道（ほっかいどう）は夏（なつ）どうですか。",
         questionEn: "How is Hokkaido in summer?",
         contextRange: [4, 4],
-        answerSentence: 4,
         choices: [
           "涼（すず）しくて、自然（しぜん）がきれいです",
           "暑（あつ）いです",
@@ -2229,7 +2155,6 @@ const sprintStoriesWithQA = [
           "二人（ふたり）はどうやって北海道（ほっかいどう）へ行（い）きますか。",
         questionEn: "How will the two go to Hokkaido?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "飛行機（ひこうき）",
           "新幹線（しんかんせん）",
@@ -2250,7 +2175,6 @@ const sprintStoriesWithQA = [
           "ソフィア（そふぃあ）さんはなぜ北海道（ほっかいどう）に行（い）くことにしましたか。",
         questionEn: "Why did Sophia decide on Hokkaido?",
         contextRange: [4, 7],
-        answerSentence: 7,
         choices: [
           "友達（ともだち）は海（うみ）が好（す）きで、ソフィア（そふぃあ）さんは暑（あつ）い所（ところ）が苦手（にがて）ですから",
           "京都（きょうと）が遠（とお）いですから",
@@ -2274,7 +2198,6 @@ const sprintStoriesWithQA = [
           "ソフィア（そふぃあ）さんはなぜ京都（きょうと）より北海道（ほっかいどう）がいいと思（おも）いましたか。",
         questionEn: "Why did Sophia prefer Hokkaido over Kyoto?",
         contextRange: [3, 6],
-        answerSentence: 6,
         choices: [
           "暑（あつ）い所（ところ）が苦手（にがて）ですから",
           "京都（きょうと）が嫌（きら）いですから",
@@ -2298,7 +2221,6 @@ const sprintStoriesWithQA = [
           "飛行機（ひこうき）と新幹線（しんかんせん）と、どちらが安（やす）いですか。",
         questionEn: "Which is cheaper — plane or shinkansen?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "飛行機（ひこうき）",
           "新幹線（しんかんせん）",
@@ -2317,7 +2239,6 @@ const sprintStoriesWithQA = [
         question: "二人（ふたり）はホテル（ほてる）をどこにしましたか。",
         questionEn: "Where did they choose their hotel?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "駅（えき）の近（ちか）く",
           "海（うみ）の近（ちか）く",
@@ -2340,7 +2261,6 @@ const sprintStoriesWithQA = [
           "ソフィア（そふぃあ）さんは何（なに）を楽（たの）しみにしていますか。",
         questionEn: "What is Sophia looking forward to?",
         contextRange: [10, 10],
-        answerSentence: 10,
         choices: [
           "海（うみ）が見（み）られること",
           "お寺（てら）を見（み）ること",
@@ -2366,7 +2286,6 @@ const sprintStoriesWithQA = [
           "友達（ともだち）は旅行（りょこう）についてどう思（おも）っていますか。",
         questionEn: "How does her friend feel about the trip?",
         contextRange: [11, 11],
-        answerSentence: 11,
         choices: [
           "とても喜（よろこ）んでいます",
           "心配（しんぱい）しています",
@@ -2454,7 +2373,6 @@ const sprintStoriesWithQA = [
           "山田（やまだ）さんは先週（せんしゅう）の土曜日（どようび）、どうやって公園（こうえん）へ行（い）きましたか。",
         questionEn: "How did Yamada go to the park last Saturday?",
         contextRange: [2, 2],
-        answerSentence: 2,
         choices: [
           "自転車（じてんしゃ）で",
           "バス（ばす）で",
@@ -2472,7 +2390,6 @@ const sprintStoriesWithQA = [
           "山田（やまだ）さんは公園（こうえん）で誰（だれ）に会（あ）いましたか。",
         questionEn: "Who did Yamada meet at the park?",
         contextRange: [3, 3],
-        answerSentence: 3,
         choices: [
           "高校（こうこう）の友達（ともだち）",
           "母（はは）",
@@ -2494,7 +2411,6 @@ const sprintStoriesWithQA = [
         question: "山田（やまだ）さんは母（はは）に何（なに）をあげましたか。",
         questionEn: "What did Yamada give his mother?",
         contextRange: [9, 9],
-        answerSentence: 9,
         choices: [
           "花（はな）",
           "ケーキ（けーき）",
@@ -2514,7 +2430,6 @@ const sprintStoriesWithQA = [
           "山田（やまだ）さんはなぜ友達（ともだち）と昼（ひる）ごはんを食（た）べませんでしたか。",
         questionEn: "Why didn't Yamada have lunch with his friend?",
         contextRange: [5, 7],
-        answerSentence: 6,
         choices: [
           "母（はは）の誕生日（たんじょうび）でしたから",
           "友達（ともだち）が嫌（きら）いですから",
@@ -2538,7 +2453,6 @@ const sprintStoriesWithQA = [
           "山田（やまだ）さんはなぜ財布（さいふ）を忘（わす）れたことが問題（もんだい）でしたか。",
         questionEn: "Why was forgetting his wallet a problem?",
         contextRange: [4, 5],
-        answerSentence: 5,
         choices: [
           "友達（ともだち）と昼（ひる）ごはんを食（た）べる予定（よてい）でしたから",
           "公園（こうえん）で何（なに）か買（か）いたかったから",
@@ -2562,7 +2476,6 @@ const sprintStoriesWithQA = [
           "山田（やまだ）さんはどうして「いい一日（いちにち）でした」と思（おも）いましたか。",
         questionEn: "Why did Yamada think it was a good day?",
         contextRange: [8, 10],
-        answerSentence: 10,
         choices: [
           "母（はは）がとても嬉（うれ）しそうでしたから",
           "友達（ともだち）と昼（ひる）ごはんを食（た）べましたから",
@@ -2588,7 +2501,6 @@ const sprintStoriesWithQA = [
           "山田（やまだ）さんは友達（ともだち）に何（なに）と言（い）いましたか。",
         questionEn: "What did Yamada say to his friend?",
         contextRange: [7, 7],
-        answerSentence: 7,
         choices: [
           "「今日（きょう）は母（はは）の誕生日（たんじょうび）ですから、家（いえ）に帰（かえ）ります」",
           "「一緒（いっしょ）に昼（ひる）ごはんを食（た）べましょう」",
@@ -2612,7 +2524,6 @@ const sprintStoriesWithQA = [
           "友達（ともだち）は山田（やまだ）さんに何（なに）と言（い）いましたか。",
         questionEn: "What did the friend say to Yamada?",
         contextRange: [8, 8],
-        answerSentence: 8,
         choices: [
           "「そうか。じゃあ、また今度（こんど）」",
           "「一緒（いっしょ）に帰（かえ）りましょう」",
@@ -2636,7 +2547,6 @@ const sprintStoriesWithQA = [
         question: "母（はは）は花（はな）についてどう言（い）いましたか。",
         questionEn: "What did his mother say about the flowers?",
         contextRange: [9, 10],
-        answerSentence: 9,
         choices: [
           "「ありがとう。とても嬉（うれ）しい」",
           "「花（はな）が高（たか）いです」",
