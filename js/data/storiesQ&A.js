@@ -445,7 +445,7 @@ const sprintStoriesWithQA = [
         question:
           "マリア（まりあ）さんの妹（いもうと）はどんな人（ひと）ですか。",
         questionEn: "What kind of person is Maria's younger sister?",
-        contextRange: [10, 10],
+        contextRange: [9, 10],
         answerSentence: 10,
         choices: [
           "高校生（こうこうせい）で、ピアノ（ぴあの）が上手（じょうず）です",
@@ -518,7 +518,7 @@ const sprintStoriesWithQA = [
         question:
           "マリア（まりあ）さんは家族（かぞく）についてどう思（おも）っていますか。",
         questionEn: "How does Maria feel about her family?",
-        contextRange: [11, 12],
+        contextRange: [10, 11],
         answerSentence: 11,
         choices: [
           "家族（かぞく）がとても好（す）きです",
@@ -695,7 +695,7 @@ const sprintStoriesWithQA = [
       {
         question: "リー（りー）さんはなぜ走（はし）りましたか。",
         questionEn: "Why did Lee run?",
-        contextRange: [4, 10],
+        contextRange: [4, 11],
         answerSentence: 10,
         choices: [
           "映画（えいが）に間（ま）に合（あ）いたかったから",
@@ -1646,7 +1646,7 @@ const sprintStoriesWithQA = [
 
       // Layer 4 — Resolution
       {
-        jp: "三週間（さんしゅうかん）で、百（ひゃく）以上の漢字（かんじ）を覚（おぼ）えました。",
+        jp: "三週間（さんしゅうかん）で、百（ひゃく）以上（いじょう）の漢字（かんじ）を覚（おぼ）えました。",
         en: "In three weeks, he memorized over a hundred kanji.",
       },
       {
@@ -1694,7 +1694,7 @@ const sprintStoriesWithQA = [
         question:
           "リン（りん）さんはミゲル（みげる）さんに何（なに）を教（おし）えてくれましたか。",
         questionEn: "What did Lin tell Miguel about?",
-        contextRange: [8, 8],
+        contextRange: [7, 8],
         answerSentence: 8,
         choices: [
           "いい漢字（かんじ）のアプリ（あぷり）",
@@ -1767,7 +1767,7 @@ const sprintStoriesWithQA = [
         question:
           "ミゲル（みげる）さんは今（いま）どう思（おも）っていますか。",
         questionEn: "How does Miguel feel now?",
-        contextRange: [11, 11],
+        contextRange: [10, 10],
         answerSentence: 11,
         choices: [
           "漢字（かんじ）が少（すこ）し楽（たの）しいです",
@@ -2635,7 +2635,7 @@ const sprintStoriesWithQA = [
       {
         question: "母（はは）は花（はな）についてどう言（い）いましたか。",
         questionEn: "What did his mother say about the flowers?",
-        contextRange: [9, 9],
+        contextRange: [9, 10],
         answerSentence: 9,
         choices: [
           "「ありがとう。とても嬉（うれ）しい」",
