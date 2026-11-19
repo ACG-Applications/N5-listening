@@ -1,15 +1,11 @@
 // Service Worker for N5-listening
-const CACHE_NAME = "n5-listening-v2"; // Bump this version!
+const CACHE_NAME = "n5-listening-v3"; // Bump this version!
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   // Data files
-  "./js/data/sentences.js",
-  "./js/data/sprints.js",
-  "./js/data/stories.js",
   "./js/data/storiesQ&A.js",
-  "./js/data/wordDict.js",
   "./images/icons/icon-192.png",
   "./images/icons/icon-512.png",
 ];
