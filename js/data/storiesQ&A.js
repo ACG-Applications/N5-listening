@@ -1768,7 +1768,7 @@ const sprintStoriesWithQA = [
           "ミゲル（みげる）さんは今（いま）どう思（おも）っていますか。",
         questionEn: "How does Miguel feel now?",
         contextRange: [10, 10],
-        answerSentence: 11,
+        answerSentence: 10,
         choices: [
           "漢字（かんじ）が少（すこ）し楽（たの）しいです",
           "漢字（かんじ）がもっと嫌（きら）いになりました",
