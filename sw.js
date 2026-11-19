@@ -1,5 +1,5 @@
 // Service Worker for N5-listening
-const CACHE_NAME = "n5-listening-v3"; // Bump this version!
+const CACHE_NAME = "n5-listening-v4"; // Bump this version!
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,6 +8,7 @@ const ASSETS = [
   "./js/data/storiesQ&A.js",
   "./images/icons/icon-192.png",
   "./images/icons/icon-512.png",
+  "./images/icons/Antonio.png",
 ];
 
 // Install event - cache assets

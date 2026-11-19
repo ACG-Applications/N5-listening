@@ -10,6 +10,7 @@
     />
     <link rel="apple-touch-icon" href="images/icons/icon-192.png" />
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>JLPT N5 聴解練習 + Story Mode</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -94,7 +95,7 @@
       .stamp {
         position: absolute;
         top: 6px;
-        right: 0;
+        left: 0;
         width: 56px;
         height: 56px;
         border: 2px solid var(--shu);
@@ -114,14 +115,12 @@
       .antonio-icon {
         position: absolute;
         top: 4px;
-        left: 0;
-        width: 80px;
+        right: 0;
+        width: 56px;
         height: 56px;
         border: 2px solid var(--shu);
-        border-radius: 30px;
+        border-radius: 50%;
         object-fit: cover;
-        transform: rotate(-4deg);
-        opacity: 0.85;
         background: var(--paper);
       }
 
@@ -1147,6 +1146,39 @@
         }
         .story-header {
           border-bottom: 1px solid #000 !important;
+        }
+      }
+      /* Short landscape (phone sideways): body padding 40/80 plus a 40px header pad and a
+         38px title ate the viewport, leaving the sprint chips below the fold. */
+      @media (orientation: landscape) and (max-height: 560px) {
+        body {
+          padding: 12px 14px 40px;
+        }
+
+        header {
+          padding-top: 6px;
+          padding-bottom: 10px;
+          margin-bottom: 12px;
+        }
+
+        h1 {
+          font-size: 1.6rem;
+          margin: 14px 0 4px;
+        }
+
+        .sub {
+          display: none;
+        }
+
+        .stamp,
+        .antonio-icon {
+          top: 2px;
+          width: 40px;
+          height: 40px;
+        }
+
+        .mode-tabs {
+          margin: 8px 0;
         }
       }
     </style>
